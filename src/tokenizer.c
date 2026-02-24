@@ -52,3 +52,4 @@ t_token tokenizer(char *str)
         i++;
     }
 }
+ 
