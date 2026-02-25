@@ -37,7 +37,7 @@ typedef struct      s_state
     int             id;
     t_list          *items;
     t_list          *transitions;
-    int             rule_id;
+    int             reduction_rule_id;
 }                   t_state;
 
 typedef struct      s_transition
