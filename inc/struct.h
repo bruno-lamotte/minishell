@@ -13,8 +13,8 @@ typedef struct      s_token
 typedef struct      s_rule
 {
     int             id;
-    char            *left_vars;
-    t_list          *right_vars;
+    char            *left_symbol;
+    t_list          *right_symbols;
     int             nb_items;
 }                   t_rule;
 
@@ -29,7 +29,7 @@ typedef struct      s_symbol
 {
     char            *name;
     t_list          *firsts;
-    t_list          *sfollows;
+    t_list          *follows;
 }                   t_symbol;
 
 typedef struct      s_state
@@ -37,6 +37,7 @@ typedef struct      s_state
     int             id;
     t_list          *items;
     t_list          *transitions;
+    int             rule_id;
 }                   t_state;
 
 typedef struct      s_transition
@@ -44,6 +45,19 @@ typedef struct      s_transition
     char            *symbol;
     struct s_state  *dest_state;
 }                   t_transition;
+
+typedef struct      s_stack
+{
+    int             state_id;
+    t_ast           *ast_node;
+}                   t_stack;
+
+typedef struct      s_ast
+{
+    char            *type;
+    char            *value;
+    t_list          *children;
+}                   t_ast;
 
 typedef struct      s_parser
 {
