@@ -28,13 +28,13 @@ typedef struct      s_item
     struct s_item   *next_item;
 }                   t_item;
 
-typedef struct      s_vars
+typedef struct      s_symbol
 {
-    char            *var_name;
-    t_list          *var_firsts;
-    t_list          *var_follows;
-    struct s_vars    *next_var;
-}                   t_vars;
+    char            *name;
+    t_list          *firsts;
+    t_list          *sfollows;
+    struct s_symbol    *next_symbol;
+}                   t_symbol;
 
 typedef struct      s_state
 {
