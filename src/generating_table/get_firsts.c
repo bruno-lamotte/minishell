@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/02/27 14:22:47 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/02/27 16:03:42 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int should_look_for_next_right_symbol(t_symbol *left_symbol, t_rule rule)
 {
     return (does_firsts_contains_this_token(left_symbol->firsts, "EMPTY") && rule->right_symbols->next)
 }
-void	get_first_loop(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol *right_symbol)
+void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol *right_symbol)
 {
 	t_rule		*next_rule;
 
@@ -69,16 +69,21 @@ void	get_first_loop(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbo
 			else
 			{
 				next_rule = get_rule_from_symbol(data, right_symbol);
-				if (!rule == next_rule)
-					get_first_loop(data, next_rule);
+				if (rule != next_rule) 
+                /*ce if n est peut etre pas suffisant :
+                je ne sais pas si une grammaire peut boucler a une ou plus regles d intervales.
+                si c est le cas je compte mettre en place un bitsmask qu un handler actualise
+                a chaque ouverture et fermeture de stack
+                pour etre sur de ne pas ouvrir deux fenetres pour la meme regle*/
+					get_first_dfs(data, next_rule);
                 if (!add_firsts_if_not_token(data, next_rule, left_symbol))
                     return (/*JSP*/);
 			}
 		}
         if (should_look_for_next_right_symbol(left_symbol, rule))
-            right_symbol = get_symbol_from_rule(data, rule->right_symbols->next->content)
-        else if (left_symbol == data->rules->next->content->left_symbol)
-            data->rules = data->rules->next;
+            right_symbol = get_symbol_from_rule(data, rule->right_symbols->next->content);
+        // else if (left_symbol == data->rules->next->content->left_symbol)
+        //     data->rules = data->rules->next;
         else
             return ;
 	}
@@ -88,13 +93,14 @@ void	get_firsts(t_parser *data)
 {
 	t_symbol	*left_symbol;
 	t_symbol	*right_symbol;
+    t_list      *current_rule;
 
-	while (data->rules)
+    current_rule = data->rules;
+	while (current)
 	{
-		left_symbol = get_symbol_from_rule(data, rule->left_symbol);
-		right_symbol = get_symbol_from_rule(data, rule->right_symbols->content);
-
-			get_first_loop(data, data->rules->content, left_symbol, right_symbol);
-		data->rules = data->rules->next;
+		left_symbol = get_symbol_from_rule(data, rule->content->left_symbol);
+		right_symbol = get_symbol_from_rule(data, rule->content->right_symbols->content);
+		get_first_dfs(data, current->content, left_symbol, right_symbol);
+		current_rule = current_rule->next;
 	}
 }
