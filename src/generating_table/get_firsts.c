@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/02/27 14:02:28 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/02/27 14:22:47 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,23 @@ int	does_firsts_contains_this_token(t_list firsts, char *token_name)
 	return (0);
 }
 
-int add_first_if_not_token(t_parser *data, t_rule *next_rule, t_symbol *left_symbol)
+int add_firsts_if_not_token(t_parser *data, t_rule *next_rule, t_symbol *left_symbol)
 {
-    t_list new_list;
+    t_list *new_list;
+    t_list *new_node;
     
 	new_list = get_symbol_from_rule(data, next_rule->left_symbol)->firsts;
 	if (!new_list)
 		return (0);
-	ft_lstadd_back(&left_symbol->firsts, new_list);
+    while (new_list)
+    {
+        new_node = ft_lstnew(new_list->content);
+        if (!new_list)
+            return (0);
+        if (does_firsts_contains_this_token(left_symbol->firsts, new_list->content))
+	        ft_lstadd_back(&left_symbol->firsts, new_node);
+        new_list = new_list->next;
+    }
     return (1);
 }
 
@@ -62,7 +71,7 @@ void	get_first_loop(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbo
 				next_rule = get_rule_from_symbol(data, right_symbol);
 				if (!rule == next_rule)
 					get_first_loop(data, next_rule);
-                if (!add_first_if_not_token(data, next_rule, left_symbol))
+                if (!add_firsts_if_not_token(data, next_rule, left_symbol))
                     return (/*JSP*/);
 			}
 		}
