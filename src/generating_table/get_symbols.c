@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_symbols.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:36 by blamotte          #+#    #+#             */
-/*   Updated: 2026/02/27 12:16:32 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/02/28 19:31:19 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-t_symbol	get_rule_from_symbol(t_parser *data, char *symbol)
+#include "minishell.h"
+
+t_rule	*get_rule_from_symbol(t_parser *data, char *symbol)
 {
 	while (data->rules)
 	{
@@ -22,12 +24,12 @@ t_symbol	get_rule_from_symbol(t_parser *data, char *symbol)
 	return (NULL);
 }
 
-t_symbol	get_symbol_from_rule(t_parser *data, char *left_symbol)
+t_symbol	*get_symbol_from_rule(t_parser *data, char *left_symbol)
 {
 	while (data->symbols)
 	{
 		if (!ft_strcmp(data->symbols->content->name, left_symbol))
-			return (data->symbols);
+			return (data->symbols->content);
 		else
 			data->symbols = data->symbols->next;
 	}
@@ -35,13 +37,13 @@ t_symbol	get_symbol_from_rule(t_parser *data, char *left_symbol)
 }
 int	symbol_is_token(char *name)
 {
-	return (name < 97);
+	return (&name < 97);
 }
 
 void    complete_symbol_name(t_parser *data, t_symbol **symbol, char *name)
 {
-    **symbol->name = ft_strdup(name);
-    if (!**symbol->name)
+    (*symbol)->name = ft_strdup(name);
+    if (!(*symbol)->name)
         return (/*a completer*/);
 }
 
