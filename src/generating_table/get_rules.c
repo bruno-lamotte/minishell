@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 00:50:05 by blamotte          #+#    #+#             */
-/*   Updated: 2026/02/28 19:40:53 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/01 19:11:30 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	get_leftsymbol_from_grammar(t_parser *data, t_rule **new_rule,
 	{
 		while (line[i] != ' ' && line[i] != ':')
 			i++;
-		*new_rule->left_symbol = ft_substr(line, 0, i);
+		(*new_rule)->left_symbol = ft_substr(line, 0, i);
 	}
 }
 
