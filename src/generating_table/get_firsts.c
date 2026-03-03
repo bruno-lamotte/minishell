@@ -6,11 +6,11 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/01 19:10:48 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/03 16:17:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	does_list_contains_this_token(t_list *list, char *token_name)
+int	does_list_contains_this_symbol(t_list *list, char *token_name)
 {
 	while (list)
 	{
@@ -34,7 +34,7 @@ int add_firsts_if_not_token(t_parser *data, t_rule *next_rule, t_symbol *left_sy
         new_node = ft_lstnew(new_list->content);
         if (!new_node)
             return (0);
-        if (!does_list_contains_this_token(left_symbol->firsts, new_list->content))
+        if (!does_list_contains_this_symbol(left_symbol->firsts, new_list->content))
 	        ft_lstadd_back(&left_symbol->firsts, new_node);
         new_list = new_list->next;
     }
@@ -55,7 +55,7 @@ int should_look_for_next_right_symbol(t_symbol *left_symbol, t_rule rule)
 {
 	if (!rule->right_symbols->next)
 		return (0);
-    return (does_list_contains_this_token(left_symbol->firsts, "EMPTY") 
+    return (does_list_contains_this_symbol(left_symbol->firsts, "EMPTY") 
 		&& rule->right_symbols->next->content);
 }
 
@@ -65,14 +65,14 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 
 	while (1)
 	{
-		if (!does_list_contains_this_token(left_symbol->firsts, right_symbol->name))
+		if (!does_list_contains_this_symbol(left_symbol->firsts, right_symbol->name))
 		{
 			if (symbol_is_token(right_symbol))
                 if (!add_first_if_token(left_symbol, right_symbol))
                     return (/*JSP*/);
 			else
 			{
-				next_rule = get_rule_from_symbol(data, right_symbol);
+				next_rule = get_rule_from_symbol(data, right_symbol)->content;
 				if (rule != next_rule) 
                 /*
 				ce if n est peut etre pas suffisant :

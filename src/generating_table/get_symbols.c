@@ -6,18 +6,18 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:36 by blamotte          #+#    #+#             */
-/*   Updated: 2026/02/28 19:31:19 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/03 16:19:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_rule	*get_rule_from_symbol(t_parser *data, char *symbol)
+t_list	*get_rule_from_symbol(t_parser *data, char *symbol)
 {
 	while (data->rules)
 	{
 		if (!ft_strcmp(data->rules->content->left_symbol, symbol))
-			return (data->rules->content);
+			return (data->rules);
 		else
 			data->rules = data->rules->next;
 	}
