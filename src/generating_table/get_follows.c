@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 14:34:18 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 01:52:00 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/04 10:39:28 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,33 +65,39 @@ int contains_empty_in_firsts(t_symbol *symbol)
     return (0);
 }
 
-void get_follows(t_parser *data)
+void    update_follows(t_parser *data, t_list *current_rule, int *added)
 {
-    t_list  *current_rule;
-    int     has_added;
     t_symbol *tmp_symbol;
     t_symbol *tmp_next_symbol;
+    
+    while (current_rule)
+    {
+        tmp_symbol = get_symbol_from_rule(data, current_rule->right_symbols->content);
+        while (tmp_symbol->next)
+        {
+            tmp_next_symbol = get_symbol_from_rule(data, tmp_symbol->next->content);
+            *added += add_follows_from_list(&tmp_symbol, tmp_next_symbol);
+            if (contains_empty_in_firsts(tmp_next_symbol))
+                *added += add_follows_from_list(&tmp_symbol, get_symbol_from_rule(data, current_rule->left_symbol));
+            tmp_symbol = tmp_next_symbol;
+        }
+        if (!tmp_symbol->next && ft_strcmp(tmp_symbol->name, current_rule->left_symbol))
+            *added += add_follows_from_list(&tmp_symbol, get_symbol_from_rule(data, current_rule->left_symbol));
+        current_rule = current_rule->next;
+    }
+}
 
-    has_added = 1;
+void    get_follows(t_parser *data)
+{
+    t_list  *current_rule;
+    int     added;
+
+    added = 1;
     current_rule = data->rules;
     add_dollar_to_start_symbol(data);
     while (has_added)
     {
-        has_added = 0;
-        while (current_rule)
-        {
-            tmp_symbol = get_symbol_from_rule(data, current_rule->right_symbols->content);
-            while (tmp_symbol->next)
-            {
-                tmp_next_symbol = get_symbol_from_rule(data, tmp_symbol->next->content);
-                has_added += add_follows_from_list(&tmp_symbol, tmp_next_symbol);
-                if (contains_empty_in_firsts(tmp_next_symbol))
-                    has_added += add_follows_from_list(&tmp_symbol, get_symbol_from_rule(data, current_rule->left_symbol));
-                tmp_symbol = tmp_next_symbol;
-            }
-            if (!tmp_symbol->next && ft_strcmp(tmp_symbol->name, current_rule->left_symbol))
-                has_added += add_follows_from_list(&tmp_symbol, get_symbol_from_rule(data, current_rule->left_symbol));
-            current_rule = current_rule->next;
-        }
+        added = 0;
+        update_follows(data, current_rule, &added);
     }
 }

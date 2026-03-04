@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/02/27 16:03:42 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/04 10:06:00 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 	t_rule		*next_rule;
 
 	while (1)
-	{
+	{        // else if (left_symbol == data->rules->next->content->left_symbol)
+        //     data->rules = data->rules->next;
 		if (!does_list_contains_this_symbol(left_symbol->firsts, right_symbol->name))
 		{
 			if (symbol_is_token(right_symbol))
@@ -79,11 +80,7 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
                 /*
 				ce if n est peut etre pas suffisant :
                 je ne sais pas si une grammaire peut boucler a une ou plus regles d intervales.
-                si c est le cas je compte mettre en place un bitsmask qu un handler actualise
-                a chaque ouverture et fermeture de stack
-                pour etre sur de ne pas ouvrir deux fenetres pour la meme regle
-				
-				UPDATE: ou sinon faire un pointfixe qui boucle tant qu il y a des changement comme pour follows
+                si c est le cas faire un pointfixe qui boucle tant qu il y a des changement comme pour follows
 				*/
 					get_first_dfs(data, next_rule, left_symbol, get_symbol_from_rule(data, next_rule->right_symbols->content));
                 if (!add_firsts_if_not_token(data, next_rule, left_symbol))
@@ -92,8 +89,6 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 		}
         if (should_look_for_next_right_symbol(left_symbol, rule))
             right_symbol = get_symbol_from_rule(data, rule->right_symbols->next->content);
-        // else if (left_symbol == data->rules->next->content->left_symbol)
-        //     data->rules = data->rules->next;
         else
             return ;
 	}

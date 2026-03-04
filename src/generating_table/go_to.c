@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 03:20:49 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 09:52:09 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/04 10:15:06 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_transition	*create_transition(char *symbol_name, t_state *dest_state)
 	return (transition);
 }
 
-t_state	*create_new_state(t_data *data, t_state *state)
+t_state	*create_new_state(t_parser *data, t_state *state)
 {
 	t_state *new_state;
 
@@ -41,7 +41,7 @@ t_state	*create_new_state(t_data *data, t_state *state)
 	return (new_state);
 }
 
-void	add_item_to_list(t_data *data, t_state **new_state, t_item *item)
+void	add_item_to_list(t_parser *data, t_state **new_state, t_item *item)
 {
 	t_item *new_item;
 
@@ -51,11 +51,28 @@ void	add_item_to_list(t_data *data, t_state **new_state, t_item *item)
 	ft_lstadd_back(&(*new_state)->items, ft_lstnew(new_item));
 }
 
-void	go_to(t_data *data, t_state *current_state, t_state *new_state, t_item *item)
+void	add_transition_to_state(t_parser *data, t_state *new_state, t_symbol *symbol)
+{
+	t_state     *transition_state;
+
+	transition_state = find_state(data, new_state);
+	if (!transition_state)
+	{
+		ft_lstadd_back(&data->states, ft_lstnew(new_state));
+		transition = create_transition(symbol->name, new_state);
+	}
+	else
+    {
+		transition = create_transition(symbol->name, transition_state);
+        free(new_state);
+    }
+	ft_lstadd_back(&current_state->transitions, ft_lstnew(transition));
+}
+
+void	get_new_state(t_parser *data, t_state *current_state, t_state *new_state, t_item *item)
 {
     t_symbol    *symbol;
 	t_symbol    *next_symbol;
-	t_state     *transition_state;
 
     symbol = get_symbol_after_dot(current_state->items->content);
 	while (symbol)
@@ -71,21 +88,11 @@ void	go_to(t_data *data, t_state *current_state, t_state *new_state, t_item *ite
 			symbol = next_symbol;
 	}
 	closure(data, new_state);
-	transition_state = find_state(data, new_state);
-	if (!transition_state)
-	{
-		ft_lstadd_back(&data->states, ft_lstnew(new_state));
-		transition = create_transition(symbol->name, new_state);
-	}
-	else
-    {
-		transition = create_transition(symbol->name, transition_state);
-        free(new_state);
-    }
-	ft_lstadd_back(&current_state->transitions, ft_lstnew(transition));
+	add_transition_to_state(data, new_state, symbol);
+
 }
 
-void	go_to_main(t_data *data, t_state *state)
+void	go_to(t_parser *data, t_state *state)
 {
 	t_state *new_state;
 	t_symbol *symbol;
@@ -101,7 +108,7 @@ void	go_to_main(t_data *data, t_state *state)
 		symbol = get_symbol_after_dot(state->items->content);
 		ft_lstadd_back(&seen_symbols, ft_lstnew(symbol->name));
 		if (symbol && !does_list_contains_this_token(seen_symbols, symbol->name))
-			go_to(data, current_state,new_state, state->items);
+			get_new_state(data, current_state,new_state, state->items);
 		state->items = state->items->next;
 	}
 	ft_lstclear(&seen_symbols, NULL);
