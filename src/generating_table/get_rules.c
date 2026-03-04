@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_rules.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 00:50:05 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/01 19:11:30 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/04 01:41:22 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	get_leftsymbol_from_grammar(t_parser *data, t_rule **new_rule,
 
 	i = 0;
 	if (line[i] == ' ')
-		(*new_rule)->left_symbol = ft_strdup(ft_lstlast(data->rules)->left_symbol);
+		(*new_rule)->left_symbol = ft_strdup(ft_lstlast(data->rules)->content->left_symbol);
 	else
 	{
 		while (line[i] != ' ' && line[i] != ':')
@@ -45,7 +45,7 @@ void	get_rightsymbols_from_grammar(t_parser *data, t_rule **new_rule,
 		i = 0;
 		while (*line == ' ')
 			line++;
-		while (line[i] != ' ' || line[i] != '\n')
+		while (line[i] != ' ' && line[i] != '\n')
 			i++;
 		symbol = ft_substr(line, 0, i);
 		new_list = ft_lstnew(symbol);
@@ -89,13 +89,13 @@ int	parse_grammar(t_parser *data)
 	t_rule	*new_rule;
 	t_list	*new_list;
 
-	fd = open(grammar.txt, O_RDONLY);
+	fd = open("grammar.txt", O_RDONLY);
 	if (fd == -1)
 		return (0);
 	line = get_next_line(fd);
 	while (line)
 	{
-		if (*line == "\n")
+		if (*line == '\n')
 			break ;
 		new_rule = malloc(sizeof(t_rule));
 		if (!new_rule)

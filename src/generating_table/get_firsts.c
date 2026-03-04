@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_firsts.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/03 16:17:50 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/04 01:45:39 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "minishell.h"
 
 int	does_list_contains_this_symbol(t_list *list, char *token_name)
 {
@@ -45,13 +47,13 @@ int add_first_if_token(t_symbol *left_symbol, t_symbol *right_symbol)
 {
     t_list  *new_list;
     
-	new_list = ft_lstnew(right_symbol->content);
+	new_list = ft_lstnew(right_symbol->name);
 	if (!new_list)
 		return (0);
 	ft_lstadd_back(&left_symbol->firsts, new_list);
     return (1);
 }
-int should_look_for_next_right_symbol(t_symbol *left_symbol, t_rule rule)
+int should_look_for_next_right_symbol(t_symbol *left_symbol, t_rule *rule)
 {
 	if (!rule->right_symbols->next)
 		return (0);
@@ -72,7 +74,7 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
                     return (/*JSP*/);
 			else
 			{
-				next_rule = get_rule_from_symbol(data, right_symbol)->content;
+				next_rule = get_rule_from_symbolname(data, right_symbol)->content;
 				if (rule != next_rule) 
                 /*
 				ce if n est peut etre pas suffisant :

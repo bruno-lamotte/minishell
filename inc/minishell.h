@@ -6,11 +6,11 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:52 by blamotte          #+#    #+#             */
-/*   Updated: 2026/02/27 12:16:32 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/04 01:36:45 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINIHSELL_H
+#ifndef MINISHELL_H
 # define MINISHELL_H
 
 # include <fcntl.h>

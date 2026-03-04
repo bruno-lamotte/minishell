@@ -3,30 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   closure.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 20:55:38 by marvin            #+#    #+#             */
-/*   Updated: 2026/03/01 20:55:38 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/04 01:44:27 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+t_item  *create_new_item(t_rule *rule, int dot_pos)
+{
+    t_item      *new_item;
+    static int  id = 0;
+
+    new_item = malloc(sizeof(t_item));
+    if (!new_item)
+        return (NULL);
+    new_item->id = ++id;
+    new_item->rule_of_item = rule;
+    new_item->dot_pos = dot_pos;
+    return (new_item);
+}
 
 t_symbol *get_symbol_from_list(t_list *right_symbols, int dot_pos)
 {
     t_list  *current;
 
     current = right_symbols;
-    while (dot_pos)
+    while (dot_pos--)
     {
+        if (!current)
+            return (NULL);
         current = current->next;
     }
-    return (get_symbol_from_rule(current->content));
+    return (get_symbol_from_rule(data, current->content));
 }
 
 t_symbol *get_symbol_after_dot(t_item *item)
 {
     char *symbol_name;
+    t_symbol *symbol;
 
     if (item->dot_pos >= item->rule_of_item->nb_items)
         return (NULL);
@@ -36,7 +53,7 @@ t_symbol *get_symbol_after_dot(t_item *item)
     return (NULL);
 }
 
-void  closure(t_data *data, t_state *state)
+void  closure(t_parser *data, t_state *state)
 {
     t_list  *current_item;
     t_symbol *symbol_after_dot;
@@ -49,13 +66,13 @@ void  closure(t_data *data, t_state *state)
         symbol_after_dot = get_symbol_after_dot(current_item->content);
         if (symbol_after_dot)
         {
-            rule_of_item = get_rule_from_symbol(data, symbol_after_dot->name);
+            rule_of_item = get_rule_from_symbolname(data, symbol_after_dot->name);
             while (rule_of_item)
             {
                 new_item = create_new_item(rule_of_item, 0);
                 if (!does_list_contains_this_symbol(state->items, new_item))
                     ft_lstadd_back(&state->items, ft_lstnew(new_item));
-                if (ft_strcmp(rule_of_item->content->left_symbol, symbol_after_dot->name))
+                if (!ft_strcmp(rule_of_item->content->left_symbol, symbol_after_dot->name))
                     rule_of_item = rule_of_item->next;
                 else
                     break ;
