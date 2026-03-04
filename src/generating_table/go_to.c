@@ -2,19 +2,15 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   go_to.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+
-	+:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+
-	+#+        */
-/*                                                +#+#+#+#+#+
-	+#+           */
-/*   Created: 2026/03/01 20:55:47 by marvin            #+#    #+#             */
-/*   Updated: 2026/03/04 01:22:38 by blamotte         ###   ########.fr       */
+/*                                                    +:+ +:+         +:+     */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/04 03:20:49 by blamotte          #+#    #+#             */
+/*   Updated: 2026/03/04 09:52:09 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 t_transition	*create_transition(char *symbol_name, t_state *dest_state)
 {
@@ -104,11 +100,9 @@ void	go_to_main(t_data *data, t_state *state)
 			return (/*a completer*/);
 		symbol = get_symbol_after_dot(state->items->content);
 		ft_lstadd_back(&seen_symbols, ft_lstnew(symbol->name));
-		if (symbol && !does_list_contains_this_token(seen_symbols,
-				symbol->name))
-		{
+		if (symbol && !does_list_contains_this_token(seen_symbols, symbol->name))
 			go_to(data, current_state,new_state, state->items);
-		}
 		state->items = state->items->next;
 	}
+	ft_lstclear(&seen_symbols, NULL);
 }
