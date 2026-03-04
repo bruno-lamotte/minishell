@@ -12,37 +12,6 @@
 
 t_token make_token(char *str, int i)
 
-int is_end_of_imput(char c)
-{
-    return (c == '\0' || c == '\n');
-}
-
-int is_operator(char c)
-{
-    return (c == '|' || c == '<' || c == '>' || c == ';');
-}
-
-int can_be_added_to_opperator(char c)
-{
-    return (c == '<' || c == '>');
-}
-
-int is_blank(char c)
-{
-    return (c == ' ' || c == '\t');
-}
-
-int handle_comment(char *str, int *i)
-{
-    if (str[*i] == '#')
-    {
-        while (str[*i] && str[*i] != '\n')
-            (*i)++;
-        return (1);
-    }
-    return (0);
-}
-
 int handle_previus_is_operator(char *str, int *i)
 {
     if (*i == 0)
