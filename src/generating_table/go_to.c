@@ -2,11 +2,11 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   go_to.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
+/*                                                    +:+ +:+
 	+:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+      
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+
 	+#+        */
-/*                                                +#+#+#+#+#+  
+/*                                                +#+#+#+#+#+
 	+#+           */
 /*   Created: 2026/03/01 20:55:47 by marvin            #+#    #+#             */
 /*   Updated: 2026/03/04 01:22:38 by blamotte         ###   ########.fr       */
@@ -15,17 +15,36 @@
 
 #include "minishell.h"
 
-t_state *create_new_state(t_data *data, t_state *state)
-{
-    t_state *new_state;
 
-    new_state = malloc(sizeof(t_state));
-    if (!new_state)
-        return (NULL);
-    new_state->id = ft_lstlast(data->states)->content->id + 1;
-    new_state->items = NULL;
-    return (new_state);
+t_transition	*create_transition(char *symbol_name, t_state *dest_state)
+{
+	t_transition *transition;
+
+	transition = malloc(sizeof(t_transition));
+	if (!transition)
+		return (NULL);
+	transition->symbol = ft_strdup(symbol_name);
+	if (!transition->symbol)
+	{
+		free(transition);
+		return (/*JSP*/);
+	}
+	transition->dest_state = dest_state;
+	return (transition);
 }
+
+t_state	*create_new_state(t_data *data, t_state *state)
+{
+	t_state *new_state;
+
+	new_state = malloc(sizeof(t_state));
+	if (!new_state)
+		return (NULL);
+	new_state->id = ft_lstlast(data->states)->content->id + 1;
+	new_state->items = NULL;
+	return (new_state);
+}
+
 void	add_item_to_list(t_data *data, t_state **new_state, t_item *item)
 {
 	t_item *new_item;
@@ -36,10 +55,13 @@ void	add_item_to_list(t_data *data, t_state **new_state, t_item *item)
 	ft_lstadd_back(&(*new_state)->items, ft_lstnew(new_item));
 }
 
-void	go_to(t_data *data, t_state *new_state, t_item *item, t_symbol *symbol)
+void	go_to(t_data *data, t_state *current_state, t_state *new_state, t_item *item)
 {
-	t_symbol *next_symbol;
+    t_symbol    *symbol;
+	t_symbol    *next_symbol;
+	t_state     *transition_state;
 
+    symbol = get_symbol_after_dot(current_state->items->content);
 	while (symbol)
 	{
 		add_item_to_list(data, &new_state, item->content);
@@ -53,28 +75,40 @@ void	go_to(t_data *data, t_state *new_state, t_item *item, t_symbol *symbol)
 			symbol = next_symbol;
 	}
 	closure(data, new_state);
-	if (!state_already_exists(data, new_state))
+	transition_state = find_state(data, new_state);
+	if (!transition_state)
+	{
 		ft_lstadd_back(&data->states, ft_lstnew(new_state));
+		transition = create_transition(symbol->name, new_state);
+	}
 	else
-		free(new_state);
+    {
+		transition = create_transition(symbol->name, transition_state);
+        free(new_state);
+    }
+	ft_lstadd_back(&current_state->transitions, ft_lstnew(transition));
 }
 
 void	go_to_main(t_data *data, t_state *state)
 {
 	t_state *new_state;
-    t_symbol *symbol;
-    t_list    *seen_symbols;
+	t_symbol *symbol;
+	t_list *seen_symbols;
+	t_transition *transition;
 
-    seen_symbols = NULL;
-    while (state->items)
-    {
-        new_state = create_new_state(data,state);
-	    if (!new_state)
-		    return (/*a completer*/);
-        symbol = get_symbol_after_dot(state->items->content);
-        ft_lstadd_back(&seen_symbols, ft_lstnew(symbol->name));
-        if (symbol && !does_list_contains_this_token(seen_symbols, symbol->name))
-            go_to(data, new_state, state->items, symbol);
-        state->items = state->items->next;
-    }
+	seen_symbols = NULL;
+	while (state->items)
+	{
+		new_state = create_new_state(data, state);
+		if (!new_state)
+			return (/*a completer*/);
+		symbol = get_symbol_after_dot(state->items->content);
+		ft_lstadd_back(&seen_symbols, ft_lstnew(symbol->name));
+		if (symbol && !does_list_contains_this_token(seen_symbols,
+				symbol->name))
+		{
+			go_to(data, current_state,new_state, state->items);
+		}
+		state->items = state->items->next;
+	}
 }
