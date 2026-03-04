@@ -19,7 +19,7 @@ t_item  *create_new_item(t_rule *rule, int dot_pos)
 
     new_item = malloc(sizeof(t_item));
     if (!new_item)
-        return (NULL);
+        return (/*JSP*/);
     new_item->id = ++id;
     new_item->rule_of_item = rule;
     new_item->dot_pos = dot_pos;
@@ -37,7 +37,7 @@ t_symbol *get_symbol_from_list(t_list *right_symbols, int dot_pos)
             return (NULL);
         current = current->next;
     }
-    return (get_symbol_from_rule(data, current->content));
+    return (get_symbol_from_name(data, current->content));
 }
 
 t_symbol *get_symbol_after_dot(t_item *item)
@@ -48,6 +48,14 @@ t_symbol *get_symbol_after_dot(t_item *item)
     if (item->dot_pos >= item->rule_of_item->nb_items)
         return (NULL);
     symbol = get_symbol_from_list(item->rule_of_item->right_symbols, item->dot_pos);
+        return (symbol);
+}
+
+t_symbol    get_non_terminal_symbol_after_dot(t_item *item)
+{
+    t_symbol *symbol;
+
+    symbol = get_symbol_after_dot(item);
     if (!symbol_is_token(symbol->name))
         return (symbol);
     return (NULL);
@@ -63,7 +71,7 @@ void  closure(t_parser *data, t_state *state)
     current_item = state->items;
     while (current_item)
     {
-        symbol_after_dot = get_symbol_after_dot(current_item->content);
+        symbol_after_dot = get_non_terminal_symbol_after_dot(current_item->content);
         if (symbol_after_dot)
         {
             rule_of_item = get_rule_from_symbolname(data, symbol_after_dot->name);

@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 14:34:18 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 10:39:28 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:09:28 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void add_dollar_to_start_symbol(t_parser *data)
     t_list      *new_list;
     t_symbol    *symbol;
 
-    symbol = get_symbol_from_rule(data, data->rules->content->left_symbol);
+    symbol = get_symbol_from_name(data, data->rules->content->left_symbol);
     new_list = ft_lstnew("$");
     if (!new_list)
         return (/*a completer*/);
@@ -72,17 +72,17 @@ void    update_follows(t_parser *data, t_list *current_rule, int *added)
     
     while (current_rule)
     {
-        tmp_symbol = get_symbol_from_rule(data, current_rule->right_symbols->content);
+        tmp_symbol = get_symbol_from_name(data, current_rule->right_symbols->content);
         while (tmp_symbol->next)
         {
-            tmp_next_symbol = get_symbol_from_rule(data, tmp_symbol->next->content);
+            tmp_next_symbol = get_symbol_from_name(data, tmp_symbol->next->content);
             *added += add_follows_from_list(&tmp_symbol, tmp_next_symbol);
             if (contains_empty_in_firsts(tmp_next_symbol))
-                *added += add_follows_from_list(&tmp_symbol, get_symbol_from_rule(data, current_rule->left_symbol));
+                *added += add_follows_from_list(&tmp_symbol, get_symbol_from_name(data, current_rule->left_symbol));
             tmp_symbol = tmp_next_symbol;
         }
         if (!tmp_symbol->next && ft_strcmp(tmp_symbol->name, current_rule->left_symbol))
-            *added += add_follows_from_list(&tmp_symbol, get_symbol_from_rule(data, current_rule->left_symbol));
+            *added += add_follows_from_list(&tmp_symbol, get_symbol_from_name(data, current_rule->left_symbol));
         current_rule = current_rule->next;
     }
 }

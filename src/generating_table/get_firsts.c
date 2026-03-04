@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 10:06:00 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:09:28 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int add_firsts_if_not_token(t_parser *data, t_rule *next_rule, t_symbol *left_sy
     t_list *new_list;
     t_list *new_node;
     
-	new_list = get_symbol_from_rule(data, next_rule->left_symbol)->firsts;
+	new_list = get_symbol_from_name(data, next_rule->left_symbol)->firsts;
 	if (!new_list)
 		return (0);
     while (new_list)
@@ -66,8 +66,7 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 	t_rule		*next_rule;
 
 	while (1)
-	{        // else if (left_symbol == data->rules->next->content->left_symbol)
-        //     data->rules = data->rules->next;
+	{
 		if (!does_list_contains_this_symbol(left_symbol->firsts, right_symbol->name))
 		{
 			if (symbol_is_token(right_symbol))
@@ -82,13 +81,13 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
                 je ne sais pas si une grammaire peut boucler a une ou plus regles d intervales.
                 si c est le cas faire un pointfixe qui boucle tant qu il y a des changement comme pour follows
 				*/
-					get_first_dfs(data, next_rule, left_symbol, get_symbol_from_rule(data, next_rule->right_symbols->content));
+					get_first_dfs(data, next_rule, left_symbol, get_symbol_from_name(data, next_rule->right_symbols->content));
                 if (!add_firsts_if_not_token(data, next_rule, left_symbol))
                     return (/*JSP*/);
 			}
 		}
         if (should_look_for_next_right_symbol(left_symbol, rule))
-            right_symbol = get_symbol_from_rule(data, rule->right_symbols->next->content);
+            right_symbol = get_symbol_from_name(data, rule->right_symbols->next->content);
         else
             return ;
 	}
@@ -103,8 +102,8 @@ void	get_firsts(t_parser *data)
     current_rule = data->rules;
 	while (current_rule)
 	{
-		left_symbol = get_symbol_from_rule(data, current_rule->content->left_symbol);
-		right_symbol = get_symbol_from_rule(data, current_rule->content->right_symbols->content);
+		left_symbol = get_symbol_from_name(data, current_rule->content->left_symbol);
+		right_symbol = get_symbol_from_name(data, current_rule->content->right_symbols->content);
 		get_first_dfs(data, current_rule->content, left_symbol, right_symbol);
 		current_rule = current_rule->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/03 23:34:09 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:26:58 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_item
 
 typedef struct s_symbol
 {
+	int		nbr;
 	char	*name;
 	t_list	*firsts;
 	t_list	*follows;
@@ -48,7 +49,6 @@ typedef struct s_state
 	int		id;
 	t_list	*items;
 	t_list	*transitions;
-	int		reduction_rule_id;
 }			t_state;
 
 typedef struct s_transition

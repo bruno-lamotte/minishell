@@ -3,11 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   global_variables.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:56 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/03 15:49:30 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/04 19:27:03 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-enum
+#include "minishell.h"
+
+#define ACCEPTED 424242
