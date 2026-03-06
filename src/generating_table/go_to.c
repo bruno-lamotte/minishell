@@ -51,9 +51,10 @@ void	add_item_to_list(t_parser *data, t_state **new_state, t_item *item)
 	ft_lstadd_back(&(*new_state)->items, ft_lstnew(new_item));
 }
 
-void	add_transition_to_state(t_parser *data, t_state *new_state, t_symbol *symbol)
+void	add_transition_to_state(t_parser *data, t_state *current_state, t_state *new_state, t_symbol *symbol)
 {
-	t_state     *transition_state;
+	t_state     	*transition_state;
+	t_transition	*transition;
 
 	transition_state = find_state(data, new_state);
 	if (!transition_state)
@@ -69,17 +70,17 @@ void	add_transition_to_state(t_parser *data, t_state *new_state, t_symbol *symbo
 	ft_lstadd_back(&current_state->transitions, ft_lstnew(transition));
 }
 
-void	get_new_state(t_parser *data, t_state *current_state, t_state *new_state, t_item *item)
+void	get_new_state(t_parser *data, t_state *current_state, t_state *new_state, t_list *item)
 {
     t_symbol    *symbol;
 	t_symbol    *next_symbol;
 
-    symbol = get_symbol_after_dot(current_state->items->content);
+    symbol = get_symbol_after_dot(data, current_state->items->content);
 	while (symbol)
 	{
 		add_item_to_list(data, &new_state, item->content);
 		item = item->next;
-		next_symbol = get_symbol_after_dot(item->content);
+		next_symbol = get_symbol_after_dot(data, item->content);
 		while (next_symbol && !ft_strcmp(next_symbol->name, symbol->name))
 			next_symbol = next_symbol->next;
 		if (!next_symbol)
@@ -88,28 +89,36 @@ void	get_new_state(t_parser *data, t_state *current_state, t_state *new_state, t
 			symbol = next_symbol;
 	}
 	closure(data, new_state);
-	add_transition_to_state(data, new_state, symbol);
+	add_transition_to_state(data, current_state, new_state, symbol);
 
 }
 
 void	go_to(t_parser *data, t_state *state)
 {
+	t_state *current_item;
 	t_state *new_state;
 	t_symbol *symbol;
 	t_list *seen_symbols;
 	t_transition *transition;
 
 	seen_symbols = NULL;
-	while (state->items)
-	{
+	current_item = state->items;
+	while (current_item)
+	{`
 		new_state = create_new_state(data, state);
 		if (!new_state)
 			return (/*a completer*/);
-		symbol = get_symbol_after_dot(state->items->content);
+		symbol = get_symbol_after_dot(data, current_item->content);
+		if (!symbol)
+		{
+			free(new_state);
+			current_item = current_item->next;
+			continue ;
+		}
 		ft_lstadd_back(&seen_symbols, ft_lstnew(symbol->name));
-		if (symbol && !does_list_contains_this_token(seen_symbols, symbol->name))
-			get_new_state(data, current_state,new_state, state->items);
-		state->items = state->items->next;
+		if (!does_list_contains_this_symbol(seen_symbols, symbol->name))
+			get_new_state(data, state, new_state, current_item);
+		current_item = current_item->next;
 	}
 	ft_lstclear(&seen_symbols, NULL);
 }

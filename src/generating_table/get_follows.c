@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 14:34:18 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 18:55:08 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 19:35:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int add_follows_from_list(t_symbol **symbol, t_symbol *next_symbol)
         return (0);
     while (new_list)
     {
-        if (ft_strcmp(new_list->content, "EMPTY"))
+        if (!ft_strcmp(new_list->content, "EMPTY"))
             new_list = new_list->next;
         else if (!does_list_contains_this_symbol((*symbol)->follows, new_list->content))
         {
@@ -67,15 +67,18 @@ int contains_empty_in_firsts(t_symbol *symbol)
 
 void    update_follows(t_parser *data, t_list *current_rule, int *added)
 {
-    t_symbol *tmp_symbol;
-    t_symbol *tmp_next_symbol;
+    t_list      *right_symbols;
+    t_symbol    *tmp_symbol;
+    t_symbol    *tmp_next_symbol;
     
+
     while (current_rule)
     {
-        tmp_symbol = get_symbol_from_name(data, current_rule->right_symbols->content);
-        while (tmp_symbol->next)
+        right_symbols = current_rule->content->right_symbols;
+        tmp_symbol = get_symbol_from_name(data, right_symbols->content);
+        while (right_symbol->next)
         {
-            tmp_next_symbol = get_symbol_from_name(data, tmp_symbol->next->content);
+            tmp_next_symbol = get_symbol_from_name(data, right_symbols->next->content);
             *added += add_follows_from_list(&tmp_symbol, tmp_next_symbol);
             if (contains_empty_in_firsts(tmp_next_symbol))
                 *added += add_follows_from_list(&tmp_symbol, get_symbol_from_name(data, current_rule->left_symbol));

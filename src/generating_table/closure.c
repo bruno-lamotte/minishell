@@ -26,7 +26,7 @@ t_item  *create_new_item(t_rule *rule, int dot_pos)
     return (new_item);
 }
 
-t_symbol *get_symbol_from_list(t_list *right_symbols, int dot_pos)
+t_symbol *get_symbol_from_list(t_parser *data, t_list *right_symbols, int dot_pos)
 {
     t_list  *current;
 
@@ -40,25 +40,38 @@ t_symbol *get_symbol_from_list(t_list *right_symbols, int dot_pos)
     return (get_symbol_from_name(data, current->content));
 }
 
-t_symbol *get_symbol_after_dot(t_item *item)
+t_symbol *get_symbol_after_dot(t_parser *data, t_item *item)
 {
     char *symbol_name;
     t_symbol *symbol;
 
     if (item->dot_pos >= item->rule_of_item->nb_items)
         return (NULL);
-    symbol = get_symbol_from_list(item->rule_of_item->right_symbols, item->dot_pos);
+    symbol = get_symbol_from_list(data, item->rule_of_item->right_symbols, item->dot_pos);
         return (symbol);
 }
 
-t_symbol    get_non_terminal_symbol_after_dot(t_item *item)
+t_symbol    get_non_terminal_symbol_after_dot(t_parser *data, t_item *item)
 {
     t_symbol *symbol;
 
-    symbol = get_symbol_after_dot(item);
+    symbol = get_symbol_after_dot(data, item);
     if (!symbol_is_token(symbol->name))
         return (symbol);
     return (NULL);
+}
+int does_state_contains_this_item(t_list *items, t_item *item)
+{
+    t_list *current;
+
+    current = items;
+    while (current)
+    {
+        if (current->content->id == item->id)
+            return (1);
+        current = current->next;
+    }
+    return (0);
 }
 
 void  closure(t_parser *data, t_state *state)
@@ -71,14 +84,14 @@ void  closure(t_parser *data, t_state *state)
     current_item = state->items;
     while (current_item)
     {
-        symbol_after_dot = get_non_terminal_symbol_after_dot(current_item->content);
+        symbol_after_dot = get_non_terminal_symbol_after_dot(data, current_item->content);
         if (symbol_after_dot)
         {
             rule_of_item = get_rule_from_symbolname(data, symbol_after_dot->name);
             while (rule_of_item)
             {
                 new_item = create_new_item(rule_of_item, 0);
-                if (!does_list_contains_this_symbol(state->items, new_item))
+                if (!does_state_contains_this_item(state->items, new_item))
                     ft_lstadd_back(&state->items, ft_lstnew(new_item));
                 if (!ft_strcmp(rule_of_item->content->left_symbol, symbol_after_dot->name))
                     rule_of_item = rule_of_item->next;

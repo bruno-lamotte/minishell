@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   get_firsts.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 19:09:28 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/06 20:21:51 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	does_list_contains_this_symbol(t_list *list, char *token_name)
+int	does_list_contains_this_symbol(t_list *list, char *name)
 {
 	while (list)
 	{
-		if (!ft_strcmp(list->content, token_name))
+		if (!ft_strcmp(list->content, name))
 			return (1);
 		list = list->next;
 	}
@@ -69,7 +69,7 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 	{
 		if (!does_list_contains_this_symbol(left_symbol->firsts, right_symbol->name))
 		{
-			if (symbol_is_token(right_symbol))
+			if (symbol_is_token(right_symbol->name))
                 if (!add_first_if_token(left_symbol, right_symbol))
                     return (/*JSP*/);
 			else

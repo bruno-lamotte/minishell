@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:52 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 01:36:45 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/06 20:22:20 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 # define MINISHELL_H
 
 # include <fcntl.h>
-# include <global_variables.h>
 # include <libft.h>
 # include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <struct.h>
 # include <sys/time.h>
 # include <unistd.h>

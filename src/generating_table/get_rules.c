@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_rules.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 00:50:05 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 19:27:03 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/06 19:21:09 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	get_leftsymbol_from_grammar(t_parser *data, t_rule **new_rule,
 
 void	get_id_from_grammar(t_parser *data, t_rule **new_rule, char *line)
 {
-	if (data->rules = NULL)
+	if (data->rules == NULL)
 		(*new_rule)->id = 1;
 	(*new_rule)->id = (ft_lstlast(data->rules)->content->id + 1);
 }
@@ -42,7 +42,7 @@ void	get_rightsymbols_from_grammar(t_parser *data, t_rule **new_rule,
 	char	*symbol;
 	t_list	*new_list;
 
-	while (line)
+	while (*line && *line != '\n')
 	{
 		i = 0;
 		while (*line == ' ')
@@ -111,4 +111,5 @@ int	parse_grammar(t_parser *data)
 	if (line)
 		free(line);
 	close(fd);
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 02:26:54 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 19:06:05 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 20:12:08 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ int get_transition_from_symbol(t_state *state, char *symbol_name)
 {
     t_list *transition;
 
-    transition = state->transition;
+    transition = state->transitions;
     while (transition)
     {
-        if (!ft_strcmp(transition->content->symbol))
+        if (!ft_strcmp(transition->content->symbol, symbol_name))
             return (transition->content->dest_state->id);
         transition = transition->next;
     }
@@ -32,11 +32,11 @@ void fill_table_when_reduce(t_parser *data, int ***table, t_list *state, t_list 
     t_symbol    *symbol;
     t_list      *follow;
 
-    rule = get_rule_from_symbolname(item->content->rule_of_item->left_symbol);
-    follow = rule->follows;
+    rule = get_rule_from_symbolname(data, item->content->rule_of_item->left_symbol);
+    follow = get_symbol_from_name(data, item->content->rule_of_item->left_symbol)->follows;
     while (follow)
     {
-        symbol = get_symbol_from_name(follow->content);
+        symbol = get_symbol_from_name(data, follow->content);
         if (ft_strcmp(symbol->name, "$"))
             table[state->content->id][symbol->nbr] = ACCEPTED;
         else
@@ -54,12 +54,10 @@ void    fill_parsing_table(t_parser *data, int ***table)
     state = data->states;
     while (state)
     {
-        item = current_data->content->items;
+        item = state->content->items;
         while (item)
         {
-            symbol = get_symbol_after_dot(item->content);
-            if (table[state->content->id][symbol->nbr])
-                return (/*jsp*/ printf("%s", "ERROR : possible conflict conflict"));
+            symbol = get_symbol_after_dot(data, item->content);
             if (symbol)
                 table[state->content->id][symbol->nbr] = get_transition_from_symbol(state->content, symbol->name);
             else
@@ -73,7 +71,7 @@ void    fill_parsing_table(t_parser *data, int ***table)
 t_state *initialize_first_state(t_parser *data)
 {
     t_state *first_state;
-    t_state *first_item;
+    t_item  *first_item;
 
     first_state = malloc(sizeof(t_state));
     if (!first_state)
@@ -89,8 +87,8 @@ void    get_states(t_parser *data)
     t_state *first_state;
 
     first_state = initialize_first_state(data);
-    closure(first_state);
-    go_to(first_state);
+    closure(data, first_state);
+    go_to(data, first_state);
 }
 
 void    initialize_data(t_parser *data)
@@ -103,17 +101,19 @@ void    initialize_data(t_parser *data)
 
 int    **create_parsing_table(t_parser *data)
 {
-    int **table;
+    int     **table;
+    t_size  size;
     
     get_rules(data);
     get_symbols(data);
     get_firsts(data);
     get_follows(data);
     get_states(data);
-    table = malloc(sizeof(int *) * (ft_lstsize(data->states) + 1));
+    size = ft_lstsize(data->states);
+    table = malloc(sizeof(int *) * size + 1);
     if (!table)
         return (NULL);
-    ft_bzero(table);
+    ft_bzero(table, sizeof(int *) * size + 1);
     return (fill_parsing_table(data, &table));
 }
 
