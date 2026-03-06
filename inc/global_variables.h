@@ -3,13 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   global_variables.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:56 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 19:27:03 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/06 20:32:05 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef GLOBAL_VARIABLES_H
+# define GLOBAL_VARIABLES_H
 
-#define ACCEPTED 424242
+# define ACCEPTED 424242
+
+#endif

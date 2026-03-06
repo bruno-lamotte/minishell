@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 20:21:51 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 21:53:25 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	does_list_contains_this_symbol(t_list *list, char *name)
 {
 	while (list)
 	{
-		if (!ft_strcmp(list->content, name))
+		if (!ft_strcmp((char *)list->content, name))
 			return (1);
 		list = list->next;
 	}
@@ -36,7 +36,7 @@ int add_firsts_if_not_token(t_parser *data, t_rule *next_rule, t_symbol *left_sy
         new_node = ft_lstnew(new_list->content);
         if (!new_node)
             return (0);
-        if (!does_list_contains_this_symbol(left_symbol->firsts, new_list->content))
+        if (!does_list_contains_this_symbol(left_symbol->firsts, (char *)new_list->content))
 	        ft_lstadd_back(&left_symbol->firsts, new_node);
         new_list = new_list->next;
     }
@@ -71,23 +71,23 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 		{
 			if (symbol_is_token(right_symbol->name))
                 if (!add_first_if_token(left_symbol, right_symbol))
-                    return (/*JSP*/);
+                    return (/*JSP*/NULL);
 			else
 			{
-				next_rule = get_rule_from_symbolname(data, right_symbol)->content;
+				next_rule = (t_rule *)get_rule_from_symbolname(data, right_symbol->name)->content;
 				if (rule != next_rule) 
                 /*
 				ce if n est peut etre pas suffisant :
                 je ne sais pas si une grammaire peut boucler a une ou plus regles d intervales.
                 si c est le cas faire un pointfixe qui boucle tant qu il y a des changement comme pour follows
 				*/
-					get_first_dfs(data, next_rule, left_symbol, get_symbol_from_name(data, next_rule->right_symbols->content));
+					get_first_dfs(data, next_rule, left_symbol, get_symbol_from_name(data, (char *)next_rule->right_symbols->content));
                 if (!add_firsts_if_not_token(data, next_rule, left_symbol))
-                    return (/*JSP*/);
+                    return (/*JSP*/NULL);
 			}
 		}
         if (should_look_for_next_right_symbol(left_symbol, rule))
-            right_symbol = get_symbol_from_name(data, rule->right_symbols->next->content);
+            right_symbol = get_symbol_from_name(data, (char *)rule->right_symbols->next->content);
         else
             return ;
 	}
@@ -102,9 +102,9 @@ void	get_firsts(t_parser *data)
     current_rule = data->rules;
 	while (current_rule)
 	{
-		left_symbol = get_symbol_from_name(data, current_rule->content->left_symbol);
-		right_symbol = get_symbol_from_name(data, current_rule->content->right_symbols->content);
-		get_first_dfs(data, current_rule->content, left_symbol, right_symbol);
+		left_symbol = get_symbol_from_name(data, ((t_rule *)current_rule->content)->left_symbol);
+		right_symbol = get_symbol_from_name(data, (char *)((t_rule *)current_rule->content)->right_symbols->content);
+		get_first_dfs(data, (t_rule *)current_rule->content, left_symbol, right_symbol);
 		current_rule = current_rule->next;
 	}
 }

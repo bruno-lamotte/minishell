@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 00:50:05 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 19:21:09 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 21:53:25 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	get_leftsymbol_from_grammar(t_parser *data, t_rule **new_rule,
 
 	i = 0;
 	if (line[i] == ' ')
-		(*new_rule)->left_symbol = ft_strdup(ft_lstlast(data->rules)->content->left_symbol);
+		(*new_rule)->left_symbol = ft_strdup(((t_rule *)ft_lstlast(data->rules)->content)->left_symbol);
 	else
 	{
 		while (line[i] != ' ' && line[i] != ':')
@@ -32,7 +32,7 @@ void	get_id_from_grammar(t_parser *data, t_rule **new_rule, char *line)
 {
 	if (data->rules == NULL)
 		(*new_rule)->id = 1;
-	(*new_rule)->id = (ft_lstlast(data->rules)->content->id + 1);
+	(*new_rule)->id = (((t_rule *)ft_lstlast(data->rules)->content)->id + 1);
 }
 
 void	get_rightsymbols_from_grammar(t_parser *data, t_rule **new_rule,

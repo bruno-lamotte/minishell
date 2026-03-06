@@ -23,7 +23,7 @@ t_transition	*create_transition(char *symbol_name, t_state *dest_state)
 	if (!transition->symbol)
 	{
 		free(transition);
-		return (/*JSP*/);
+		return (/*JSP*/NULL);
 	}
 	transition->dest_state = dest_state;
 	return (transition);
@@ -36,7 +36,7 @@ t_state	*create_new_state(t_parser *data, t_state *state)
 	new_state = malloc(sizeof(t_state));
 	if (!new_state)
 		return (NULL);
-	new_state->id = ft_lstlast(data->states)->content->id + 1;
+	new_state->id = ((t_state *)ft_lstlast(data->states)->content)->id + 1;
 	new_state->items = NULL;
 	return (new_state);
 }
@@ -75,12 +75,12 @@ void	get_new_state(t_parser *data, t_state *current_state, t_state *new_state, t
     t_symbol    *symbol;
 	t_symbol    *next_symbol;
 
-    symbol = get_symbol_after_dot(data, current_state->items->content);
+    symbol = get_symbol_after_dot(data, (t_item *)current_state->items->content);
 	while (symbol)
 	{
-		add_item_to_list(data, &new_state, item->content);
+		add_item_to_list(data, &new_state, (t_item *)item->content);
 		item = item->next;
-		next_symbol = get_symbol_after_dot(data, item->content);
+		next_symbol = get_symbol_after_dot(data, (t_item *)item->content);
 		while (next_symbol && !ft_strcmp(next_symbol->name, symbol->name))
 			next_symbol = next_symbol->next;
 		if (!next_symbol)
@@ -104,11 +104,11 @@ void	go_to(t_parser *data, t_state *state)
 	seen_symbols = NULL;
 	current_item = state->items;
 	while (current_item)
-	{`
+	{
 		new_state = create_new_state(data, state);
 		if (!new_state)
 			return (/*a completer*/);
-		symbol = get_symbol_after_dot(data, current_item->content);
+		symbol = get_symbol_after_dot(data, (t_item *)current_item->content);
 		if (!symbol)
 		{
 			free(new_state);

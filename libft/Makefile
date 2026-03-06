@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+         #
+#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/10 18:42:33 by blamotte          #+#    #+#              #
-#    Updated: 2026/01/20 08:48:54 by blamotte         ###   ########.fr        #
+#    Updated: 2026/03/06 20:51:21 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ ft_strmapi.c ft_striteri.c ft_putstr_fd.c ft_putendl_fd.c \
 ft_putchar_fd.c ft_putnbr_fd.c ft_max.c ft_abs.c \
 ft_lstnew.c ft_lstadd_front.c ft_lstsize.c \
 ft_lstlast.c ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c \
-ft_lstiter.c ft_lstmap.c \
+ft_lstiter.c ft_lstmap.c ft_strcmp.c \
 get_next_line.c get_next_line_utils.c \
 ft_printf.c ft_print_nbr.c ft_print_nbr_base.c ft_print_text.c ft_parsing.c #ft_buffer_utils.c
 

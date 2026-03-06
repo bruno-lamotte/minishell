@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   struct.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 19:26:58 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/06 20:33:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCT_H
 # define STRUCT_H
 
-# include <minishell.h>
+# include <libft.h>
 
 typedef struct s_token
 {
@@ -57,18 +57,18 @@ typedef struct s_transition
 	t_state	*dest_state;
 }			t_transition;
 
-typedef struct s_stack
-{
-	int		state_id;
-	t_ast	*ast_node;
-}			t_stack;
-
 typedef struct s_ast
 {
 	char	*type;
 	char	*value;
 	t_list	*children;
 }			t_ast;
+
+typedef struct s_stack
+{
+	int		state_id;
+	t_ast	*ast_node;
+}			t_stack;
 
 typedef struct s_parser
 {

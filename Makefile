@@ -19,7 +19,15 @@ LIBFT_DIR   = libft
 #                                 SOURCES                                      #
 # **************************************************************************** #
 
-SRCS_FILES  = 
+SRCS_FILES  = generating_table/closure.c \
+				generating_table/get_firsts.c \
+				generating_table/get_follows.c \
+				generating_table/get_rules.c \
+				generating_table/get_symbols.c \
+				generating_table/get_table.c \
+				generating_table/go_to.c \
+				parsing/tokenizer/tokenizer_utils.c \
+				parsing/tokenizer/tokenizer.c
 
 SRCS        = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
