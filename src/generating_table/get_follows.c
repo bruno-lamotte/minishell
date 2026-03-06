@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_follows.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 14:34:18 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 19:09:28 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/06 18:55:08 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ int add_follows_from_list(t_symbol **symbol, t_symbol *next_symbol)
 {
     t_list *new_list;
     t_list *new_node;
-    int     has_added;
+    int     added;
     
-    has_added = 0;
+    added = 0;
     new_list = next_symbol->firsts;
     if (!new_list)
         return (0);
@@ -43,12 +43,12 @@ int add_follows_from_list(t_symbol **symbol, t_symbol *next_symbol)
             new_node = ft_lstnew(new_list->content);
             if (!new_node)
                 return (/*jsp*/);
-            has_added++;
+            added++;
             ft_lstadd_back(&(*symbol)->follows, new_node);
             new_list = new_list->next;
         }
     }
-    return (has_added);
+    return (added);
 }
 
 int contains_empty_in_firsts(t_symbol *symbol)
@@ -95,7 +95,7 @@ void    get_follows(t_parser *data)
     added = 1;
     current_rule = data->rules;
     add_dollar_to_start_symbol(data);
-    while (has_added)
+    while (added)
     {
         added = 0;
         update_follows(data, current_rule, &added);

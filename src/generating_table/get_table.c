@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_table.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 02:26:54 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/04 19:27:03 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/06 19:06:05 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int get_transition_from_symbol(t_state *state, char *symbol_name)
 {
-    t_list transition;
+    t_list *transition;
 
     transition = state->transition;
     while (transition)
@@ -26,12 +26,29 @@ int get_transition_from_symbol(t_state *state, char *symbol_name)
     return (NULL);
 }
 
+void fill_table_when_reduce(t_parser *data, int ***table, t_list *state, t_list *item)
+{
+    t_rule      *rule;
+    t_symbol    *symbol;
+    t_list      *follow;
+
+    rule = get_rule_from_symbolname(item->content->rule_of_item->left_symbol);
+    follow = rule->follows;
+    while (follow)
+    {
+        symbol = get_symbol_from_name(follow->content);
+        if (ft_strcmp(symbol->name, "$"))
+            table[state->content->id][symbol->nbr] = ACCEPTED;
+        else
+            table[state->content->id][symbol->nbr] = -rule->id;
+        follow = follow->next;
+    }
+}
+
 void    fill_parsing_table(t_parser *data, int ***table)
 {
     t_symbol    *symbol;
-    t_rule      *rule;
     t_list      *state;
-    t_list      *follow;
     t_list      *item;
 
     state = data->states;
@@ -46,24 +63,11 @@ void    fill_parsing_table(t_parser *data, int ***table)
             if (symbol)
                 table[state->content->id][symbol->nbr] = get_transition_from_symbol(state->content, symbol->name);
             else
-            {
-                rule = get_rule_from_symbolname(item->content->rule_of_item->left_symbol);
-                follow = rule->follows;
-                while (follow)
-                {
-                    symbol = get_symbol_from_name(follow->content);
-                    if (ft_strcmp(symbol->name, "$"))
-                        table[state->content->id][symbol->nbr] = ACCEPTED;
-                    else
-                        table[state->content->id][symbol->nbr] = -rule->id;
-                    follow = follow->next;
-                }
-            }
+                fill_table_when_reduce(data, table, state, item);
             item = item->next;
         }
         state = state->next;
     }
-    table[1][1]
 }
 
 t_state *initialize_first_state(t_parser *data)
@@ -99,7 +103,7 @@ void    initialize_data(t_parser *data)
 
 int    **create_parsing_table(t_parser *data)
 {
-    int        **table;
+    int **table;
     
     get_rules(data);
     get_symbols(data);
@@ -115,7 +119,7 @@ int    **create_parsing_table(t_parser *data)
 
 int main(void)
 {
-    int    **table;
+    int         **table;
     t_parser    *data;
 
     data = malloc(sizeof(t_parser));
