@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:52 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 20:36:27 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 22:18:03 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 t_list		*get_rule_from_symbolname(t_parser *data, char *symbol);
 t_symbol	*get_symbol_from_name(t_parser *data, char *left_symbol);
 int			symbol_is_token(char *name);
-void		complete_symbol_name(t_parser *data, t_symbol **symbol, char *name);
+void		complete_symbol_name(t_symbol **symbol, char *name);
 int			symbol_already_parsed(t_list *symbols, char *left_symbol);
 void		get_symbols(t_parser *data);
 
@@ -40,11 +40,10 @@ void		get_symbols(t_parser *data);
 
 void		get_leftsymbol_from_grammar(t_parser *data, t_rule **new_rule,
 				char *line);
-void		get_id_from_grammar(t_parser *data, t_rule **new_rule, char *line);
-void		get_rightsymbols_from_grammar(t_parser *data, t_rule **new_rule,
+void		get_id_from_grammar(t_parser *data, t_rule **new_rule);
+void		get_rightsymbols_from_grammar(t_rule **new_rule,
 				char *line);
-void		get_nbitems_from_grammar(t_parser *data, t_rule **new_rule,
-				char *line);
+void		get_nbitems_from_grammar(t_rule **new_rule);
 void		get_rule_from_grammar(t_parser *data, t_rule **new_rule,
 				char *line);
 int			parse_grammar(t_parser *data);
@@ -90,9 +89,9 @@ void		closure(t_parser *data, t_state *state);
 /* ************************************************************************** */
 
 t_transition	*create_transition(char *symbol_name, t_state *dest_state);
-t_state			*create_new_state(t_parser *data, t_state *state);
+t_state			*create_new_state(t_parser *data);
 t_state			*find_state(t_parser *data, t_state *new_state);
-void			add_item_to_list(t_parser *data, t_state **new_state,
+void			add_item_to_list(t_state **new_state,
 					t_item *item);
 void			add_transition_to_state(t_parser *data, t_state *current_state,
 					t_state *new_state, t_symbol *symbol);
@@ -114,24 +113,24 @@ void	initialize_data(t_parser *data);
 int		**create_parsing_table(t_parser *data);
 void	print_table(int **table);
 
-/* ************************************************************************** */
-/*                            tokenizer_utils.c                               */
-/* ************************************************************************** */
+// /* ************************************************************************** */
+// /*                            tokenizer_utils.c                               */
+// /* ************************************************************************** */
 
-int		is_end_of_imput(char c);
-int		is_operator(char c);
-int		can_be_added_to_opperator(char c);
-int		is_blank(char c);
-int		handle_comment(char *str, int *i);
+// int		is_end_of_imput(char c);
+// int		is_operator(char c);
+// int		can_be_added_to_opperator(char c);
+// int		is_blank(char c);
+// int		handle_comment(char *str, int *i);
 
-/* ************************************************************************** */
-/*                               tokenizer.c                                  */
-/* ************************************************************************** */
+// /* ************************************************************************** */
+// /*                               tokenizer.c                                  */
+// /* ************************************************************************** */
 
-t_token	make_token(char *str, int i);
-int		handle_previus_is_operator(char *str, int *i);
-int		handle_quote_and_backslash(char *str, int i);
-int		handle_dollar_and_accent(char *str, int i);
-t_token	tokenizer(char *str);
+// t_token	make_token(char *str, int i);
+// int		handle_previus_is_operator(char *str, int *i);
+// int		handle_quote_and_backslash(char *str, int i);
+// int		handle_dollar_and_accent(char *str, int i);
+// t_token	tokenizer(char *str);
 
 #endif

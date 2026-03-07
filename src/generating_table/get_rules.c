@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 00:50:05 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 21:53:25 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 22:05:11 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ void	get_leftsymbol_from_grammar(t_parser *data, t_rule **new_rule,
 	}
 }
 
-void	get_id_from_grammar(t_parser *data, t_rule **new_rule, char *line)
+void	get_id_from_grammar(t_parser *data, t_rule **new_rule)
 {
 	if (data->rules == NULL)
 		(*new_rule)->id = 1;
 	(*new_rule)->id = (((t_rule *)ft_lstlast(data->rules)->content)->id + 1);
 }
 
-void	get_rightsymbols_from_grammar(t_parser *data, t_rule **new_rule,
+void	get_rightsymbols_from_grammar(t_rule **new_rule,
 		char *line)
 {
 	int		i;
@@ -56,7 +56,7 @@ void	get_rightsymbols_from_grammar(t_parser *data, t_rule **new_rule,
 	}
 }
 
-void	get_nbitems_from_grammar(t_parser *data, t_rule **new_rule, char *line)
+void	get_nbitems_from_grammar(t_rule **new_rule)
 {
 	int	i;
 	t_list	*tmp;
@@ -73,20 +73,16 @@ void	get_nbitems_from_grammar(t_parser *data, t_rule **new_rule, char *line)
 
 void	get_rule_from_grammar(t_parser *data, t_rule **new_rule, char *line)
 {
-	int	i;
-
-	i = 0;
-	get_id_from_grammar(data, new_rule, line);
+	get_id_from_grammar(data, new_rule);
 	get_leftsymbol_from_grammar(data, new_rule, line);
 	while (*line != '|' && *line != ':')
 		line++;
-	get_rightsymbols_from_grammar(data, new_rule, line);
-	get_nbitems_from_grammar(data, new_rule, line);
+	get_rightsymbols_from_grammar(new_rule, line);
+	get_nbitems_from_grammar(new_rule);
 }
 int	parse_grammar(t_parser *data)
 {
 	int		fd;
-	int		i;
 	char	*line;
 	t_rule	*new_rule;
 	t_list	*new_list;

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 14:34:18 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 21:53:25 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 22:00:14 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void add_dollar_to_start_symbol(t_parser *data)
     symbol = get_symbol_from_name(data, ((t_rule *)data->rules->content)->left_symbol);
     new_list = ft_lstnew("$");
     if (!new_list)
-        return (/*a completer*/);
+        return /*a completer*/;
     ft_lstadd_back(&symbol->follows, new_list);
 }
 
@@ -42,7 +42,7 @@ int add_follows_from_list(t_symbol **symbol, t_symbol *next_symbol)
         {
             new_node = ft_lstnew(new_list->content);
             if (!new_node)
-                return (/*JSP*/NULL);
+                return (/*JSP*/0);
             added++;
             ft_lstadd_back(&(*symbol)->follows, new_node);
             new_list = new_list->next;

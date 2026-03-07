@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 21:53:25 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 21:59:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,10 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 		if (!does_list_contains_this_symbol(left_symbol->firsts, right_symbol->name))
 		{
 			if (symbol_is_token(right_symbol->name))
+			{
                 if (!add_first_if_token(left_symbol, right_symbol))
-                    return (/*JSP*/NULL);
+                    return /*JSP*/;
+			}
 			else
 			{
 				next_rule = (t_rule *)get_rule_from_symbolname(data, right_symbol->name)->content;
@@ -83,7 +85,7 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 				*/
 					get_first_dfs(data, next_rule, left_symbol, get_symbol_from_name(data, (char *)next_rule->right_symbols->content));
                 if (!add_firsts_if_not_token(data, next_rule, left_symbol))
-                    return (/*JSP*/NULL);
+                    return /*JSP*/;
 			}
 		}
         if (should_look_for_next_right_symbol(left_symbol, rule))

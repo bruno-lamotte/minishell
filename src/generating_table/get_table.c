@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 02:26:54 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 21:53:25 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 22:19:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ int get_transition_from_symbol(t_state *state, char *symbol_name)
             return (((t_transition *)transition->content)->dest_state->id);
         transition = transition->next;
     }
-    return (NULL);
+    return (0);
 }
 
 void fill_table_when_reduce(t_parser *data, int ***table, t_list *state, t_list *item)
 {
-    t_rule      *rule;
+    t_list      *rule;
     t_symbol    *symbol;
     t_list      *follow;
 
@@ -116,6 +116,25 @@ int    **create_parsing_table(t_parser *data)
     ft_bzero(table, sizeof(int *) * (size + 1));
     fill_parsing_table(data, &table);
     return (table);
+}
+
+void print_table(int **table)
+{
+    int i;
+    int j;
+
+    i = 0;
+    while (table[i])
+    {
+        j = 0;
+        while (table[i][j] != ACCEPTED)
+        {
+            printf("%d ", table[i][j]);
+            j++;
+        }
+        printf("\n");
+        i++;
+    }
 }
 
 int main(void)

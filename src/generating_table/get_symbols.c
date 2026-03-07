@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:36 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 21:53:25 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/06 22:08:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ int	symbol_is_token(char *name)
 	return (*name < 97);
 }
 
-void    complete_symbol_name(t_parser *data, t_symbol **symbol, char *name)
+void    complete_symbol_name(t_symbol **symbol, char *name)
 {
     (*symbol)->name = ft_strdup(name);
     if (!(*symbol)->name)
-        return (/*a completer*/);
+        return /*a completer*/;
 }
 
 int symbol_already_parsed(t_list *symbols, char *left_symbol)
@@ -78,12 +78,12 @@ void	get_symbols(t_parser *data)
 
 		new_symbol = malloc(sizeof(t_symbol));
 		if (!new_symbol)
-			return (/*error jsp*/);
-        complete_symbol_name(data, &new_symbol, ((t_rule *)current_rule->content)->left_symbol);
+			return /*error jsp*/;
+        complete_symbol_name(&new_symbol, ((t_rule *)current_rule->content)->left_symbol);
 		new_symbol->nbr = nbr++; 
         new_list = ft_lstnew(new_symbol);
         if (!new_list)
-            return (/*je ne sais tjrs pas*/);
+            return /*je ne sais tjrs pas*/;
         ft_lstadd_back(&data->symbols, new_list);
 		while (symbol_already_parsed(data->symbols, ((t_rule *)current_rule->content)->left_symbol))
 			current_rule = current_rule->next;

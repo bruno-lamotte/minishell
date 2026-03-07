@@ -6,13 +6,13 @@
 #    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/10 18:42:33 by blamotte          #+#    #+#              #
-#    Updated: 2026/03/06 20:51:21 by marvin           ###   ########.fr        #
+#    Updated: 2026/03/06 22:05:59 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME        = libft.a
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror
+CFLAGS      = #-Wall -Wextra -Werror
 AR          = ar rcs
 RM          = rm -f
 
