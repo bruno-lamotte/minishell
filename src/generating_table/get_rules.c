@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 00:50:05 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 22:05:11 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 17:05:18 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void	get_id_from_grammar(t_parser *data, t_rule **new_rule)
 {
 	if (data->rules == NULL)
 		(*new_rule)->id = 1;
-	(*new_rule)->id = (((t_rule *)ft_lstlast(data->rules)->content)->id + 1);
+	else
+		(*new_rule)->id = (((t_rule *)ft_lstlast(data->rules)->content)->id + 1);
 }
 
 void	get_rightsymbols_from_grammar(t_rule **new_rule,
@@ -42,12 +43,12 @@ void	get_rightsymbols_from_grammar(t_rule **new_rule,
 	char	*symbol;
 	t_list	*new_list;
 
-	while (*line && *line != '\n')
+	while (*line && *line != '\n' && *line != '\0' && *line != '\r')
 	{
 		i = 0;
 		while (*line == ' ')
 			line++;
-		while (line[i] != ' ' && line[i] != '\n')
+		while (line[i] != ' ' && line[i] != '\n' && line[i] != '\0' && line[i] != '\r')
 			i++;
 		symbol = ft_substr(line, 0, i);
 		new_list = ft_lstnew(symbol);
@@ -75,9 +76,9 @@ void	get_rule_from_grammar(t_parser *data, t_rule **new_rule, char *line)
 {
 	get_id_from_grammar(data, new_rule);
 	get_leftsymbol_from_grammar(data, new_rule, line);
-	while (*line != '|' && *line != ':')
+	while (*line != '|' && *line != ':' && *line != '\n' && *line != '\0' && *line != '\r')
 		line++;
-	get_rightsymbols_from_grammar(new_rule, line);
+	get_rightsymbols_from_grammar(new_rule, ++line);
 	get_nbitems_from_grammar(new_rule);
 }
 int	parse_grammar(t_parser *data)
@@ -91,13 +92,12 @@ int	parse_grammar(t_parser *data)
 	if (fd == -1)
 		return (0);
 	line = get_next_line(fd);
-	while (line)
+	while (line && *line != '\n' && *line != '\0' && *line != '\r')
 	{
-		if (*line == '\n')
-			break ;
 		new_rule = malloc(sizeof(t_rule));
 		if (!new_rule)
 			return (0);
+		ft_bzero(new_rule, sizeof(t_rule));
 		get_rule_from_grammar(data, &new_rule, line);
 		new_list = ft_lstnew(new_rule);
 		ft_lstadd_back(&data->rules, new_list);

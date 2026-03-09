@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:52 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 22:18:03 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 18:34:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ t_symbol	*get_symbol_from_name(t_parser *data, char *left_symbol);
 int			symbol_is_token(char *name);
 void		complete_symbol_name(t_symbol **symbol, char *name);
 int			symbol_already_parsed(t_list *symbols, char *left_symbol);
+void	    add_symbol_if_not_exists(t_parser *data, char *name, int *nbr);
 void		get_symbols(t_parser *data);
 
 /* ************************************************************************** */
@@ -96,7 +97,7 @@ void			add_item_to_list(t_state **new_state,
 void			add_transition_to_state(t_parser *data, t_state *current_state,
 					t_state *new_state, t_symbol *symbol);
 void			get_new_state(t_parser *data, t_state *current_state,
-					t_state *new_state, t_list *item);
+					t_state *new_state, t_symbol *target_symbol);
 void			go_to(t_parser *data, t_state *state);
 
 /* ************************************************************************** */
@@ -111,7 +112,7 @@ t_state	*initialize_first_state(t_parser *data);
 void	get_states(t_parser *data);
 void	initialize_data(t_parser *data);
 int		**create_parsing_table(t_parser *data);
-void	print_table(int **table);
+void	print_table(int **table, int nb_symbols);
 
 // /* ************************************************************************** */
 // /*                            tokenizer_utils.c                               */

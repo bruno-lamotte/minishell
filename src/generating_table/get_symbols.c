@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:36 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 22:08:07 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 18:57:51 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,27 +65,39 @@ int symbol_already_parsed(t_list *symbols, char *left_symbol)
     return (0);
 }
 
-void	get_symbols(t_parser *data)
+void    add_symbol_if_not_exists(t_parser *data, char *name, int *nbr)
 {
-	t_symbol	*new_symbol;
-    t_list      *new_list;
-	t_list		*current_rule;
-	static	int nbr = 1;
-	
-	current_rule = data->rules;
-	while (current_rule)
-	{
+    t_symbol *new_symbol;
 
-		new_symbol = malloc(sizeof(t_symbol));
-		if (!new_symbol)
-			return /*error jsp*/;
-        complete_symbol_name(&new_symbol, ((t_rule *)current_rule->content)->left_symbol);
-		new_symbol->nbr = nbr++; 
-        new_list = ft_lstnew(new_symbol);
-        if (!new_list)
-            return /*je ne sais tjrs pas*/;
-        ft_lstadd_back(&data->symbols, new_list);
-		while (symbol_already_parsed(data->symbols, ((t_rule *)current_rule->content)->left_symbol))
-			current_rule = current_rule->next;
-	}
+    if (!name || symbol_already_parsed(data->symbols, name))
+        return ;
+    new_symbol = malloc(sizeof(t_symbol));
+    if (!new_symbol)
+        return ;
+    ft_bzero(new_symbol, sizeof(t_symbol));
+    complete_symbol_name(&new_symbol, name);
+    new_symbol->nbr = (*nbr)++;
+    ft_lstadd_back(&data->symbols, ft_lstnew(new_symbol));
+}
+
+void    get_symbols(t_parser *data)
+{
+    t_list  *current_rule;
+    t_list  *right_symbol;
+    int     nbr;
+
+	nbr = 0;
+    add_symbol_if_not_exists(data, "$", &nbr);
+    current_rule = data->rules;
+    while (current_rule)
+    {
+        add_symbol_if_not_exists(data, ((t_rule *)current_rule->content)->left_symbol, &nbr);
+        right_symbol = ((t_rule *)current_rule->content)->right_symbols;
+    	while (right_symbol)
+        {
+            add_symbol_if_not_exists(data, (char *)right_symbol->content, &nbr);
+            right_symbol = right_symbol->next;
+        }            
+       current_rule = current_rule->next;
+    }
 }

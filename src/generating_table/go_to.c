@@ -36,7 +36,10 @@ t_state	*create_new_state(t_parser *data)
 	new_state = malloc(sizeof(t_state));
 	if (!new_state)
 		return (NULL);
-	new_state->id = ((t_state *)ft_lstlast(data->states)->content)->id + 1;
+	if (!data->states)
+	new_state->id = 0;
+	else
+		new_state->id = ((t_state *)ft_lstlast(data->states)->content)->id + 1;
 	new_state->items = NULL;
 	return (new_state);
 }
@@ -51,6 +54,11 @@ void	add_item_to_list(t_state **new_state, t_item *item)
 	ft_lstadd_back(&(*new_state)->items, ft_lstnew(new_item));
 }
 
+int are_items_equal(t_item *i1, t_item *i2)
+{
+    return (i1->rule_of_item == i2->rule_of_item && i1->dot_pos == i2->dot_pos);
+}
+
 t_state	*find_state(t_parser *data, t_state *new_state)
 {
 	t_list	*current_state;
@@ -62,13 +70,15 @@ t_state	*find_state(t_parser *data, t_state *new_state)
 	{
 		tmp_item1 = ((t_state *)current_state->content)->items;
 		tmp_item2 = new_state->items;
-		while (tmp_item1 || tmp_item2)
+		if (ft_lstsize(((t_state *)current_state->content)->items) != ft_lstsize(new_state->items))
 		{
-			if (tmp_item1 && tmp_item2)
-			{
-				if (((t_item *)tmp_item1->content)->id == ((t_item *)tmp_item2->content)->id)
+			current_state = current_state->next;
+			continue ;
+		}
+		while (tmp_item1 && tmp_item2)
+		{
+			if (!are_items_equal((t_item *)tmp_item1->content, (t_item *)tmp_item2->content))
 					return ((t_state *)current_state->content);
-			}
 			tmp_item1 = tmp_item1->next;
 			tmp_item2 = tmp_item2->next;
 		}
@@ -96,27 +106,23 @@ void	add_transition_to_state(t_parser *data, t_state *current_state, t_state *ne
 	ft_lstadd_back(&current_state->transitions, ft_lstnew(transition));
 }
 
-void	get_new_state(t_parser *data, t_state *current_state, t_state *new_state, t_list *item)
+void    get_new_state(t_parser *data, t_state *current_state, t_state *new_state, t_symbol *target_symbol)
 {
-    t_symbol    *symbol;
-	t_symbol    *next_symbol;
+    t_list *current_item;
+    t_symbol *symbol;
 
-    symbol = get_symbol_after_dot(data, (t_item *)current_state->items->content);
-	while (symbol)
-	{
-		add_item_to_list(&new_state, (t_item *)item->content);
-		item = item->next;
-		next_symbol = get_symbol_after_dot(data, (t_item *)item->content);
-		while (next_symbol && !ft_strcmp(next_symbol->name, symbol->name))
-			next_symbol = get_symbol_after_dot(data, (t_item *)item->next->content);
-		if (!next_symbol)
-			break ;
-		else
-			symbol = next_symbol;
-	}
-	closure(data, new_state);
-	add_transition_to_state(data, current_state, new_state, symbol);
-
+    current_item = current_state->items;
+    while (current_item)
+    {
+        symbol = get_symbol_after_dot(data, (t_item *)current_item->content);
+        if (symbol && !ft_strcmp(symbol->name, target_symbol->name))
+        {
+            add_item_to_list(&new_state, (t_item *)current_item->content);
+        }
+        current_item = current_item->next;
+    }
+    closure(data, new_state);
+    add_transition_to_state(data, current_state, new_state, target_symbol);
 }
 
 void	go_to(t_parser *data, t_state *state)
@@ -140,9 +146,11 @@ void	go_to(t_parser *data, t_state *state)
 			current_item = current_item->next;
 			continue ;
 		}
-		ft_lstadd_back(&seen_symbols, ft_lstnew(symbol->name));
 		if (!does_list_contains_this_symbol(seen_symbols, symbol->name))
-			get_new_state(data, state, new_state, current_item);
+		{
+			ft_lstadd_back(&seen_symbols, ft_lstnew(symbol->name));
+			get_new_state(data, state, new_state, symbol);
+		}
 		current_item = current_item->next;
 	}
 	ft_lstclear(&seen_symbols, NULL);

@@ -55,7 +55,7 @@ t_symbol    *get_non_terminal_symbol_after_dot(t_parser *data, t_item *item)
     t_symbol *symbol;
 
     symbol = get_symbol_after_dot(data, item);
-    if (!symbol_is_token(symbol->name))
+    if (symbol && !symbol_is_token(symbol->name))
         return (symbol);
     symbol = NULL;
     return (symbol);
@@ -63,12 +63,15 @@ t_symbol    *get_non_terminal_symbol_after_dot(t_parser *data, t_item *item)
 int does_state_contains_this_item(t_list *items, t_item *item)
 {
     t_list *current;
+    t_item *current_item;
 
     current = items;
     while (current)
     {
-        if (((t_item *)current->content)->id == item->id)
-            return (1);
+        current_item = (t_item *)current->content;
+        if (current_item->rule_of_item == item->rule_of_item && 
+            current_item->dot_pos == item->dot_pos)
+                return (1);
         current = current->next;
     }
     return (0);
@@ -93,6 +96,8 @@ void  closure(t_parser *data, t_state *state)
                 new_item = create_new_item((t_rule *)rule_of_item->content, 0);
                 if (!does_state_contains_this_item(state->items, new_item))
                     ft_lstadd_back(&state->items, ft_lstnew(new_item));
+                else
+                    free (new_item);
                 if (!ft_strcmp(((t_rule *)rule_of_item->content)->left_symbol, symbol_after_dot->name))
                     rule_of_item = rule_of_item->next;
                 else

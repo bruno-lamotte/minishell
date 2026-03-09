@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 02:26:54 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 22:19:57 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 18:56:39 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,19 @@ int get_transition_from_symbol(t_state *state, char *symbol_name)
 
 void fill_table_when_reduce(t_parser *data, int ***table, t_list *state, t_list *item)
 {
-    t_list      *rule;
+    t_rule      *rule;
     t_symbol    *symbol;
     t_list      *follow;
 
-    rule = get_rule_from_symbolname(data, ((t_item *)item->content)->rule_of_item->left_symbol);
+    rule = ((t_item *)item->content)->rule_of_item;
     follow = get_symbol_from_name(data, ((t_item *)item->content)->rule_of_item->left_symbol)->follows;
     while (follow)
     {
         symbol = get_symbol_from_name(data, (char *)follow->content);
-        if (ft_strcmp(symbol->name, "$"))
+        if (rule->id == 1 && !ft_strcmp(symbol->name, "$"))
             (*table)[((t_state *)state->content)->id][symbol->nbr] = ACCEPTED;
         else
-            (*table)[((t_state *)state->content)->id][symbol->nbr] = -((t_rule *)rule->content)->id;
+            (*table)[((t_state *)state->content)->id][symbol->nbr] = -(rule->id);
         follow = follow->next;
     }
 }
@@ -76,6 +76,7 @@ t_state *initialize_first_state(t_parser *data)
     first_state = malloc(sizeof(t_state));
     if (!first_state)
         return (/*JSP*/NULL);
+    ft_bzero(first_state, sizeof(t_state));
     first_state->id = 0;
     first_item = create_new_item((t_rule *)data->rules->content, 0);
     ft_lstadd_back(&first_state->items, ft_lstnew(first_item));
@@ -85,10 +86,17 @@ t_state *initialize_first_state(t_parser *data)
 void    get_states(t_parser *data)
 {
     t_state *first_state;
+    t_list  *current;
 
     first_state = initialize_first_state(data);
+    ft_lstadd_back(&data->states, ft_lstnew(first_state)); 
     closure(data, first_state);
-    go_to(data, first_state);
+    current = data->states;
+    while (current)
+    {
+        go_to(data, (t_state *)current->content);
+        current = current->next;
+    }
 }
 
 void    initialize_data(t_parser *data)
@@ -103,22 +111,32 @@ int    **create_parsing_table(t_parser *data)
 {
     int     **table;
     int     size;
+    int     nb_symbols;
+    int     i;
     
+    i = 0;
     parse_grammar(data);
     get_symbols(data);
     get_firsts(data);
     get_follows(data);
     get_states(data);
     size = ft_lstsize(data->states);
+    nb_symbols = ft_lstsize(data->symbols);
     table = malloc(sizeof(int *) * (size + 1));
     if (!table)
         return (NULL);
-    ft_bzero(table, sizeof(int *) * (size + 1));
+    while (i < size)
+    {
+        table[i] = malloc(sizeof(int) * nb_symbols);
+        ft_bzero(table[i], sizeof(int) * nb_symbols);
+        i++;
+    }
+    table[size] = NULL;
     fill_parsing_table(data, &table);
     return (table);
 }
 
-void print_table(int **table)
+void print_table(int **table, int nb_symbols)
 {
     int i;
     int j;
@@ -127,7 +145,7 @@ void print_table(int **table)
     while (table[i])
     {
         j = 0;
-        while (table[i][j] != ACCEPTED)
+        while (j < nb_symbols)
         {
             printf("%d ", table[i][j]);
             j++;
@@ -147,6 +165,6 @@ int main(void)
         return (1);
     initialize_data(data);
     table = create_parsing_table(data);
-    print_table(table);
+    print_table(table, ft_lstsize(data->symbols));
     return (0);
 }

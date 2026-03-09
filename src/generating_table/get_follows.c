@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 14:34:18 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 22:00:14 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 17:16:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,18 @@ int add_follows_from_list(t_symbol **symbol, t_symbol *next_symbol)
         return (0);
     while (new_list)
     {
-        if (!ft_strcmp((char *)new_list->content, "EMPTY"))
-            new_list = new_list->next;
-        else if (!does_list_contains_this_symbol((*symbol)->follows, (char *)new_list->content))
+        if (ft_strcmp((char *)new_list->content, "EMPTY"))
         {
-            new_node = ft_lstnew(new_list->content);
-            if (!new_node)
-                return (/*JSP*/0);
-            added++;
-            ft_lstadd_back(&(*symbol)->follows, new_node);
-            new_list = new_list->next;
+            if (!does_list_contains_this_symbol((*symbol)->follows, (char *)new_list->content))
+            {
+                new_node = ft_lstnew(new_list->content);
+                if (!new_node)
+                    return (/*JSP*/0);
+                added++;
+                ft_lstadd_back(&(*symbol)->follows, new_node);
+            }
         }
+        new_list = new_list->next;
     }
     return (added);
 }

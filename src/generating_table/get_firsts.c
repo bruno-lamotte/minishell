@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 21:59:26 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 16:52:04 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ int should_look_for_next_right_symbol(t_symbol *left_symbol, t_rule *rule)
 
 void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol *right_symbol)
 {
-	t_rule		*next_rule;
+	t_list	*rule_node;
+	t_rule	*next_rule;
 
 	while (1)
 	{
@@ -76,7 +77,13 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 			}
 			else
 			{
-				next_rule = (t_rule *)get_rule_from_symbolname(data, right_symbol->name)->content;
+				rule_node = get_rule_from_symbolname(data, right_symbol->name);            
+                if (!rule_node)
+                {
+                    printf("Error: No rule found for non-terminal '%s'\n", right_symbol->name);
+                    return ; // ou jsp
+                }
+				next_rule = (t_rule *)rule_node->content;
 				if (rule != next_rule) 
                 /*
 				ce if n est peut etre pas suffisant :

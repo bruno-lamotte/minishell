@@ -6,13 +6,13 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:56 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 20:32:05 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 18:40:47 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GLOBAL_VARIABLES_H
 # define GLOBAL_VARIABLES_H
 
-# define ACCEPTED 424242
+# define ACCEPTED 42
 
 #endif
