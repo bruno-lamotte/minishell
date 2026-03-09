@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:52 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/09 18:34:53 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 21:52:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ t_state	*initialize_first_state(t_parser *data);
 void	get_states(t_parser *data);
 void	initialize_data(t_parser *data);
 int		**create_parsing_table(t_parser *data);
-void	print_table(int **table, int nb_symbols);
+void	print_table(int **table, t_parser *data);
 
 // /* ************************************************************************** */
 // /*                            tokenizer_utils.c                               */

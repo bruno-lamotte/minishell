@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 02:26:54 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/09 18:56:39 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 21:57:16 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,23 +136,45 @@ int    **create_parsing_table(t_parser *data)
     return (table);
 }
 
-void print_table(int **table, int nb_symbols)
+void print_table(int **table, t_parser *data)
 {
-    int i;
-    int j;
+        int     i;
+        int     j;
+        t_list  *sym;
+        int     nb_sym;
 
-    i = 0;
-    while (table[i])
-    {
-        j = 0;
-        while (j < nb_symbols)
+        nb_sym = ft_lstsize(data->symbols);
+                printf("%-6s|", "ETAT");
+        sym = data->symbols;
+        while (sym)
         {
-            printf("%d ", table[i][j]);
-            j++;
+                printf(" %-14s|", ((t_symbol *)sym->content)->name);
+                sym = sym->next;
         }
         printf("\n");
-        i++;
-    }
+        printf("------|");
+        j = 0;
+        while (j++ < nb_sym)
+                printf("---------------|");
+        printf("\n");
+        i = 0;
+        while (table[i])
+        {
+                printf("%-6d|", i);
+                j = 0;
+                while (j < nb_sym)
+                {
+                        if (table[i][j] == ACCEPTED)
+                                printf(" %-14s|", "ACC");
+                        else if (table[i][j] == 0)
+                                printf(" %-14s|", ".");
+                        else
+                                printf(" %-14d|", table[i][j]);
+                        j++;
+                }
+                printf("\n");
+                i++;
+        }
 }
 
 int main(void)
@@ -165,6 +187,6 @@ int main(void)
         return (1);
     initialize_data(data);
     table = create_parsing_table(data);
-    print_table(table, ft_lstsize(data->symbols));
+    print_table(table, data);
     return (0);
 }

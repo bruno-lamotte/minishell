@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/09 16:52:04 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 20:29:17 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,18 +78,8 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 			else
 			{
 				rule_node = get_rule_from_symbolname(data, right_symbol->name);            
-                if (!rule_node)
-                {
-                    printf("Error: No rule found for non-terminal '%s'\n", right_symbol->name);
-                    return ; // ou jsp
-                }
 				next_rule = (t_rule *)rule_node->content;
-				if (rule != next_rule) 
-                /*
-				ce if n est peut etre pas suffisant :
-                je ne sais pas si une grammaire peut boucler a une ou plus regles d intervales.
-                si c est le cas faire un pointfixe qui boucle tant qu il y a des changement comme pour follows
-				*/
+				if (rule != next_rule) //attention aux règles récursives indirectes
 					get_first_dfs(data, next_rule, left_symbol, get_symbol_from_name(data, (char *)next_rule->right_symbols->content));
                 if (!add_firsts_if_not_token(data, next_rule, left_symbol))
                     return /*JSP*/;

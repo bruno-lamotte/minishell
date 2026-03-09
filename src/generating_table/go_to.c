@@ -36,11 +36,11 @@ t_state	*create_new_state(t_parser *data)
 	new_state = malloc(sizeof(t_state));
 	if (!new_state)
 		return (NULL);
+	ft_bzero(new_state, sizeof(t_state));
 	if (!data->states)
-	new_state->id = 0;
+		new_state->id = 0;
 	else
 		new_state->id = ((t_state *)ft_lstlast(data->states)->content)->id + 1;
-	new_state->items = NULL;
 	return (new_state);
 }
 
@@ -64,7 +64,7 @@ t_state	*find_state(t_parser *data, t_state *new_state)
 	t_list	*current_state;
 	t_list	*tmp_item1;
 	t_list	*tmp_item2;
-
+	int		found;
 	current_state = data->states;
 	while (current_state)
 	{
@@ -75,13 +75,19 @@ t_state	*find_state(t_parser *data, t_state *new_state)
 			current_state = current_state->next;
 			continue ;
 		}
+		found = 1;
 		while (tmp_item1 && tmp_item2)
 		{
 			if (!are_items_equal((t_item *)tmp_item1->content, (t_item *)tmp_item2->content))
-					return ((t_state *)current_state->content);
+			{
+				found = 0;
+				break ;
+			}
 			tmp_item1 = tmp_item1->next;
 			tmp_item2 = tmp_item2->next;
 		}
+		if (found)
+			return ((t_state *)current_state->content);
 		current_state = current_state->next;
 	}
 	return (NULL);
@@ -101,6 +107,7 @@ void	add_transition_to_state(t_parser *data, t_state *current_state, t_state *ne
 	else
     {
 		transition = create_transition(symbol->name, transition_state);
+		//il faut nettoyer avant de free
         free(new_state);
     }
 	ft_lstadd_back(&current_state->transitions, ft_lstnew(transition));
@@ -142,13 +149,15 @@ void	go_to(t_parser *data, t_state *state)
 		symbol = get_symbol_after_dot(data, (t_item *)current_item->content);
 		if (!symbol)
 		{
-			free(new_state);
 			current_item = current_item->next;
 			continue ;
 		}
 		if (!does_list_contains_this_symbol(seen_symbols, symbol->name))
 		{
 			ft_lstadd_back(&seen_symbols, ft_lstnew(symbol->name));
+			new_state = create_new_state(data);
+			if (!new_state)
+				return /*a completer*/;
 			get_new_state(data, state, new_state, symbol);
 		}
 		current_item = current_item->next;

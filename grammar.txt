@@ -1,4 +1,4 @@
-pipe_sequence   : simple_command 
+pipe_sequence   : simple_command
                 | pipe_sequence PIPE simple_command
 simple_command  : cmd_prefix cmd_word cmd_suffix
                 | cmd_prefix cmd_word
@@ -20,4 +20,4 @@ io_file         : RET_TO filename
                 | DGREAT filename
 filename        : WORD
 io_here         : DLESS here_end
-here_end        : WORD  
+here_end        : WORD
