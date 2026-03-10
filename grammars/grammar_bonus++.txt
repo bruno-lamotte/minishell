@@ -1,0 +1,40 @@
+complete_command : list
+list             : and_or
+                 | list SEMI and_or
+                 | list BACKGROUND and_or
+                 | and_or BACKGROUND
+and_or           : pipeline
+                 | and_or AND_IF pipeline
+                 | and_or OR_IF pipeline
+pipeline         : command
+                 | pipeline PIPE command
+                 | BANG pipeline
+command          : simple_command
+                 | subshell
+                 | subshell redirect_list
+subshell         : L_PAREN complete_command R_PAREN
+simple_command   : cmd_prefix cmd_word cmd_suffix
+                 | cmd_prefix cmd_word
+                 | cmd_prefix
+                 | cmd_name cmd_suffix
+                 | cmd_name
+cmd_name         : WORD
+cmd_word         : WORD
+cmd_prefix       : io_redirect
+                 | cmd_prefix io_redirect
+cmd_suffix       : io_redirect
+                 | cmd_suffix io_redirect
+                 | WORD
+                 | cmd_suffix WORD
+redirect_list    : io_redirect
+                 | redirect_list io_redirect
+io_redirect      : io_file
+                 | io_here
+io_file          : LESS filename
+                 | GREAT filename
+                 | DGREAT filename
+                 | LESSGREAT filename
+                 | ANDGREAT filename
+filename         : WORD
+io_here          : DLESS here_end
+here_end         : WORD

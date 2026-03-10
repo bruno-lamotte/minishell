@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   global_variables.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:56 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/09 18:40:47 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/10 01:03:35 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GLOBAL_VARIABLES_H
 # define GLOBAL_VARIABLES_H
 
-# define ACCEPTED 42
+# define ACCEPTED 424242
 
 #endif
