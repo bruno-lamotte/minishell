@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_follows.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 14:34:18 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/09 17:16:01 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/11 03:18:36 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,32 @@ void add_dollar_to_start_symbol(t_parser *data)
     ft_lstadd_back(&symbol->follows, new_list);
 }
 
-int add_follows_from_list(t_symbol **symbol, t_symbol *next_symbol)
+int add_follows_from_follows(t_symbol **symbol, t_symbol *next_symbol)
+{
+    t_list *new_list;
+    t_list *new_node;
+    int     added;
+    
+    added = 0;
+    new_list = next_symbol->follows;
+    if (!new_list)
+        return (0);
+    while (new_list)
+    {
+       if (!does_list_contains_this_symbol((*symbol)->follows, (char *)new_list->content))
+        {
+            new_node = ft_lstnew(new_list->content);
+            if (!new_node)
+                return (/*JSP*/0);
+            added++;
+            ft_lstadd_back(&(*symbol)->follows, new_node);
+        }
+        new_list = new_list->next;
+    }
+    return (added);
+}
+
+int add_follows_from_firsts(t_symbol **symbol, t_symbol *next_symbol)
 {
     t_list *new_list;
     t_list *new_node;
@@ -80,14 +105,14 @@ void    update_follows(t_parser *data, t_list *current_rule, int *added)
         while (right_symbols->next)
         {
             tmp_next_symbol = get_symbol_from_name(data, (char *)right_symbols->next->content);
-            *added += add_follows_from_list(&tmp_symbol, tmp_next_symbol);
+            *added += add_follows_from_firsts(&tmp_symbol, tmp_next_symbol);
             if (contains_empty_in_firsts(tmp_next_symbol))
-                *added += add_follows_from_list(&tmp_symbol, get_symbol_from_name(data, ((t_rule *)current_rule->content)->left_symbol));
+                *added += add_follows_from_follows(&tmp_symbol, get_symbol_from_name(data, ((t_rule *)current_rule->content)->left_symbol));
             tmp_symbol = tmp_next_symbol;
             right_symbols = right_symbols->next;
         }
         if (!right_symbols->next && ft_strcmp(tmp_symbol->name, ((t_rule *)current_rule->content)->left_symbol))
-            *added += add_follows_from_list(&tmp_symbol, get_symbol_from_name(data, ((t_rule *)current_rule->content)->left_symbol));
+            *added += add_follows_from_follows(&tmp_symbol, get_symbol_from_name(data, ((t_rule *)current_rule->content)->left_symbol));
         current_rule = current_rule->next;
     }
 }

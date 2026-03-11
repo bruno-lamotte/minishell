@@ -93,15 +93,14 @@ void  closure(t_parser *data, t_state *state)
             rule_of_item = get_rule_from_symbolname(data, symbol_after_dot->name);
             while (rule_of_item)
             {
+                if (ft_strcmp(((t_rule *)rule_of_item->content)->left_symbol, symbol_after_dot->name))
+                    break ;
                 new_item = create_new_item((t_rule *)rule_of_item->content, 0);
                 if (!does_state_contains_this_item(state->items, new_item))
                     ft_lstadd_back(&state->items, ft_lstnew(new_item));
                 else
                     free (new_item);
-                if (!ft_strcmp(((t_rule *)rule_of_item->content)->left_symbol, symbol_after_dot->name))
-                    rule_of_item = rule_of_item->next;
-                else
-                    break ;
+                rule_of_item = rule_of_item->next;
             }
         }
         current_item = current_item->next;

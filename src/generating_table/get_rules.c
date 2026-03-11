@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 00:50:05 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/10 18:21:34 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/11 10:04:53 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	parse_grammar(t_parser *data)
 	t_rule	*new_rule;
 	t_list	*new_list;
 
-	fd = open("grammars/grammar.txt", O_RDONLY);
+	fd = open("grammars/grammar_POSIX.txt", O_RDONLY);
 	if (fd == -1)
 		return (0);
 	line = get_next_line(fd);

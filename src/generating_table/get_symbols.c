@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_symbols.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:36 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/09 18:57:51 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/11 06:14:25 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ void    add_symbol_if_not_exists(t_parser *data, char *name, int *nbr)
         return ;
     ft_bzero(new_symbol, sizeof(t_symbol));
     complete_symbol_name(&new_symbol, name);
+    if (symbol_is_token(new_symbol->name))
+        ft_lstadd_back(&new_symbol->firsts, ft_lstnew(new_symbol->name));
     new_symbol->nbr = (*nbr)++;
     ft_lstadd_back(&data->symbols, ft_lstnew(new_symbol));
 }

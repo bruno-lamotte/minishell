@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_table.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 02:26:54 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/09 21:57:16 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/11 06:16:22 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,8 @@ int    **create_parsing_table(t_parser *data)
 void print_table(int **table, t_parser *data)
 {
         int     i;
-        int     j;
         t_list  *sym;
+        int     j;
         int     nb_sym;
 
         nb_sym = ft_lstsize(data->symbols);
@@ -148,14 +148,9 @@ void print_table(int **table, t_parser *data)
         sym = data->symbols;
         while (sym)
         {
-                printf(" %-14s|", ((t_symbol *)sym->content)->name);
+                printf(" %-16s|", ((t_symbol *)sym->content)->name);
                 sym = sym->next;
         }
-        printf("\n");
-        printf("------|");
-        j = 0;
-        while (j++ < nb_sym)
-                printf("---------------|");
         printf("\n");
         i = 0;
         while (table[i])
@@ -165,11 +160,11 @@ void print_table(int **table, t_parser *data)
                 while (j < nb_sym)
                 {
                         if (table[i][j] == ACCEPTED)
-                                printf(" %-14s|", "ACC");
+                                printf(" %-16s|", "ACC");
                         else if (table[i][j] == 0)
-                                printf(" %-14s|", ".");
+                                printf(" %-16s|", ".");
                         else
-                                printf(" %-14d|", table[i][j]);
+                                printf(" %-16d|", table[i][j]);
                         j++;
                 }
                 printf("\n");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_firsts.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/09 20:29:17 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/11 09:59:36 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 			}
 			else
 			{
-				rule_node = get_rule_from_symbolname(data, right_symbol->name);            
+				rule_node = get_rule_from_symbolname(data, right_symbol->name);
 				next_rule = (t_rule *)rule_node->content;
 				if (rule != next_rule) //attention aux règles récursives indirectes
 					get_first_dfs(data, next_rule, left_symbol, get_symbol_from_name(data, (char *)next_rule->right_symbols->content));
@@ -88,7 +88,7 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
         if (should_look_for_next_right_symbol(left_symbol, rule))
             right_symbol = get_symbol_from_name(data, (char *)rule->right_symbols->next->content);
         else
-            return ;
+			return ;
 	}
 }
 
@@ -97,13 +97,18 @@ void	get_firsts(t_parser *data)
 	t_symbol	*left_symbol;
 	t_symbol	*right_symbol;
     t_list      *current_rule;
-
-    current_rule = data->rules;
-	while (current_rule)
-	{
-		left_symbol = get_symbol_from_name(data, ((t_rule *)current_rule->content)->left_symbol);
-		right_symbol = get_symbol_from_name(data, (char *)((t_rule *)current_rule->content)->right_symbols->content);
-		get_first_dfs(data, (t_rule *)current_rule->content, left_symbol, right_symbol);
-		current_rule = current_rule->next;
+	int			loops;
+	
+	loops = 0;
+	while (loops++ < 2)
+    {
+		current_rule = data->rules;
+		while (current_rule)
+		{
+			left_symbol = get_symbol_from_name(data, ((t_rule *)current_rule->content)->left_symbol);
+			right_symbol = get_symbol_from_name(data, (char *)((t_rule *)current_rule->content)->right_symbols->content);
+			get_first_dfs(data, (t_rule *)current_rule->content, left_symbol, right_symbol);
+			current_rule = current_rule->next;
+		}
 	}
 }
