@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/06 20:33:45 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/13 17:47:18 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,24 @@ typedef struct s_transition
 	t_state	*dest_state;
 }			t_transition;
 
+typedef enum e_node_type
+{
+	NODE_TMP,
+	NODE_COMMAND,
+	NODE_PIPE,
+	NODE_SEQUENCE,
+	NODE_AND,
+	NODE_OR,
+}			t_node_type;
+
 typedef struct s_ast
 {
-	char	*type;
-	char	*value;
-	t_list	*children;
+	t_node_type		type;
+	int				is_bang;
+	int				is_async;
+	char			**args;
+	t_ast			**children;
+	int				nb_children;
 }			t_ast;
 
 typedef struct s_stack
