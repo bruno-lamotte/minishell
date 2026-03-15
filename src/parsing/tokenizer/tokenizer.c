@@ -1,57 +1,69 @@
-    /* ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:52:12 by blamotte          #+#    #+#             */
-/*   Updated: 2026/02/27 12:16:32 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/15 00:00:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-t_token make_token(char *str, int i)
+#include "minishell.h"
 
-int handle_previus_is_operator(char *str, int *i)
+static t_token	*tokenize_operator(char *str, int *i)
 {
-    if (*i == 0)
-        return (0);
-    if (!is_operator(str[*i - 1]))
-        return (0);
-    if (!is_operator(str[*i]))
-        return (1);
-    while (can_be_added_to_opperator(str[*i]))
-        (*i)++;
-    return (1);
+	if (str[*i] == '|')
+		return ((*i)++, create_token(ft_strdup("|"), TOKEN_PIPE));
+	if (str[*i] == '>' && str[*i + 1] == '>')
+		return ((*i) += 2, create_token(ft_strdup(">>"), TOKEN_DGREAT));
+	if (str[*i] == '>')
+		return ((*i)++, create_token(ft_strdup(">"), TOKEN_RET_TO));
+	if (str[*i] == '<' && str[*i + 1] == '<')
+		return ((*i) += 2, create_token(ft_strdup("<<"), TOKEN_DLESS));
+	if (str[*i] == '<')
+		return ((*i)++, create_token(ft_strdup("<"), TOKEN_RET_FROM));
+	return (NULL);
 }
 
-int handle_quote_and_backslash(char *str, int i)
-
-int handle_dollar_and_accent(char *str, int i)
-
-t_token tokenizer(char *str)
+static t_token	*tokenize_word(char *str, int *i)
 {
-    int     i;
+	int	start;
 
-    while (is_blank(*str))
-        str++;
-    i = 0;
-    while(1)
-    {
-        if (is_end_of_imput(str[i]))
-            return (make_token(str, i));
-        handle_comment(str, &i);
-        if (handle_previus_is_operator(str, &i))
-            return (make_token(str, i));
-        if (handle_quote_and_backslash(str, &i))
-            return (make_token(str, i));
-        if (handle_dollar_and_accent(str, &i))
-            return (make_token(str, i));
-        if (is_operator(str[i]) && i > 0)
-            return (make_token(str, i - 1));
-        if (is_blank(str[i]))
-            return (make_token(str, i - 1));
-        i++;
-    }
+	start = *i;
+	while (str[*i] && !is_blank(str[*i]) && !is_operator_char(str[*i]))
+	{
+		if (str[*i] == '\'' || str[*i] == '"')
+			*i = skip_quotes(str, *i);
+		else
+			(*i)++;
+	}
+	return (create_token(ft_substr(str, start, *i - start), TOKEN_WORD));
 }
- 
+
+t_list	*tokenize(char *str)
+{
+	t_list	*tokens;
+	t_token	*token;
+	int		i;
+
+	tokens = NULL;
+	i = 0;
+	while (str[i])
+	{
+		while (str[i] && is_blank(str[i]))
+			i++;
+		if (!str[i])
+			break ;
+		if (is_operator_char(str[i]))
+			token = tokenize_operator(str, &i);
+		else
+			token = tokenize_word(str, &i);
+		if (!token)
+			return (NULL);
+		ft_lstadd_back(&tokens, ft_lstnew(token));
+	}
+	ft_lstadd_back(&tokens, ft_lstnew(create_token(ft_strdup("$"), TOKEN_END)));
+	return (tokens);
+}

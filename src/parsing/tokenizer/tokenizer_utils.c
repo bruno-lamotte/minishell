@@ -1,42 +1,48 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenizer_utils.c                                  :+:      :+:    :+:   */
+/*   tokenizer_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 20:32:21 by marvin            #+#    #+#             */
-/*   Updated: 2026/03/01 20:32:21 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/15 00:00:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int is_end_of_imput(char c)
+#include "minishell.h"
+
+int	is_blank(char c)
 {
-    return (c == '\0' || c == '\n');
+	return (c == ' ' || c == '\t');
 }
 
-int is_operator(char c)
+int	is_operator_char(char c)
 {
-    return (c == '|' || c == '<' || c == '>' || c == ';');
+	return (c == '|' || c == '<' || c == '>');
 }
 
-int can_be_added_to_opperator(char c)
+int	skip_quotes(char *str, int i)
 {
-    return (c == '<' || c == '>');
+	char	quote;
+
+	quote = str[i];
+	i++;
+	while (str[i] && str[i] != quote)
+		i++;
+	if (str[i] == quote)
+		i++;
+	return (i);
 }
 
-int is_blank(char c)
+t_token	*create_token(char *value, t_token_type type)
 {
-    return (c == ' ' || c == '\t');
-}
+	t_token	*token;
 
-int handle_comment(char *str, int *i)
-{
-    if (str[*i] == '#')
-    {
-        while (str[*i] && str[*i] != '\n')
-            (*i)++;
-        return (1);
-    }
-    return (0);
+	token = malloc(sizeof(t_token));
+	if (!token)
+		return (NULL);
+	token->value = value;
+	token->type = type;
+	return (token);
 }

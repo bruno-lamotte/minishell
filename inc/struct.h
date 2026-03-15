@@ -15,10 +15,21 @@
 
 # include <libft.h>
 
+typedef enum e_token_type
+{
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_RET_TO,
+	TOKEN_RET_FROM,
+	TOKEN_DGREAT,
+	TOKEN_DLESS,
+	TOKEN_END,
+}			t_token_type;
+
 typedef struct s_token
 {
-	int		type;
-	char	*value;
+	t_token_type	type;
+	char			*value;
 }			t_token;
 
 typedef struct s_rule
