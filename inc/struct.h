@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/13 17:47:18 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/16 20:08:12 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,27 @@ typedef struct s_transition
 
 typedef enum e_node_type
 {
-	NODE_TMP,
-	NODE_COMMAND,
-	NODE_PIPE,
-	NODE_SEQUENCE,
-	NODE_AND,
-	NODE_OR,
+	STRING,
+	COMMAND,
+	PIPE,
+	SEQUENCE,
+	AND,
+	OR,
 }			t_node_type;
+
+typedef enum e_redirection_type
+{
+	REDIR_INPUT,
+	REDIR_OUTPUT,
+	REDIR_APPEND,
+	REDIR_HEREDOC,
+}			t_redirection_type;
+
+typedef struct s_redirection
+{
+	t_redirection_type		type;
+	char					*file;
+}							t_redirection;
 
 typedef struct s_ast
 {
@@ -75,7 +89,8 @@ typedef struct s_ast
 	char			**args;
 	t_ast			**children;
 	int				nb_children;
-}			t_ast;
+	t_list			*redirections;
+}					t_ast;
 
 typedef struct s_stack
 {
