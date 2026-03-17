@@ -6,13 +6,13 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 19:25:07 by marvin            #+#    #+#             */
-/*   Updated: 2026/03/17 05:31:40 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/17 05:39:25 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void shift(t_list *stack, int state_id, t_token token)
+void shift(t_list *stack, int state_id, t_token *token)
 {
     t_stack *new_node;
 
@@ -21,7 +21,11 @@ void shift(t_list *stack, int state_id, t_token token)
         return /*a completer*/;
     new_node->state_id = state_id;
     new_node->ast_node = NULL;
-    new_node->symbol = &token;
+    new_node->symbol = ft_strdup(token->type);
+    new_node->values = ft_strdup(token->value);
+    if (!new_node->symbol || !new_node->values)
+        return /*a completer*/;
+    new_node->nb_values = 1;
     ft_lstadd_front(&stack, ft_lstnew(new_node));
 }
 
