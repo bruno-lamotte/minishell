@@ -1,4 +1,4 @@
-start           : pipe_sequence
+complete_command: pipe_sequence
 pipe_sequence   : simple_command
                 | pipe_sequence PIPE simple_command
 simple_command  : cmd_prefix cmd_word cmd_suffix
