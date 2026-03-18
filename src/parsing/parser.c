@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 19:25:07 by marvin            #+#    #+#             */
-/*   Updated: 2026/03/17 05:39:25 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/18 05:01:18 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,35 @@ void shift(t_list *stack, int state_id, t_token *token)
         return /*a completer*/;
     new_node->nb_values = 1;
     ft_lstadd_front(&stack, ft_lstnew(new_node));
+}
+
+int get_next_state_after_reduce(t_parser *data, int **table, t_rule *rule)
+{
+    int state_id;
+
+    state_id = (t_stack *)(data->stack->next->content)->state_id;
+    return (table[state_id][rule->left_symbol]);
+}
+
+void    reduce(t_parser *data, int **table, int action)
+{
+    t_rule      *rule;
+    t_node_type node_type;
+
+    rule = get_rule_from_id(data, -action);
+    node_type = get_node_type_from_rule(rule);
+    if (node_type == COMMAND)
+        reduce_ast_command(data, rule, node_type);
+    else if (node_type == SUBSHELL 
+        || ft_strnstr(rule->left_symbol, "subshell", ft_strlen(rule->left_symbol)))
+        reduce_ast_subshell(data, rule, node_type);
+    else if (node_type == PIPE && is_node_already_type(data, rule->nb_items, node_type))
+        reduce_multiple_pipes(data, rule);
+    else if (node_type == PIPE || node_type == SEQUENCE || node_type == AND || node_type == OR)
+        reduce_ast_control(data, rule, node_type);
+    else if (!reduce_booleans(data, rule, node_type))
+        reduce_symbol(data, rule);
+    (t_stack *)(data->stack->content)->state_id = get_next_state_after_reduce(data, table, rule);
 }
 
 int parser(t_parser *data, int **table)
