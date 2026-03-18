@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 00:45:50 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/17 05:33:23 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/18 02:37:51 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ int get_size_of_args(t_parser *data, int lookahead)
     stack = data->stack;
     while (lookahead--)
     {
+        if (is_redirection_symbol(((t_stack *)(stack->content))->symbol) || is_assignement_symbol(((t_stack *)(stack->content))->symbol))
+            continue ;
         if (((t_stack *)(stack->content))->ast_node)
             size += ((t_stack *)(stack->content))->ast_node->nb_args;
         else
@@ -106,6 +108,56 @@ int get_size_of_args(t_parser *data, int lookahead)
         stack = stack->next;
     }
     return (size);
+}
+
+int is_assignement_symbol(t_stack *stack)
+{
+    return (!ft_strcmp(stack->symbol, "ASSIGNMENT_WORD"));
+}
+
+int get_size_of_assignements(t_parser *data, int lookahead)
+{
+   int size;
+    t_list *stack;
+
+    size = 0;
+    stack = data->stack;
+    while (lookahead--)
+    {
+        if (((t_stack *)(stack->content))->ast_node)
+            size += ((t_stack *)(stack->content))->ast_node->nb_assignments;
+        else if (is_assignement_symbol(((t_stack *)(stack->content))->symbol))
+            size++;
+        stack = stack->next;
+    }
+    return (size);
+}
+
+char    **pop_assignements_from_stack(t_parser *data, int size)
+{
+    char    **assignments;
+    t_list  *stack;
+
+    stack = data->stack;
+    assignments = malloc(sizeof(char *) * (size + 1));
+    if (!assignments)
+        return (NULL/*JSP*/);
+    assignments[size] = NULL;
+    while (size--)
+    {
+        if (((t_stack *)(stack->content))->ast_node)
+        {
+            size -= ((t_stack *)(stack->content))->ast_node->nb_assignments;
+            ft_memcpy(assignments + size, ((t_stack *)(stack->content))->ast_node->assignments, sizeof(char *) * ((t_stack *)(stack->content))->ast_node->nb_assignments);
+        }
+        else if (is_assignement_symbol(((t_stack *)(stack->content))->symbol))
+        {
+            size--;
+            assignments[size] = ft_strdup(((t_stack *)(stack->content))->values[0]);
+        }
+        stack = stack->next;
+    }
+    return (assignments);
 }
 
 char    **pop_args_from_stack(t_parser *data, int size)
@@ -125,7 +177,7 @@ char    **pop_args_from_stack(t_parser *data, int size)
             size -= ((t_stack *)(stack->content))->ast_node->nb_args;
             ft_memcpy(args + size, ((t_stack *)(stack->content))->ast_node->args, sizeof(char *) * ((t_stack *)(stack->content))->ast_node->nb_args);
         }
-        else
+        else if (!is_redirection_symbol((t_stack *)(stack->content)) && !is_assignement_symbol((t_stack *)(stack->content)))
         {
             size -= ((t_stack *)(stack->content))->ast_node->nb_args;
             ft_memcpy(args + size, ((t_stack *)(stack->content))->values, sizeof(char *) * ((t_stack *)(stack->content))->nb_values);
@@ -135,10 +187,10 @@ char    **pop_args_from_stack(t_parser *data, int size)
     return (args);
 }
 
-int is_redirection_symbol(t_token *token)
+int is_redirection_symbol(t_stack *stack)
 {
-    return (!ft_strcmp(token->type, "redirect_list")
-        || !ft_strcmp(token->type, "io_redirect"));
+    return (!ft_strcmp(stack->symbol->type, "redirect_list")
+        || !ft_strcmp(stack->symbol->type, "io_redirect"));
 }
 
 t_list  *get_redirection_from_symbol(t_stack *stack)
@@ -250,6 +302,7 @@ void    reduce_ast_command(t_parser *data, t_rule *rule, t_node_type node_type)
     ast_node->nb_args = get_size_of_args(data, lookahead);
     ast_node->args = pop_args_from_stack(data, ast_node->nb_args);
     ast_node->redirections = pop_redirections_from_stack(data, lookahead);
+    ast_node->assignments = pop_assignements_from_stack(data, ast_node->nb_assignments);
     clear_stack_after_reduce(data, lookahead, 1);
     ft_bzero(stack_node, sizeof(t_stack));
     stack_node->ast_node = ast_node;

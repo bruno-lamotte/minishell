@@ -22,6 +22,8 @@ cmd_name         : WORD
 cmd_word         : WORD
 cmd_prefix       : io_redirect
                  | cmd_prefix io_redirect
+                 | ASSIGNMENT_WORD
+                 | cmd_prefix ASSIGNMENT_WORD
 cmd_suffix       : io_redirect
                  | cmd_suffix io_redirect
                  | WORD

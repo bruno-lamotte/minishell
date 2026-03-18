@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/17 04:07:14 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/18 00:59:41 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,9 @@ typedef struct s_ast
 	int				is_async;
 	char			**args;
 	int				nb_args;
-	t_ast			**children;
+	char			**assignments;
+	int				nb_assignments;
+	struct s_ast	**children;
 	int				nb_children;
 	t_list			*redirections;
 }					t_ast;
