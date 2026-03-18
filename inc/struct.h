@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/18 00:59:41 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/18 08:20:51 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ typedef struct s_parser
 	t_list	*symbols;
 	t_list	*states;
 	t_list	*stack;
+	t_list	*here_docs;
 }			t_parser;
 
 #endif

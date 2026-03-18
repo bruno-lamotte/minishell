@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:49:37 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/18 05:05:19 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/18 08:53:14 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char    **pop_args_from_stack(t_parser *data, int size)
         }
         else if (!is_redirection_symbol((t_stack *)(stack->content)) && ft_strcmp(stack->symbol, "ASSIGNMENT_WORD"))
         {
-            size -= ((t_stack *)(stack->content))->ast_node->nb_args;
+            size -= ((t_stack *)(stack->content))->nb_values;
             ft_memcpy(args + size, ((t_stack *)(stack->content))->values, sizeof(char *) * ((t_stack *)(stack->content))->nb_values);
         }
         stack = stack->next;

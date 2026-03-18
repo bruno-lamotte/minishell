@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   reduce_redirect.c                                  :+:      :+:    :+:   */
+/*   pop_redirect.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:50:40 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/18 04:50:46 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/18 09:03:37 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_list  *get_redirection_from_symbol(t_stack *stack)
         new_redir = malloc(sizeof(t_redirection));
         if (!new_redir)
             return (NULL/*JSP*/);
-        new_redir->file = ft_strdup(((t_stack *)(stack->content))->symbol);
+        new_redir->file = ft_strdup(((t_stack *)(stack->content))->values[i + 1]);
         if (!ft_strcmp(stack->values[i], "<"))
             new_redir->type = INPUT;
         if (!ft_strcmp(stack->values[i], ">"))
@@ -42,9 +42,12 @@ t_list  *get_redirection_from_symbol(t_stack *stack)
         if (!ft_strcmp(stack->values[i], ">>"))
             new_redir->type = APPEND;
         if (!ft_strcmp(stack->values[i], "<<"))
+        {
             new_redir->type = HEREDOC;
+            ft_lstadd_back(&data->here_docs, ft_lstnew(new_redir));
+        }
         ft_lstadd_back(&list_redirs, ft_lstnew(new_redir));
-        i++;
+        i+=2;
     }
     return (list_redirs);
 }

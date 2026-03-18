@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 19:25:07 by marvin            #+#    #+#             */
-/*   Updated: 2026/03/18 06:29:13 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/18 09:11:28 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,19 +56,6 @@ void    reduce(t_parser *data, int **table, int action)
     else if (!reduce_booleans(data, rule, node_type))
         reduce_symbol(data, rule);
     (t_stack *)(data->stack->content)->state_id = get_next_state_after_reduce(data, table, rule);
-}
-
-t_token lex_assignment(int **table, t_token *token, int state_id)
-{
-    char    *first_quote;
-    char    *equal;
-    first_quote = ft_strchr(token->value, '"');
-    equal = ft_strchr(token->value, '=');
-    if (equal && (!first_quote || equal < first_quote) 
-        && table[state_id][ASSIGNMENT_WORD]
-        && !ft_strcmp(token->type, "WORD"))
-        token->type = "ASSIGNMENT_WORD";
-    return (token);
 }
 
 int parser(t_parser *data, int **table)
