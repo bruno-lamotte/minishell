@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 19:25:07 by marvin            #+#    #+#             */
-/*   Updated: 2026/03/18 09:11:28 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/19 22:24:12 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ int parser(t_parser *data, int **table)
     {
         id = (t_stack *)(stack->content)->state_id;
         token = lex_assignment(table, (t_token *)(tokens_list->content), id);
+        if (!token)
+            return (print_parsing_error(data, table, id, NULL), 0);
         action = table[id][token->type];
         if (!action)
             return (print_parsing_error(data, table, id, token), 0);

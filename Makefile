@@ -26,6 +26,7 @@ SRCS_FILES  = generating_table/closure.c \
 				generating_table/get_symbols.c \
 				generating_table/get_table.c \
 				generating_table/go_to.c \
+				generating_table/print_table.c \
 
 SRCS        = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
@@ -47,7 +48,8 @@ all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBS_FLAGS) -o $(NAME)
-	@echo "✅ $(NAME) compiled successfully!"
+	./$(NAME) > tmp
+#	@echo "✅ $(NAME) compiled successfully!"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 06:58:26 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/18 06:58:32 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/19 22:23:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,11 @@ t_token lex_assignment(int **table, t_token *token, int state_id)
     char    *first_quote;
     char    *equal;
     
+    if (!token)
+        return (NULL);
     first_quote = ft_strchr(token->value, '"');
+    if (ft_strchr(token->value, '\'') && (!first_quote || ft_strchr(token->value, '\'') < first_quote))
+        first_quote = ft_strchr(token->value, '\'');
     equal = ft_strchr(token->value, '=');
     if (equal && (!first_quote || equal < first_quote) 
         && table[state_id][ASSIGNMENT_WORD]

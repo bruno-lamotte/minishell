@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:52 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/11 08:39:02 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/20 02:06:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,8 @@ void	initialize_data(t_parser *data);
 int		**create_parsing_table(t_parser *data);
 void	print_table(int **table, t_parser *data);
 
+void	print_table_in_c(int **table, int nb_states, int nb_tokens);
+void	print_rules_in_c(t_list *rule_list);
 // /* ************************************************************************** */
 // /*                            tokenizer_utils.c                               */
 // /* ************************************************************************** */

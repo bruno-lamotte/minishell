@@ -1,22 +1,32 @@
-    /* ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:52:12 by blamotte          #+#    #+#             */
-/*   Updated: 2026/02/27 12:16:32 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/20 20:37:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-t_token make_token(char *str, int i)
+#include "minishell.h"
 
-int handle_previus_is_operator(char *str, int *i)
+t_token *make_token(char *str, int i, char *type)
 {
-    if (*i == 0)
-        return (0);
-    if (!is_operator(str[*i - 1]))
+    t_token *token;
+
+    token = malloc(sizeof(t_token));
+    if (!token)
+        return (NULL/*JSP*/); 
+    token->type = ft_strdup(type);
+    token->value = ft_substr(str, 0, i);
+    return (token);
+}
+
+int handle_is_operator(char *str, int *i)
+{
+    if (*i != 0)
         return (0);
     if (!is_operator(str[*i]))
         return (1);
@@ -25,32 +35,35 @@ int handle_previus_is_operator(char *str, int *i)
     return (1);
 }
 
-int handle_quote_and_backslash(char *str, int i)
-
-int handle_dollar_and_accent(char *str, int i)
-
-t_token tokenizer(char *str)
+t_token *tokenizer(char *str)
 {
-    int     i;
+    int    i;
+    int    quoted;
 
     while (is_blank(*str))
         str++;
     i = 0;
+    quoted = 0;
     while(1)
     {
+        if (is_quote(str[i]))
+            quoted = !quoted;
         if (is_end_of_imput(str[i]))
-            return (make_token(str, i));
+        {
+            if (quoted && str[i] == '\n')
+                i++;
+            else if (quoted)
+                return (NULL);
+            if (i == 0)
+                return (make_token(str, i, "END_OF_INPUT"));
+            else
+                return (make_token(str, i, "WORD"));
+        }
         handle_comment(str, &i);
-        if (handle_previus_is_operator(str, &i))
-            return (make_token(str, i));
-        if (handle_quote_and_backslash(str, &i))
-            return (make_token(str, i));
-        if (handle_dollar_and_accent(str, &i))
-            return (make_token(str, i));
-        if (is_operator(str[i]) && i > 0)
-            return (make_token(str, i - 1));
-        if (is_blank(str[i]))
-            return (make_token(str, i - 1));
+        if (handle_is_operator(str, &i))
+            return (make_token(str, i, "OPERATOR"));
+        if (!quoted && is_blank(str[i]))
+            return (make_token(str, i - 1, "WORD"));
         i++;
     }
 }

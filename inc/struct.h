@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   struct.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/18 08:20:51 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/20 02:05:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@ typedef struct s_token
 	int		type;
 	char	*value;
 }			t_token;
+
+typedef struct s_reduce_rule
+{
+	char	*left_symbol;
+	int		nb_items;
+}			t_reduce_rule;
 
 typedef struct s_rule
 {
