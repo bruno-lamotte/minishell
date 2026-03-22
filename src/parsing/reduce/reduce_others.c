@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   reduce_other_ast_nodes.c                           :+:      :+:    :+:   */
+/*   reduce_others.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:57:55 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/18 05:00:07 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int reduce_booleans(t_parser *data, t_rule *rule, t_node_type node_type)
+int reduce_booleans(t_slr1 *data, t_rule *rule, t_node_type node_type)
 {
     t_list *right_symbols;
 
@@ -34,7 +34,7 @@ int reduce_booleans(t_parser *data, t_rule *rule, t_node_type node_type)
     return (0);
 }
 
-void    reduce_ast_subshell(t_parser *data, t_rule *rule, t_node_type node_type)
+void    reduce_ast_subshell(t_slr1 *data, t_rule *rule, t_node_type node_type)
 {
     t_ast   *ast_node;
     t_list  *tmp_list;
@@ -69,7 +69,7 @@ void    reduce_ast_subshell(t_parser *data, t_rule *rule, t_node_type node_type)
     }
 }
 
-void    reduce_multiple_pipes(t_parser *data, t_rule *rule)
+void    reduce_multiple_pipes(t_slr1 *data, t_rule *rule)
 {
     t_ast   *ast_node;
     t_list  *stack_node_to_update;
@@ -90,7 +90,7 @@ void    reduce_multiple_pipes(t_parser *data, t_rule *rule)
     ft_lstadd_front(&((t_stack *)(data->stack->content)->ast_node), ft_lstnew(stack_node));
 }
 
-void    reduce_ast_control(t_parser *data, t_rule *rule, t_node_type node_type)
+void    reduce_ast_control(t_slr1 *data, t_rule *rule, t_node_type node_type)
 {
     t_ast   *ast_node;
     t_stack *stack_node;
@@ -114,7 +114,7 @@ void    reduce_ast_control(t_parser *data, t_rule *rule, t_node_type node_type)
     ft_lstadd_front(&((t_stack *)(data->stack->content)->ast_node), ft_lstnew(stack_node));
 }
 
-void    reduce_symbol(t_parser *data, t_rule *rule)
+void    reduce_symbol(t_slr1 *data, t_rule *rule)
 {
     t_stack *stack_node;
 

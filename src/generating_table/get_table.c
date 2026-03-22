@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 02:26:54 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/20 20:31:30 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/22 21:40:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int get_transition_from_symbol(t_state *state, char *symbol_name)
     return (0);
 }
 
-void fill_table_when_reduce(t_parser *data, int ***table, t_list *state, t_list *item)
+void fill_table_when_reduce(t_slr1 *data, int ***table, t_list *state, t_list *item)
 {
     t_rule      *rule;
     t_symbol    *symbol;
@@ -45,7 +45,7 @@ void fill_table_when_reduce(t_parser *data, int ***table, t_list *state, t_list 
     }
 }
 
-void    fill_parsing_table(t_parser *data, int ***table)
+void    fill_parsing_table(t_slr1 *data, int ***table)
 {
     t_symbol    *symbol;
     t_list      *state;
@@ -68,7 +68,7 @@ void    fill_parsing_table(t_parser *data, int ***table)
     }
 }
 
-t_state *initialize_first_state(t_parser *data)
+t_state *initialize_first_state(t_slr1 *data)
 {
     t_state *first_state;
     t_item  *first_item;
@@ -83,7 +83,7 @@ t_state *initialize_first_state(t_parser *data)
     first_state->transitions = NULL;
     return (first_state);
 }
-void    get_states(t_parser *data)
+void    get_states(t_slr1 *data)
 {
     t_state *first_state;
     t_list  *current;
@@ -99,15 +99,14 @@ void    get_states(t_parser *data)
     }
 }
 
-void    initialize_data(t_parser *data)
+void    initialize_data(t_slr1 *data)
 {
-    data->tokens = NULL;
     data->rules = NULL;
     data->symbols = NULL;
     data->states = NULL;
 }
 
-int    **create_parsing_table(t_parser *data)
+int    **create_parsing_table(t_slr1 *data)
 {
     int     **table;
     int     size;
@@ -139,9 +138,9 @@ int    **create_parsing_table(t_parser *data)
 int main(void)
 {
     int         **table;
-    t_parser    *data;
+    t_slr1    *data;
 
-    data = malloc(sizeof(t_parser));
+    data = malloc(sizeof(t_slr1));
     if (!data)
         return (1);
     initialize_data(data);

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_symbols.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:36 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/11 06:14:25 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*get_rule_from_symbolname(t_parser *data, char *symbol)
+t_list	*get_rule_from_symbolname(t_slr1 *data, char *symbol)
 {
 	t_list	*current;
 	
@@ -27,7 +27,7 @@ t_list	*get_rule_from_symbolname(t_parser *data, char *symbol)
 	return (NULL);
 }
 
-t_symbol	*get_symbol_from_name(t_parser *data, char *left_symbol)
+t_symbol	*get_symbol_from_name(t_slr1 *data, char *left_symbol)
 {
 	t_list	*current;
 
@@ -65,7 +65,7 @@ int symbol_already_parsed(t_list *symbols, char *left_symbol)
     return (0);
 }
 
-void    add_symbol_if_not_exists(t_parser *data, char *name, int *nbr)
+void    add_symbol_if_not_exists(t_slr1 *data, char *name, int *nbr)
 {
     t_symbol *new_symbol;
 
@@ -82,7 +82,7 @@ void    add_symbol_if_not_exists(t_parser *data, char *name, int *nbr)
     ft_lstadd_back(&data->symbols, ft_lstnew(new_symbol));
 }
 
-void    get_symbols(t_parser *data)
+void    get_symbols(t_slr1 *data)
 {
     t_list  *current_rule;
     t_list  *right_symbol;

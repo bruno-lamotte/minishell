@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   reduce_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 00:45:50 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/18 05:05:55 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ t_node_type get_node_type_from_rule(t_rule *rule)
     return (UNKNOWN);
 }
 
-t_rule  *get_rule_from_id(t_parser *data, int id)
+t_rule  *get_rule_from_id(t_slr1 *data, int id)
 {
     t_list *rules;
 
@@ -50,7 +50,7 @@ t_rule  *get_rule_from_id(t_parser *data, int id)
     return (NULL);
 }
 
-int is_node_already_type(t_parser *data, int lookahead, t_node_type node_type)
+int is_node_already_type(t_slr1 *data, int lookahead, t_node_type node_type)
 {
     t_list *stack;
 
@@ -73,7 +73,7 @@ void    free_char_array(char **array, int size)
     free(array);
 }
 
-void    clear_stack_after_reduce(t_parser *data, int nb_items, int should_free_ast)
+void    clear_stack_after_reduce(t_slr1 *data, int nb_items, int should_free_ast)
 {
     t_list *stack;
 

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 19:25:07 by marvin            #+#    #+#             */
-/*   Updated: 2026/03/19 22:24:12 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/22 21:48:05 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void shift(t_list *stack, int state_id, t_token *token)
     ft_lstadd_front(&stack, ft_lstnew(new_node));
 }
 
-int get_next_state_after_reduce(t_parser *data, int **table, t_rule *rule)
+int get_next_state_after_reduce(t_slr1 *data, int **table, t_rule *rule)
 {
     int state_id;
 
@@ -37,7 +37,7 @@ int get_next_state_after_reduce(t_parser *data, int **table, t_rule *rule)
     return (table[state_id][rule->left_symbol]);
 }
 
-void    reduce(t_parser *data, int **table, int action)
+void    reduce(t_slr1 *data, int **table, int action)
 {
     t_rule      *rule;
     t_node_type node_type;
@@ -58,7 +58,7 @@ void    reduce(t_parser *data, int **table, int action)
     (t_stack *)(data->stack->content)->state_id = get_next_state_after_reduce(data, table, rule);
 }
 
-int parser(t_parser *data, int **table)
+int parser(t_parser *data)
 {
     int     action;
     int     id;
@@ -71,16 +71,16 @@ int parser(t_parser *data, int **table)
     while (tokens_list)
     {
         id = (t_stack *)(stack->content)->state_id;
-        token = lex_assignment(table, (t_token *)(tokens_list->content), id);
+        token = lex_assignment(data->table, (t_token *)(tokens_list->content), id);
         if (!token)
-            return (print_parsing_error(data, table, id, NULL), 0);
-        action = table[id][token->type];
+            return (print_parsing_error(data, data->table, id, token), 0);
+        action = data->table[id][token->type];
         if (!action)
-            return (print_parsing_error(data, table, id, token), 0);
+            return (print_parsing_error(data, data->table, id, token), 0);
         else if (action == ACCEPTED)
             return (1);
         else if (action < 0)
-            reduce(data, stack, table, -action);
+            reduce(data, stack, data->table, -action);
         else
         {
             shift(stack, action, token);

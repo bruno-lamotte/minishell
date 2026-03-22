@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   reduce_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:49:37 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/18 08:53:14 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int get_size_of_args(t_parser *data, int lookahead)
+int get_size_of_args(t_slr1 *data, int lookahead)
 {
     int size;
     t_list *stack;
@@ -32,7 +32,7 @@ int get_size_of_args(t_parser *data, int lookahead)
     return (size);
 }
 
-int get_size_of_assignements(t_parser *data, int lookahead)
+int get_size_of_assignements(t_slr1 *data, int lookahead)
 {
    int size;
     t_list *stack;
@@ -50,7 +50,7 @@ int get_size_of_assignements(t_parser *data, int lookahead)
     return (size);
 }
 
-char    **pop_assignements_from_stack(t_parser *data, int size)
+char    **pop_assignements_from_stack(t_slr1 *data, int size)
 {
     char    **assignments;
     t_list  *stack;
@@ -77,7 +77,7 @@ char    **pop_assignements_from_stack(t_parser *data, int size)
     return (assignments);
 }
 
-char    **pop_args_from_stack(t_parser *data, int size)
+char    **pop_args_from_stack(t_slr1 *data, int size)
 {
     char    **args;
     t_list  *stack;
@@ -104,7 +104,7 @@ char    **pop_args_from_stack(t_parser *data, int size)
     return (args);
 }
 
-void    reduce_ast_command(t_parser *data, t_rule *rule, t_node_type node_type)
+void    reduce_ast_command(t_slr1 *data, t_rule *rule, t_node_type node_type)
 {
     t_ast   *ast_node;
     t_stack *stack_node;

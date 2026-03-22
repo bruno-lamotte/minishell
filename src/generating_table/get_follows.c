@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_follows.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 14:34:18 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/11 03:18:36 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void add_dollar_to_start_symbol(t_parser *data)
+void add_dollar_to_start_symbol(t_slr1 *data)
 {
     t_list      *new_list;
     t_symbol    *symbol;
@@ -91,7 +91,7 @@ int contains_empty_in_firsts(t_symbol *symbol)
     return (0);
 }
 
-void    update_follows(t_parser *data, t_list *current_rule, int *added)
+void    update_follows(t_slr1 *data, t_list *current_rule, int *added)
 {
     t_list      *right_symbols;
     t_symbol    *tmp_symbol;
@@ -117,7 +117,7 @@ void    update_follows(t_parser *data, t_list *current_rule, int *added)
     }
 }
 
-void    get_follows(t_parser *data)
+void    get_follows(t_slr1 *data)
 {
     t_list  *current_rule;
     int     added;

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void print_table(int **table, t_parser *data)
+void print_table(int **table, t_slr1 *data)
 {
     int     i;
     t_list  *sym;

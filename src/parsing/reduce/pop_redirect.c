@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pop_redirect.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:50:40 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/18 09:03:37 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ t_list  *get_redirection_from_symbol(t_stack *stack)
     return (list_redirs);
 }
 
-t_list  *pop_redirections_from_stack(t_parser *data, int lookahead)
+t_list  *pop_redirections_from_stack(t_slr1 *data, int lookahead)
 {
     t_list          *redirections;
     t_list          *new_redir;

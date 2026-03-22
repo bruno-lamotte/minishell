@@ -26,7 +26,7 @@ t_item  *create_new_item(t_rule *rule, int dot_pos)
     return (new_item);
 }
 
-t_symbol *get_symbol_from_list(t_parser *data, t_list *right_symbols, int dot_pos)
+t_symbol *get_symbol_from_list(t_slr1 *data, t_list *right_symbols, int dot_pos)
 {
     t_list  *current;
 
@@ -40,7 +40,7 @@ t_symbol *get_symbol_from_list(t_parser *data, t_list *right_symbols, int dot_po
     return (get_symbol_from_name(data, (char *)current->content));
 }
 
-t_symbol *get_symbol_after_dot(t_parser *data, t_item *item)
+t_symbol *get_symbol_after_dot(t_slr1 *data, t_item *item)
 {
     t_symbol *symbol;
 
@@ -50,7 +50,7 @@ t_symbol *get_symbol_after_dot(t_parser *data, t_item *item)
         return (symbol);
 }
 
-t_symbol    *get_non_terminal_symbol_after_dot(t_parser *data, t_item *item)
+t_symbol    *get_non_terminal_symbol_after_dot(t_slr1 *data, t_item *item)
 {
     t_symbol *symbol;
 
@@ -77,7 +77,7 @@ int does_state_contains_this_item(t_list *items, t_item *item)
     return (0);
 }
 
-void  closure(t_parser *data, t_state *state)
+void  closure(t_slr1 *data, t_state *state)
 {
     t_list  *current_item;
     t_symbol *symbol_after_dot;

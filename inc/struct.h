@@ -6,14 +6,14 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/20 02:05:02 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/22 21:40:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCT_H
 # define STRUCT_H
 
-# include <libft.h>
+# include "libft.h"
 
 typedef struct s_token
 {
@@ -111,14 +111,19 @@ typedef struct s_stack
 	t_ast	*ast_node;
 }			t_stack;
 
-typedef struct s_parser
+typedef struct s_slr1
 {
-	t_list	*tokens;
 	t_list	*rules;
 	t_list	*symbols;
 	t_list	*states;
+}			t_slr1;
+
+typedef struct s_parser
+{
+	t_list	*tokens;
 	t_list	*stack;
 	t_list	*here_docs;
+	int		**table;
 }			t_parser;
 
 #endif

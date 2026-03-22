@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_firsts.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/11 09:59:36 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	does_list_contains_this_symbol(t_list *list, char *name)
 	return (0);
 }
 
-int add_firsts_if_not_token(t_parser *data, t_rule *next_rule, t_symbol *left_symbol)
+int add_firsts_if_not_token(t_slr1 *data, t_rule *next_rule, t_symbol *left_symbol)
 {
     t_list *new_list;
     t_list *new_node;
@@ -61,7 +61,7 @@ int should_look_for_next_right_symbol(t_symbol *left_symbol, t_rule *rule)
 		&& rule->right_symbols->next->content);
 }
 
-void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol *right_symbol)
+void	get_first_dfs(t_slr1 *data, t_rule *rule, t_symbol *left_symbol, t_symbol *right_symbol)
 {
 	t_list	*rule_node;
 	t_rule	*next_rule;
@@ -92,7 +92,7 @@ void	get_first_dfs(t_parser *data, t_rule *rule, t_symbol *left_symbol, t_symbol
 	}
 }
 
-void	get_firsts(t_parser *data)
+void	get_firsts(t_slr1 *data)
 {
 	t_symbol	*left_symbol;
 	t_symbol	*right_symbol;

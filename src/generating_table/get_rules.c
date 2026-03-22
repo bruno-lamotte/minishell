@@ -6,13 +6,13 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 00:50:05 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/20 00:54:21 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	get_leftsymbol_from_grammar(t_parser *data, t_rule **new_rule,
+void	get_leftsymbol_from_grammar(t_slr1 *data, t_rule **new_rule,
 		char *line)
 {
 	int	i;
@@ -28,7 +28,7 @@ void	get_leftsymbol_from_grammar(t_parser *data, t_rule **new_rule,
 	}
 }
 
-void	get_id_from_grammar(t_parser *data, t_rule **new_rule)
+void	get_id_from_grammar(t_slr1 *data, t_rule **new_rule)
 {
 	if (data->rules == NULL)
 		(*new_rule)->id = 1;
@@ -72,7 +72,7 @@ void	get_nbitems_from_grammar(t_rule **new_rule)
 	(*new_rule)->nb_items = i;
 }
 
-void	get_rule_from_grammar(t_parser *data, t_rule **new_rule, char *line)
+void	get_rule_from_grammar(t_slr1 *data, t_rule **new_rule, char *line)
 {
 	get_id_from_grammar(data, new_rule);
 	get_leftsymbol_from_grammar(data, new_rule, line);
@@ -81,7 +81,7 @@ void	get_rule_from_grammar(t_parser *data, t_rule **new_rule, char *line)
 	get_rightsymbols_from_grammar(new_rule, ++line);
 	get_nbitems_from_grammar(new_rule);
 }
-int	parse_grammar(t_parser *data)
+int	parse_grammar(t_slr1 *data)
 {
 	int		fd;
 	char	*line;

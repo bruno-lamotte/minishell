@@ -29,7 +29,7 @@ t_transition	*create_transition(char *symbol_name, t_state *dest_state)
 	return (transition);
 }
 
-t_state	*create_new_state(t_parser *data)
+t_state	*create_new_state(t_slr1 *data)
 {
 	t_state *new_state;
 
@@ -59,7 +59,7 @@ int are_items_equal(t_item *i1, t_item *i2)
     return (i1->rule_of_item == i2->rule_of_item && i1->dot_pos == i2->dot_pos);
 }
 
-t_state	*find_state(t_parser *data, t_state *new_state)
+t_state	*find_state(t_slr1 *data, t_state *new_state)
 {
 	t_list	*current_state;
 	t_list	*tmp_item1;
@@ -93,7 +93,7 @@ t_state	*find_state(t_parser *data, t_state *new_state)
 	return (NULL);
 }
 
-void	add_transition_to_state(t_parser *data, t_state *current_state, t_state *new_state, t_symbol *symbol)
+void	add_transition_to_state(t_slr1 *data, t_state *current_state, t_state *new_state, t_symbol *symbol)
 {
 	t_state     	*transition_state;
 	t_transition	*transition;
@@ -113,7 +113,7 @@ void	add_transition_to_state(t_parser *data, t_state *current_state, t_state *ne
 	ft_lstadd_back(&current_state->transitions, ft_lstnew(transition));
 }
 
-void    get_new_state(t_parser *data, t_state *current_state, t_state *new_state, t_symbol *target_symbol)
+void    get_new_state(t_slr1 *data, t_state *current_state, t_state *new_state, t_symbol *target_symbol)
 {
     t_list *current_item;
     t_symbol *symbol;
@@ -132,7 +132,7 @@ void    get_new_state(t_parser *data, t_state *current_state, t_state *new_state
     add_transition_to_state(data, current_state, new_state, target_symbol);
 }
 
-void	go_to(t_parser *data, t_state *state)
+void	go_to(t_slr1 *data, t_state *state)
 {
 	t_list *current_item;
 	t_state *new_state;
