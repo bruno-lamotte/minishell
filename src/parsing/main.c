@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 06:58:26 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/24 20:18:48 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/24 22:31:03 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,6 @@ int main(int ac, char **av)
     ft_lstadd_front(&data.stack, ft_lstnew(ft_calloc(sizeof(t_stack), 1)));
     if (parser(&data))
         printf("WEEEEEEEEE\n");
+    else
+        printf("nope\n");
 }

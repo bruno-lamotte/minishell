@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 00:45:50 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/24 20:58:42 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/24 22:29:25 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,9 @@ int is_node_already_type(t_parser *data, int lookahead, t_node_type node_type)
     stack = data->stack;
     while (lookahead--)
         stack = stack->next;
-    return (((t_stack *)(stack->content))->ast_node->type == node_type);
+    if (((t_stack *)(stack->content))->ast_node && ((t_stack *)(stack->content))->ast_node->type == node_type)
+        return (1);
+    return (0);
 }
 
 int get_symbol_nbr(t_parser *data, char *symbol)
@@ -54,6 +56,8 @@ int get_symbol_nbr(t_parser *data, char *symbol)
     i = 0;
     while (data->symbols[i] && ft_strcmp(data->symbols[i], symbol))
         i++;
+    if (!data->symbols[i])
+        return (-1);
     return (i);
 }
 

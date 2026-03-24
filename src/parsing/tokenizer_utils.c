@@ -23,7 +23,7 @@ int is_operator(char c)
 
 int can_be_added_to_opperator(char c)
 {
-    return (c == '<' || c == '>');
+    return (c == '<' || c == '>' || c == '&' || c == '|');
 }
 
 int is_blank(char c)
