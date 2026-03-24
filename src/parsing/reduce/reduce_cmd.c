@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:49:37 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/24 07:42:04 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/24 21:02:43 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,23 @@ char    **pop_assignements_from_stack(t_parser *data, int size)
     if (!assignments)
         return (NULL/*JSP*/);
     assignments[size] = NULL;
-    i = size;
     while (size)
     {
         if (((t_stack *)(stack->content))->ast_node)
         {
             size -= ((t_stack *)(stack->content))->ast_node->nb_assignments;
             ft_memcpy(assignments + size, ((t_stack *)(stack->content))->ast_node->assignments, sizeof(char *) * ((t_stack *)(stack->content))->ast_node->nb_assignments);
+            free(((t_stack *)(stack->content))->values);
+            ((t_stack *)(stack->content))->values = NULL;
+            ((t_stack *)(stack->content))->nb_values = 0;
         }
         else if (!ft_strcmp(((t_stack *)(stack->content))->symbol, "ASSIGNMENT_WORD"))
         {
             size--;
             assignments[size] = ft_strdup(((t_stack *)(stack->content))->values[0]);
+            free(((t_stack *)(stack->content))->values);
+            ((t_stack *)(stack->content))->values = NULL;
+            ((t_stack *)(stack->content))->nb_values = 0;
         }
         stack = stack->next;
     }
@@ -98,12 +103,18 @@ char    **pop_args_from_stack(t_parser *data, int size)
         {
             size -= ((t_stack *)(stack->content))->ast_node->nb_args;
             ft_memcpy(args + size, ((t_stack *)(stack->content))->ast_node->args, sizeof(char *) * ((t_stack *)(stack->content))->ast_node->nb_args);
+            free(((t_stack *)(stack->content))->values);
+            ((t_stack *)(stack->content))->values = NULL;
+            ((t_stack *)(stack->content))->nb_values = 0;
         }
-        else if (!is_redirection_symbol(((t_stack *)(stack->content))->symbol) 
+        else if (!is_redirection_symbol(((t_stack *)(stack->content))) 
             && ft_strcmp(((t_stack *)(stack->content))->symbol, "ASSIGNMENT_WORD"))
         {
             size -= ((t_stack *)(stack->content))->nb_values;
             ft_memcpy(args + size, ((t_stack *)(stack->content))->values, sizeof(char *) * ((t_stack *)(stack->content))->nb_values);
+            free(((t_stack *)(stack->content))->values);
+            ((t_stack *)(stack->content))->values = NULL;
+            ((t_stack *)(stack->content))->nb_values = 0;
         }
         stack = stack->next;
     }

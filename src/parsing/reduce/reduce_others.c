@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:57:55 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/24 07:26:58 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/24 18:31:49 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ int reduce_booleans(t_parser *data, t_reduce_rule *rule)
     stack = data->stack;
     if (ft_strnstr(rule->left_symbol, "pipeline", ft_strlen(rule->left_symbol))
         && rule->nb_items == 3 && ((t_stack *)(stack->next->content))->symbol 
-        && !ft_strcmp((t_stack *)(stack->next->content)->symbol, "BANG"))
+        && !ft_strcmp(((t_stack *)(stack->next->content))->symbol, "BANG"))
     {
-        (t_stack *)(stack->content)->ast_node->is_bang = 1;
+        ((t_stack *)(stack->content))->ast_node->is_bang = 1;
         return (1);
     }
      if ((ft_strnstr(rule->left_symbol, "and_or", ft_strlen(rule->left_symbol))
@@ -31,7 +31,7 @@ int reduce_booleans(t_parser *data, t_reduce_rule *rule)
         && rule->nb_items == 3 && ((t_stack *)(stack->content))->symbol 
         && !ft_strcmp(((t_stack *)(stack->content))->symbol, "BACKGROUND")))
     {
-        (t_stack *)(stack->content)->ast_node->is_async = 1;
+        ((t_stack *)(stack->content))->ast_node->is_async = 1;
         return (1);
     }
     return (0);
@@ -48,7 +48,7 @@ void    reduce_ast_subshell(t_parser *data, t_reduce_rule *rule, t_node_type nod
         tmp_list = ((t_stack *)(data->stack->content))->ast_node->redirections;
         ((t_stack *)(data->stack->content))->ast_node->redirections = pop_redirections_from_stack(data, rule->nb_items);
         ft_lstclear(&tmp_list, NULL);
-        (t_stack *)(data->stack->content)->symbol = ft_strdup(rule->left_symbol);
+        ((t_stack *)(data->stack->content))->symbol = ft_strdup(rule->left_symbol);
         return ;
     }
     else if (rule->nb_items == 3)
@@ -74,7 +74,6 @@ void    reduce_ast_subshell(t_parser *data, t_reduce_rule *rule, t_node_type nod
 
 void    reduce_multiple_pipes(t_parser *data, t_reduce_rule *rule)
 {
-    t_ast   *ast_node;
     t_list  *stack_node_to_update;
     t_stack *stack_node;
     t_ast   **children;
