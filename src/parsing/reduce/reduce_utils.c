@@ -3,36 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   reduce_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 00:45:50 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/24 06:56:41 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node_type get_node_type_from_rule(t_rule *rule)
+t_node_type get_node_type_from_rule(t_reduce_rule *rule, t_list *stack)
 {
-    t_list *right_symbols;
-
-    right_symbols = rule->right_symbols;
     if (ft_strnstr(rule->left_symbol, "cmd", ft_strlen(rule->left_symbol)))
         return (COMMAND);
-    while (right_symbols)
-    {
-        if (!ft_strcmp(right_symbol->content, "subshell"))
-            return (SUBSHELL);
-        if (!ft_strcmp(right_symbol->content, "PIPE"))
-            return (PIPE);
-        if (!ft_strcmp(right_symbol->content, "SEMI"))
-            return (SEQUENCE);
-        if (!ft_strcmp(right_symbol->content, "AND_IF"))
-            return (AND);
-        if (!ft_strcmp(right_symbol->content, "OR_IF"))
-            return (OR);
-        right_symbols = right_symbols->next;
-    }
+    if (ft_strnstr(rule->left_symbol, "subshell", ft_strlen(rule->left_symbol)))
+        return (SUBSHELL);
+    if (ft_strnstr(rule->left_symbol, "pipeline", ft_strlen(rule->left_symbol))
+        && rule->nb_items == 3 && (t_stack *)(stack->next->content)->symbol 
+        && !ft_strcmp((t_stack *)(stack->next->content)->symbol, "PIPE"))
+        return (PIPE);
+    if (ft_strnstr(rule->left_symbol, "and_or", ft_strlen(rule->left_symbol))
+        && rule->nb_items == 3 && (t_stack *)(stack->next->content)->symbol 
+        && !ft_strcmp((t_stack *)(stack->next->content)->symbol, "SEMI"))
+        return (SEQUENCE);
+    if (ft_strnstr(rule->left_symbol, "and_or", ft_strlen(rule->left_symbol))
+        && rule->nb_items == 3 && (t_stack *)(stack->next->content)->symbol 
+        && !ft_strcmp((t_stack *)(stack->next->content)->symbol, "AND_IF"))
+        return (AND);
+    if (ft_strnstr(rule->left_symbol, "and_or", ft_strlen(rule->left_symbol))
+        && rule->nb_items == 3 && (t_stack *)(stack->next->content)->symbol 
+        && !ft_strcmp((t_stack *)(stack->next->content)->symbol, "OR_IF"))
+        return (OR);
     return (UNKNOWN);
 }
 
@@ -90,8 +91,10 @@ void    clear_stack_after_reduce(t_slr1 *data, int nb_items, int should_free_ast
             }
             free((t_stack *)(stack->content)->ast_node);
         }
-        if ((t_stack *)(stack->content)->symbol)
+        if ((t_stack *)(stack->content)->values)
             free_char_array(((t_stack *)(stack->content))->values, ((t_stack *)(stack->content))->nb_values);
+        if ((t_stack *)(stack->content)->symbol)
+            free(((t_stack *)(stack->content))->symbol);
         free((t_stack *)(stack->content));
     }
 }

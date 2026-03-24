@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 19:25:07 by marvin            #+#    #+#             */
-/*   Updated: 2026/03/22 21:48:05 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/24 07:28:40 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void shift(t_list *stack, int state_id, t_token *token)
+void shift(t_parser *data, int state_id, t_token *token)
 {
     t_stack *new_node;
 
@@ -22,11 +22,14 @@ void shift(t_list *stack, int state_id, t_token *token)
     new_node->state_id = state_id;
     new_node->ast_node = NULL;
     new_node->symbol = ft_strdup(token->type);
-    new_node->values = ft_strdup(token->value);
+    new_node->values = malloc(sizeof(char *) * 2);
+    if (!new_node->symbol || !new_node->values)
+        return /*a completer*/;
+    new_node->values[0] = ft_strdup(token->value);
     if (!new_node->symbol || !new_node->values)
         return /*a completer*/;
     new_node->nb_values = 1;
-    ft_lstadd_front(&stack, ft_lstnew(new_node));
+    ft_lstadd_front(&data->stack, ft_lstnew(new_node));
 }
 
 int get_next_state_after_reduce(t_slr1 *data, int **table, t_rule *rule)
@@ -53,7 +56,7 @@ void    reduce(t_slr1 *data, int **table, int action)
         reduce_multiple_pipes(data, rule);
     else if (node_type == PIPE || node_type == SEQUENCE || node_type == AND || node_type == OR)
         reduce_ast_control(data, rule, node_type);
-    else if (!reduce_booleans(data, rule, node_type))
+    else if (!reduce_booleans(data, rule))
         reduce_symbol(data, rule);
     (t_stack *)(data->stack->content)->state_id = get_next_state_after_reduce(data, table, rule);
 }
@@ -64,7 +67,7 @@ int parser(t_parser *data)
     int     id;
     t_list  *stack;
     t_list *tokens_list;
-    t_token token;
+    t_token *token;
 
     stack = data->stack;
     tokens_list = data->tokens;
@@ -80,10 +83,10 @@ int parser(t_parser *data)
         else if (action == ACCEPTED)
             return (1);
         else if (action < 0)
-            reduce(data, stack, data->table, -action);
+            reduce(data, data->table, -action);
         else
         {
-            shift(stack, action, token);
+            shift(data, action, token);
             tokens_list = tokens_list->next;
         }
     }

@@ -3,38 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   reduce_others.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:57:55 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/24 07:26:58 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int reduce_booleans(t_slr1 *data, t_rule *rule, t_node_type node_type)
+int reduce_booleans(t_parser *data, t_reduce_rule *rule)
 {
-    t_list *right_symbols;
+    t_list *stack;
 
-    right_symbols = rule->right_symbols;
-    while (right_symbols)
+    stack = data->stack;
+    if (ft_strnstr(rule->left_symbol, "pipeline", ft_strlen(rule->left_symbol))
+        && rule->nb_items == 3 && ((t_stack *)(stack->next->content))->symbol 
+        && !ft_strcmp((t_stack *)(stack->next->content)->symbol, "BANG"))
     {
-        if (!ft_strcmp(right_symbol->content, "BANG"))
-        {
-            (t_stack *)(data->stack->content)->ast_node->is_bang = 1;
-            return (1);
-        }
-        if (!ft_strcmp(right_symbol->content, "BACKGROUND"))
-        {
-            (t_stack *)(data->stack->content)->ast_node->is_async = 1;
-            return (1);
-        }
-        right_symbols = right_symbols->next;
+        (t_stack *)(stack->content)->ast_node->is_bang = 1;
+        return (1);
+    }
+     if ((ft_strnstr(rule->left_symbol, "and_or", ft_strlen(rule->left_symbol))
+        && rule->nb_items == 3 && ((t_stack *)(stack->next->content))->symbol 
+        && !ft_strcmp(((t_stack *)(stack->next->content))->symbol, "BACKGROUND"))
+        || (ft_strnstr(rule->left_symbol, "and_or", ft_strlen(rule->left_symbol))
+        && rule->nb_items == 3 && ((t_stack *)(stack->content))->symbol 
+        && !ft_strcmp(((t_stack *)(stack->content))->symbol, "BACKGROUND")))
+    {
+        (t_stack *)(stack->content)->ast_node->is_async = 1;
+        return (1);
     }
     return (0);
 }
 
-void    reduce_ast_subshell(t_slr1 *data, t_rule *rule, t_node_type node_type)
+void    reduce_ast_subshell(t_parser *data, t_reduce_rule *rule, t_node_type node_type)
 {
     t_ast   *ast_node;
     t_list  *tmp_list;
@@ -65,11 +68,11 @@ void    reduce_ast_subshell(t_slr1 *data, t_rule *rule, t_node_type node_type)
         stack_node->symbol = ft_strdup(rule->left_symbol);
         stack_node->ast_node = ast_node;
         clear_stack_after_reduce(data, rule->nb_items, 0);
-        ft_lstadd_front(&((t_stack *)(data->stack->content)->ast_node), ft_lstnew(stack_node));
+        ft_lstadd_front(&data->stack, ft_lstnew(stack_node));
     }
 }
 
-void    reduce_multiple_pipes(t_slr1 *data, t_rule *rule)
+void    reduce_multiple_pipes(t_parser *data, t_reduce_rule *rule)
 {
     t_ast   *ast_node;
     t_list  *stack_node_to_update;
@@ -82,15 +85,14 @@ void    reduce_multiple_pipes(t_slr1 *data, t_rule *rule)
     while (i++ < rule->nb_items)
         stack_node_to_update = stack_node_to_update->next;
     stack_node = stack_node_to_update->content;
-    children = malloc(sizeof(t_ast *) * stack_node->ast_node->nb_children + 2);
+    children = malloc(sizeof(t_ast *) * (stack_node->ast_node->nb_children + 1));
     ft_memmove(children, stack_node->ast_node->children, sizeof(t_ast *) * stack_node->ast_node->nb_children);
     children[stack_node->ast_node->nb_children] = ((t_stack *)(data->stack->content))->ast_node;
     stack_node->symbol = ft_strdup(rule->left_symbol);
     clear_stack_after_reduce(data, rule->nb_items - 1, 0);
-    ft_lstadd_front(&((t_stack *)(data->stack->content)->ast_node), ft_lstnew(stack_node));
 }
 
-void    reduce_ast_control(t_slr1 *data, t_rule *rule, t_node_type node_type)
+void    reduce_ast_control(t_parser *data, t_reduce_rule *rule, t_node_type node_type)
 {
     t_ast   *ast_node;
     t_stack *stack_node;
@@ -103,7 +105,7 @@ void    reduce_ast_control(t_slr1 *data, t_rule *rule, t_node_type node_type)
     ft_bzero(stack_node, sizeof(t_stack));
     ast_node->type = node_type;
     ast_node->nb_children = 2;
-    ast_node->children = malloc(sizeof(t_ast *) * ast_node->nb_children + 1);
+    ast_node->children = malloc(sizeof(t_ast *) * (ast_node->nb_children));
     if (!ast_node->children)
         return /*a completer*/;
     ast_node->children[0] = ((t_stack *)(data->stack->next->next->content))->ast_node;
@@ -111,10 +113,10 @@ void    reduce_ast_control(t_slr1 *data, t_rule *rule, t_node_type node_type)
     stack_node->symbol = ft_strdup(rule->left_symbol);
     stack_node->ast_node = ast_node;
     clear_stack_after_reduce(data, rule->nb_items, 0);
-    ft_lstadd_front(&((t_stack *)(data->stack->content)->ast_node), ft_lstnew(stack_node));
+    ft_lstadd_front(&data->stack, ft_lstnew(stack_node));
 }
 
-void    reduce_symbol(t_slr1 *data, t_rule *rule)
+void    reduce_symbol(t_parser *data, t_reduce_rule *rule)
 {
     t_stack *stack_node;
 
@@ -126,5 +128,5 @@ void    reduce_symbol(t_slr1 *data, t_rule *rule)
     stack_node->nb_values = get_size_of_args(data, rule->nb_items);
     stack_node->values = pop_args_from_stack(data, stack_node->nb_values);
     clear_stack_after_reduce(data, rule->nb_items, 0);
-    ft_lstadd_front(&((t_stack *)(data->stack->content)->ast_node), ft_lstnew(stack_node));
+    ft_lstadd_front(&data->stack, ft_lstnew(stack_node));
 }
