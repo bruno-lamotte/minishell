@@ -26,7 +26,8 @@ GEN_SRC_FILES   = generating_table/closure.c \
                   generating_table/get_symbols.c \
                   generating_table/get_table.c \
                   generating_table/go_to.c \
-                  generating_table/print_table.c
+                  generating_table/print_table.c \
+				  generating_table/free_palestine.c
 
 GEN_SRCS        = $(addprefix $(SRC_DIR)/, $(GEN_SRC_FILES))
 GEN_OBJS        = $(GEN_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_follows.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 14:34:18 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/31 06:10:32 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,18 @@ void add_dollar_to_start_symbol(t_slr1 *data)
 {
     t_list      *new_list;
     t_symbol    *symbol;
+    char        *dup;
 
     symbol = get_symbol_from_name(data, ((t_rule *)data->rules->content)->left_symbol);
-    new_list = ft_lstnew("$");
-    if (!new_list)
+    dup = ft_strdup("$");
+    if (!dup)
         return /*a completer*/;
+    new_list = ft_lstnew(dup);
+    if (!new_list)
+    {
+        free(dup);
+        return /*a completer*/;
+    }
     ft_lstadd_back(&symbol->follows, new_list);
 }
 
@@ -28,19 +35,26 @@ int add_follows_from_follows(t_symbol **symbol, t_symbol *next_symbol)
 {
     t_list *new_list;
     t_list *new_node;
+    char   *dup;
     int     added;
-    
+
     added = 0;
     new_list = next_symbol->follows;
     if (!new_list)
         return (0);
     while (new_list)
     {
-       if (!does_list_contains_this_symbol((*symbol)->follows, (char *)new_list->content))
+        if (!does_list_contains_this_symbol((*symbol)->follows, (char *)new_list->content))
         {
-            new_node = ft_lstnew(new_list->content);
+            dup = ft_strdup((char *)new_list->content);
+            if (!dup)
+                return (0);
+            new_node = ft_lstnew(dup);
             if (!new_node)
-                return (/*JSP*/0);
+            {
+                free(dup);
+                return (0);
+            }
             added++;
             ft_lstadd_back(&(*symbol)->follows, new_node);
         }
@@ -53,8 +67,9 @@ int add_follows_from_firsts(t_symbol **symbol, t_symbol *next_symbol)
 {
     t_list *new_list;
     t_list *new_node;
+    char   *dup;
     int     added;
-    
+
     added = 0;
     new_list = next_symbol->firsts;
     if (!new_list)
@@ -65,9 +80,15 @@ int add_follows_from_firsts(t_symbol **symbol, t_symbol *next_symbol)
         {
             if (!does_list_contains_this_symbol((*symbol)->follows, (char *)new_list->content))
             {
-                new_node = ft_lstnew(new_list->content);
+                dup = ft_strdup((char *)new_list->content);
+                if (!dup)
+                    return (0);
+                new_node = ft_lstnew(dup);
                 if (!new_node)
-                    return (/*JSP*/0);
+                {
+                    free(dup);
+                    return (0);
+                }
                 added++;
                 ft_lstadd_back(&(*symbol)->follows, new_node);
             }

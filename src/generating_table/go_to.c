@@ -12,6 +12,29 @@
 
 #include "minishell.h"
 
+void	free_tmp_state(t_state *state)
+{
+	t_list			*current;
+	t_transition	*transition;
+
+	if (!state)
+		return ;
+	ft_lstclear(&state->items, free);
+	current = state->transitions;
+	while (current)
+	{
+		transition = (t_transition *)current->content;
+		if (transition)
+		{
+			free(transition->symbol);
+			free(transition);
+		}
+		current = current->next;
+	}
+	ft_lstclear(&state->transitions, NULL);
+	free(state);
+}
+
 t_transition	*create_transition(char *symbol_name, t_state *dest_state)
 {
 	t_transition *transition;
@@ -107,8 +130,7 @@ void	add_transition_to_state(t_slr1 *data, t_state *current_state, t_state *new_
 	else
     {
 		transition = create_transition(symbol->name, transition_state);
-		//il faut nettoyer avant de free
-        free(new_state);
+		free_tmp_state(new_state);
     }
 	ft_lstadd_back(&current_state->transitions, ft_lstnew(transition));
 }
@@ -143,9 +165,6 @@ void	go_to(t_slr1 *data, t_state *state)
 	current_item = state->items;
 	while (current_item)
 	{
-		new_state = create_new_state(data);
-		if (!new_state)
-			return /*a completer*/;
 		symbol = get_symbol_after_dot(data, (t_item *)current_item->content);
 		if (!symbol)
 		{

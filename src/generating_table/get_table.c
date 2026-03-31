@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 02:26:54 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/24 17:38:08 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/31 05:13:35 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,5 +149,6 @@ int main(void)
     print_rules_in_c(data->rules);
     print_symbols_in_c(data->symbols);
     //print_table(table, data);
+    free_all(data, table);
     return (0);
 }

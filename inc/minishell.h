@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:52 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/24 18:41:12 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/03/31 05:16:35 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ void	print_table(int **table, t_slr1 *data);
 void	print_table_in_c(int **table, int nb_states, int nb_tokens);
 void	print_rules_in_c(t_list *rule_list);
 void	print_symbols_in_c(t_list *symbols_list);
+void	free_all(t_slr1 *data, int **table);
 
 /* ************************************************************************** */
 /*                           initialize_table.c                               */
