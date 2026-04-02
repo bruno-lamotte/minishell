@@ -242,5 +242,6 @@ int		builtin_env(t_shell *shell);
 int		builtin_export(t_shell *shell, char **args);
 int		builtin_unset(t_shell *shell, char **args);
 int		builtin_exit(t_shell *shell, char **args);
+t_list	*find_var(t_list *env, char *arg);
 
 #endif

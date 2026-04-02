@@ -10,17 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "minishell.h"
 
-int builtin_env(char **envp)
+int	builtin_env(t_shell *shell)
 {
-    int i;
+	t_list	*current;
 
-    i = 0;
-    while (envp[i])
-    {
-        ft_printf("%s\n", envp[i]);
-        i++;
-    }
-    return (0);
+	current = shell->env;
+	while (current)
+	{
+		ft_printf("%s\n", (char *)current->content);
+		current = current->next;
+	}
+	return (0);
 }

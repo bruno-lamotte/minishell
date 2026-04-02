@@ -30,7 +30,7 @@ void    print_export(t_list *env)
 {
     while (env)
     {
-        print_var(env->content);
+        print_char(env->content);
         env = env->next;
     }
 }
