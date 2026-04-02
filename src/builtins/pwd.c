@@ -5,24 +5,24 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: user <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/23 23:29:01 by user              #+#    #+#             */
-/*   Updated: 2026/03/23 23:31:53 by user             ###   ########.fr       */
+/*   Created: 2026/04/02 18:39:48 by user              #+#    #+#             */
+/*   Updated: 2026/04/02 18:39:50 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "minishell.h"
 
-int builtin_pwd(void)
+int	builtin_pwd(void)
 {
-    char    *path;
+	char	*path;
 
-    path = getcwd(NULL, 0);
-    if (!path)
-    {
-        write (2, "error\n", 6);
-        return (1);
-    }
-    ft_printf("%s\n", path);
-    free(path);
-    return (0);
+	path = getcwd(NULL, 0);
+	if (!path)
+	{
+		write(2, "error\n", 6);
+		return (1);
+	}
+	ft_printf("%s\n", path);
+	free(path);
+	return (0);
 }

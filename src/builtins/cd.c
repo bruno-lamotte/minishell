@@ -44,15 +44,19 @@ static void	set_env_value(t_shell *shell, char *name, char *value)
 		content = current->content;
 		if (ft_strncmp(content, name, len) == 0 && content[len] == '=')
 		{
-			new_content = ft_strjoin(ft_strjoin(name, "="), value);
+			new_content = ft_strjoin(name, "=");
+			content = ft_strjoin(new_content, value);
+			free(new_content);
 			free(current->content);
-			current->content = new_content;
+			current->content = content;
 			return ;
 		}
 		current = current->next;
 	}
-	new_content = ft_strjoin(ft_strjoin(name, "="), value);
-	ft_lstadd_back(&shell->env, ft_lstnew(new_content));
+	new_content = ft_strjoin(name, "=");
+	content = ft_strjoin(new_content, value);
+	free(new_content);
+	ft_lstadd_back(&shell->env, ft_lstnew(content));
 }
 
 static int	cd_error(char *path)

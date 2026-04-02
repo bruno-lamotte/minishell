@@ -17,7 +17,11 @@
 # include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/stat.h>
 # include <sys/time.h>
+# include <signal.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 # include <unistd.h>
 # include "libft.h"
 # include "struct.h"
@@ -135,5 +139,23 @@ void	print_rules_in_c(t_list *rule_list);
 // int		handle_quote_and_backslash(char *str, int i);
 // int		handle_dollar_and_accent(char *str, int i);
 // t_token	tokenizer(char *str);
+
+/* ************************************************************************** */
+/*                               signals.c                                    */
+/* ************************************************************************** */
+
+void	setup_signals(void);
+
+/* ************************************************************************** */
+/*                               builtins                                     */
+/* ************************************************************************** */
+
+int		builtin_pwd(void);
+int		builtin_echo(char **args);
+int		builtin_cd(t_shell *shell, char **args);
+int		builtin_env(t_shell *shell);
+int		builtin_export(t_shell *shell, char **args);
+int		builtin_unset(t_shell *shell, char **args);
+int		builtin_exit(t_shell *shell, char **args);
 
 #endif
