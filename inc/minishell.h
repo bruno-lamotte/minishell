@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:52 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/22 22:17:35 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/31 05:16:35 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ void		get_firsts(t_slr1 *data);
 /* ************************************************************************** */
 
 void		add_dollar_to_start_symbol(t_slr1 *data);
-int			add_follows_from_list(t_symbol **symbol, t_symbol *next_symbol);
+int			add_follows_from_follows(t_symbol **symbol, t_symbol *next_symbol);
+int			add_follows_from_firsts(t_symbol **symbol, t_symbol *next_symbol);
 int			contains_empty_in_firsts(t_symbol *symbol);
 void		update_follows(t_slr1 *data, t_list *current_rule, int *added);
 void		get_follows(t_slr1 *data);
@@ -120,25 +121,109 @@ void	print_table(int **table, t_slr1 *data);
 
 void	print_table_in_c(int **table, int nb_states, int nb_tokens);
 void	print_rules_in_c(t_list *rule_list);
-// /* ************************************************************************** */
-// /*                            tokenizer_utils.c                               */
-// /* ************************************************************************** */
+void	print_symbols_in_c(t_list *symbols_list);
+void	free_all(t_slr1 *data, int **table);
 
-// int		is_end_of_imput(char c);
-// int		is_operator(char c);
-// int		can_be_added_to_opperator(char c);
-// int		is_blank(char c);
-// int		handle_comment(char *str, int *i);
+/* ************************************************************************** */
+/*                           initialize_table.c                               */
+/* ************************************************************************** */
 
-// /* ************************************************************************** */
-// /*                               tokenizer.c                                  */
-// /* ************************************************************************** */
+void	init_table_part_0(int **t);
+void	init_table_part_1(int **t);
+void	init_table_part_2(int **t);
+void	init_table_part_3(int **t);
+void	init_table_part_4(int **t);
+void	init_rules_part_0(t_reduce_rule *rules);
+void	init_rules_part_1(t_reduce_rule *rules);
+void	init_rules_part_2(t_reduce_rule *rules);
+void	init_rules_part_3(t_reduce_rule *rules);
+void	init_symbols_part_0(char **symbols);
+void	init_symbols_part_1(char **symbols);
 
-// t_token	make_token(char *str, int i);
-// int		handle_previus_is_operator(char *str, int *i);
-// int		handle_quote_and_backslash(char *str, int i);
-// int		handle_dollar_and_accent(char *str, int i);
-// t_token	tokenizer(char *str);
+/* ************************************************************************** */
+/*                            tokenizer_utils.c                               */
+/* ************************************************************************** */
+
+int		is_end_of_imput(char c);
+int		is_operator(char c);
+int		can_be_added_to_opperator(char c);
+int		is_blank(char c);
+int		handle_comment(char *str, int *i);
+int		is_quote(char c);
+
+/* ************************************************************************** */
+/*                               tokenizer.c                                  */
+/* ************************************************************************** */
+
+t_token	*make_token(char *str, int i, char *type);
+int		handle_is_operator(char *str, int *i);
+t_token	*tokenizer_loop(char **str);
+t_list	*tokenizer(char *str);
+
+/* ************************************************************************** */
+/*                                 lexer.c                                    */
+/* ************************************************************************** */
+
+int		is_valid_name(char *str, int len);
+t_token	*lex_assignment(t_parser *data, int **table, t_token *token, int state_id);
+t_token	*lex_operator(t_token *token);
+t_token	*lex_token(t_parser *data, int **table, t_token *token, int state_id);
+
+/* ************************************************************************** */
+/*                                 parser.c                                   */
+/* ************************************************************************** */
+
+void	shift(t_parser *data, int state_id, t_token *token);
+void	reduce(t_parser *data, int **table, int action);
+void	print_parsing_error(t_parser *data, int **table, int id, t_token *token);
+int		parser(t_parser *data);
+
+/* ************************************************************************** */
+/*                            reduce/pop_redirect.c                           */
+/* ************************************************************************** */
+
+int		is_redirection_symbol(t_stack *stack);
+t_list	*get_redirection_from_symbol(t_parser *data, t_stack *stack);
+t_list	*pop_redirections_from_stack(t_parser *data, int lookahead);
+
+/* ************************************************************************** */
+/*                              reduce/reduce_cmd.c                           */
+/* ************************************************************************** */
+
+int		get_size_of_args(t_parser *data, int lookahead);
+int		get_size_of_assignements(t_parser *data, int lookahead);
+char	**pop_assignements_from_stack(t_parser *data, int size);
+char	**pop_args_from_stack(t_parser *data, int size);
+void	reduce_ast_command(t_parser *data, t_reduce_rule *rule,
+			t_node_type node_type);
+
+/* ************************************************************************** */
+/*                            reduce/reduce_others.c                          */
+/* ************************************************************************** */
+
+int		reduce_booleans(t_parser *data, t_reduce_rule *rule);
+void	reduce_ast_subshell(t_parser *data, t_reduce_rule *rule,
+			t_node_type node_type);
+void	reduce_multiple_pipes(t_parser *data, t_reduce_rule *rule);
+void	reduce_ast_control(t_parser *data, t_reduce_rule *rule,
+			t_node_type node_type);
+void	reduce_symbol(t_parser *data, t_reduce_rule *rule);
+
+/* ************************************************************************** */
+/*                            reduce/reduce_utils.c                           */
+/* ************************************************************************** */
+
+t_node_type	get_node_type_from_rule(t_reduce_rule *rule, t_list *stack);
+int			is_node_already_type(t_parser *data, int lookahead,
+				t_node_type node_type);
+int			get_symbol_nbr(t_parser *data, char *symbol);
+int			get_next_state_after_reduce(t_parser *data, int **table,
+				t_reduce_rule *rule);
+void		free_char_array(char **array, int size);
+void		clear_stack_after_reduce(t_parser *data, int nb_items,
+				int should_free_ast);
+
+void		set_row(int **table, int state_index, char *values);
 
 /* ************************************************************************** */
 /*                               signals.c                                    */

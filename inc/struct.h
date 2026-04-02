@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   struct.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/24 07:41:07 by user             ###   ########.fr       */
+/*   Updated: 2026/03/24 18:06:52 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 typedef struct s_token
 {
-	int		type;
+	char	*type;
 	char	*value;
 }			t_token;
 
@@ -106,7 +106,7 @@ typedef struct s_stack
 {
 	int		state_id;
 	char	*symbol;
-	char	**value;
+	char	**values;
 	int		nb_values;
 	t_ast	*ast_node;
 }			t_stack;
@@ -120,10 +120,13 @@ typedef struct s_slr1
 
 typedef struct s_parser
 {
-	t_list	*tokens;
-	t_list	*stack;
-	t_list	*here_docs;
-	int		**table;
+	char			**symbols;
+	int				**table;
+	t_list			*tokens;
+	t_list			*stack;
+	t_list			*here_docs;
+	t_reduce_rule	*rules;
+
 }			t_parser;
 
 typedef struct  s_shell

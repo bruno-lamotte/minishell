@@ -17,12 +17,13 @@ int is_end_of_imput(char c)
 
 int is_operator(char c)
 {
-    return (c == '|' || c == '<' || c == '>' || c == ';');
+    return (c == '|' || c == '<' || c == '>' || c == ';' || c == '&' 
+        || c == '(' || c == ')' || c == '!');
 }
 
 int can_be_added_to_opperator(char c)
 {
-    return (c == '<' || c == '>');
+    return (c == '<' || c == '>' || c == '&' || c == '|');
 }
 
 int is_blank(char c)
@@ -39,4 +40,12 @@ int handle_comment(char *str, int *i)
         return (1);
     }
     return (0);
+}
+
+int is_quote(char c)
+{
+    static int  quotes[256] = {0};
+    if (!quotes[(unsigned char)c])
+        quotes[(unsigned char)c] = (c == '"' || c == '\'');
+    return (quotes[(unsigned char)c]);
 }

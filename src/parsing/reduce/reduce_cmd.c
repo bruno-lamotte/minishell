@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   reduce_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:49:37 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/24 21:02:43 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int get_size_of_args(t_slr1 *data, int lookahead)
+int get_size_of_args(t_parser *data, int lookahead)
 {
     int size;
     t_list *stack;
@@ -21,8 +21,12 @@ int get_size_of_args(t_slr1 *data, int lookahead)
     stack = data->stack;
     while (lookahead--)
     {
-        if (is_redirection_symbol(((t_stack *)(stack->content))->symbol) || !ft_strcmp(stack->symbol, "ASSIGNMENT_WORD"))
+        if (is_redirection_symbol((t_stack *)(stack->content))
+            || !ft_strcmp(((t_stack *)(stack->content))->symbol, "ASSIGNMENT_WORD"))
+        {
+            stack = stack->next;
             continue ;
+        }
         if (((t_stack *)(stack->content))->ast_node)
             size += ((t_stack *)(stack->content))->ast_node->nb_args;
         else
@@ -32,7 +36,7 @@ int get_size_of_args(t_slr1 *data, int lookahead)
     return (size);
 }
 
-int get_size_of_assignements(t_slr1 *data, int lookahead)
+int get_size_of_assignements(t_parser *data, int lookahead)
 {
    int size;
     t_list *stack;
@@ -43,14 +47,14 @@ int get_size_of_assignements(t_slr1 *data, int lookahead)
     {
         if (((t_stack *)(stack->content))->ast_node)
             size += ((t_stack *)(stack->content))->ast_node->nb_assignments;
-        else if (!ft_strcmp(stack->symbol, "ASSIGNMENT_WORD"))
+        else if (!ft_strcmp(((t_stack *)(stack->content))->symbol, "ASSIGNMENT_WORD"))
             size++;
         stack = stack->next;
     }
     return (size);
 }
 
-char    **pop_assignements_from_stack(t_slr1 *data, int size)
+char    **pop_assignements_from_stack(t_parser *data, int size)
 {
     char    **assignments;
     t_list  *stack;
@@ -60,24 +64,30 @@ char    **pop_assignements_from_stack(t_slr1 *data, int size)
     if (!assignments)
         return (NULL/*JSP*/);
     assignments[size] = NULL;
-    while (size--)
+    while (size)
     {
         if (((t_stack *)(stack->content))->ast_node)
         {
             size -= ((t_stack *)(stack->content))->ast_node->nb_assignments;
             ft_memcpy(assignments + size, ((t_stack *)(stack->content))->ast_node->assignments, sizeof(char *) * ((t_stack *)(stack->content))->ast_node->nb_assignments);
+            free(((t_stack *)(stack->content))->values);
+            ((t_stack *)(stack->content))->values = NULL;
+            ((t_stack *)(stack->content))->nb_values = 0;
         }
-        else if (!ft_strcmp(stack->symbol, "ASSIGNMENT_WORD"))
+        else if (!ft_strcmp(((t_stack *)(stack->content))->symbol, "ASSIGNMENT_WORD"))
         {
             size--;
             assignments[size] = ft_strdup(((t_stack *)(stack->content))->values[0]);
+            free(((t_stack *)(stack->content))->values);
+            ((t_stack *)(stack->content))->values = NULL;
+            ((t_stack *)(stack->content))->nb_values = 0;
         }
         stack = stack->next;
     }
     return (assignments);
 }
 
-char    **pop_args_from_stack(t_slr1 *data, int size)
+char    **pop_args_from_stack(t_parser *data, int size)
 {
     char    **args;
     t_list  *stack;
@@ -87,24 +97,31 @@ char    **pop_args_from_stack(t_slr1 *data, int size)
     if (!args)
         return (NULL/*JSP*/);
     args[size] = NULL;
-    while (size--)
+    while (size)
     {
         if (((t_stack *)(stack->content))->ast_node)
         {
             size -= ((t_stack *)(stack->content))->ast_node->nb_args;
             ft_memcpy(args + size, ((t_stack *)(stack->content))->ast_node->args, sizeof(char *) * ((t_stack *)(stack->content))->ast_node->nb_args);
+            free(((t_stack *)(stack->content))->values);
+            ((t_stack *)(stack->content))->values = NULL;
+            ((t_stack *)(stack->content))->nb_values = 0;
         }
-        else if (!is_redirection_symbol((t_stack *)(stack->content)) && ft_strcmp(stack->symbol, "ASSIGNMENT_WORD"))
+        else if (!is_redirection_symbol(((t_stack *)(stack->content))) 
+            && ft_strcmp(((t_stack *)(stack->content))->symbol, "ASSIGNMENT_WORD"))
         {
             size -= ((t_stack *)(stack->content))->nb_values;
             ft_memcpy(args + size, ((t_stack *)(stack->content))->values, sizeof(char *) * ((t_stack *)(stack->content))->nb_values);
+            free(((t_stack *)(stack->content))->values);
+            ((t_stack *)(stack->content))->values = NULL;
+            ((t_stack *)(stack->content))->nb_values = 0;
         }
         stack = stack->next;
     }
     return (args);
 }
 
-void    reduce_ast_command(t_slr1 *data, t_rule *rule, t_node_type node_type)
+void    reduce_ast_command(t_parser *data, t_reduce_rule *rule, t_node_type node_type)
 {
     t_ast   *ast_node;
     t_stack *stack_node;
@@ -122,11 +139,12 @@ void    reduce_ast_command(t_slr1 *data, t_rule *rule, t_node_type node_type)
     ast_node->nb_args = get_size_of_args(data, lookahead);
     ast_node->args = pop_args_from_stack(data, ast_node->nb_args);
     ast_node->redirections = pop_redirections_from_stack(data, lookahead);
+    ast_node->nb_assignments = get_size_of_assignements(data, lookahead);
     ast_node->assignments = pop_assignements_from_stack(data, ast_node->nb_assignments);
     clear_stack_after_reduce(data, lookahead, 1);
     ft_bzero(stack_node, sizeof(t_stack));
     stack_node->ast_node = ast_node;
     stack_node->symbol = ft_strdup(rule->left_symbol);
-    ft_lstadd_front(&((t_stack *)(data->stack->content)->ast_node), ft_lstnew(stack_node));
+    ft_lstadd_front(&data->stack, ft_lstnew(stack_node));
 }
 

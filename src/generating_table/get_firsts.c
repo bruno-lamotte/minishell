@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_firsts.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 12:04:23 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/22 21:37:53 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/31 05:51:29 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,33 +25,49 @@ int	does_list_contains_this_symbol(t_list *list, char *name)
 
 int add_firsts_if_not_token(t_slr1 *data, t_rule *next_rule, t_symbol *left_symbol)
 {
-    t_list *new_list;
-    t_list *new_node;
-    
+	t_list *new_list;
+	t_list *new_node;
+	char   *dup;
+
 	new_list = get_symbol_from_name(data, next_rule->left_symbol)->firsts;
 	if (!new_list)
 		return (0);
-    while (new_list)
-    {
-        new_node = ft_lstnew(new_list->content);
-        if (!new_node)
-            return (0);
-        if (!does_list_contains_this_symbol(left_symbol->firsts, (char *)new_list->content))
-	        ft_lstadd_back(&left_symbol->firsts, new_node);
-        new_list = new_list->next;
-    }
-    return (1);
+	while (new_list)
+	{
+		if (!does_list_contains_this_symbol(left_symbol->firsts, (char *)new_list->content))
+		{
+			dup = ft_strdup((char *)new_list->content);
+			if (!dup)
+				return (0);
+			new_node = ft_lstnew(dup);
+			if (!new_node)
+			{
+				free(dup);
+				return (0);
+			}
+			ft_lstadd_back(&left_symbol->firsts, new_node);
+		}
+		new_list = new_list->next;
+	}
+	return (1);
 }
 
 int add_first_if_token(t_symbol *left_symbol, t_symbol *right_symbol)
 {
-    t_list  *new_list;
-    
-	new_list = ft_lstnew(right_symbol->name);
-	if (!new_list)
+	t_list  *new_list;
+	char    *dup;
+
+	dup = ft_strdup(right_symbol->name);
+	if (!dup)
 		return (0);
+	new_list = ft_lstnew(dup);
+	if (!new_list)
+	{
+		free(dup);
+		return (0);
+	}
 	ft_lstadd_back(&left_symbol->firsts, new_list);
-    return (1);
+	return (1);
 }
 int should_look_for_next_right_symbol(t_symbol *left_symbol, t_rule *rule)
 {

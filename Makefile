@@ -1,44 +1,66 @@
 # **************************************************************************** #
 #                                 CONFIG                                       #
 # **************************************************************************** #
-
-NAME        = minishell
-CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -MMD -MP
+NAME            = minishell
+GEN_TABLE       = generating_table
+CC              = cc
+CFLAGS          = -Wall -Wextra -Werror -g3 -MMD -MP
 
 # **************************************************************************** #
 #                                 CHEMINS                                      #
 # **************************************************************************** #
 
-SRC_DIR     = src
-OBJ_DIR     = obj
-INC_DIR     = inc
-LIBFT_DIR   = libft
+SRC_DIR         = src
+OBJ_DIR         = obj
+INC_DIR         = inc
+LIBFT_DIR       = libft
 
 # **************************************************************************** #
-#                                 SOURCES                                      #
+#                                 GÉNÉRATEUR DE TABLE                          #
 # **************************************************************************** #
 
-SRCS_FILES  = generating_table/closure.c \
-				generating_table/get_firsts.c \
-				generating_table/get_follows.c \
-				generating_table/get_rules.c \
-				generating_table/get_symbols.c \
-				generating_table/get_table.c \
-				generating_table/go_to.c \
-				generating_table/print_table.c \
+GEN_SRC_FILES   = generating_table/closure.c \
+                  generating_table/get_firsts.c \
+                  generating_table/get_follows.c \
+                  generating_table/get_rules.c \
+                  generating_table/get_symbols.c \
+                  generating_table/get_table.c \
+                  generating_table/go_to.c \
+                  generating_table/print_table.c \
+				  generating_table/free_palestine.c
 
-SRCS        = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
-OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-DEPS        = $(OBJS:.o=.d)
+GEN_SRCS        = $(addprefix $(SRC_DIR)/, $(GEN_SRC_FILES))
+GEN_OBJS        = $(GEN_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+GEN_DEPS        = $(GEN_OBJS:.o=.d)
+
+# **************************************************************************** #
+#                                 MINISHELL                                    #
+# **************************************************************************** #
+
+SHELL_SRC_FILES = parsing/lexer.c \
+                  parsing/parser.c \
+                  parsing/tokenizer_utils.c \
+                  parsing/tokenizer.c \
+                  parsing/initialize_table.c \
+                  parsing/reduce/pop_redirect.c \
+                  parsing/reduce/reduce_cmd.c \
+                  parsing/reduce/reduce_others.c \
+                  parsing/reduce/reduce_utils.c \
+                  parsing/main.c
+
+SHELL_SRCS      = $(addprefix $(SRC_DIR)/, $(SHELL_SRC_FILES))
+SHELL_OBJS      = $(SHELL_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+SHELL_DEPS      = $(SHELL_OBJS:.o=.d)
+
+INIT_TABLE_FILE = $(SRC_DIR)/parsing/initialize_table.c
 
 # **************************************************************************** #
 #                                 LIBRARIES                                    #
 # **************************************************************************** #
 
-LIBFT       = $(LIBFT_DIR)/libft.a
-INCLUDES    = -I$(INC_DIR) -I$(LIBFT_DIR)
-LIBS_FLAGS  = $(LIBFT)
+LIBFT           = $(LIBFT_DIR)/libft.a
+INCLUDES        = -I$(INC_DIR) -I$(LIBFT_DIR)
+LIBS_FLAGS      = $(LIBFT)
 
 # **************************************************************************** #
 #                                 RÈGLES                                       #
@@ -46,10 +68,18 @@ LIBS_FLAGS  = $(LIBFT)
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS_FLAGS) -o $(NAME)
-	./$(NAME) > tmp
-#	@echo "✅ $(NAME) compiled successfully!"
+$(NAME): $(LIBFT) $(INIT_TABLE_FILE) $(SHELL_OBJS)
+	$(CC) $(CFLAGS) $(SHELL_OBJS) $(LIBS_FLAGS) -o $(NAME)
+	@echo "✅ $(NAME) compiled successfully!"
+
+$(INIT_TABLE_FILE): $(GEN_TABLE)
+	@echo "Generating parsing table..."
+	@./$(GEN_TABLE) > $(INIT_TABLE_FILE)
+	@echo "✅ Parsing table generated!"
+
+$(GEN_TABLE): $(LIBFT) $(GEN_OBJS)
+	$(CC) $(CFLAGS) $(GEN_OBJS) $(LIBS_FLAGS) -o $(GEN_TABLE)
+	@echo "✅ Table generator compiled!"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
@@ -65,12 +95,12 @@ clean:
 	@echo "🧹 Objects cleaned."
 
 fclean: clean
-	@rm -f $(NAME)
+	@rm -f $(NAME) $(GEN_TABLE) $(INIT_TABLE_FILE)
 	@make -sC $(LIBFT_DIR) fclean
-	@echo "🗑️  Executable removed."
+	@echo "🗑️  Executables removed."
 
 re: fclean all
 
--include $(DEPS)
+-include $(GEN_DEPS) $(SHELL_DEPS)
 
 .PHONY: all clean fclean re

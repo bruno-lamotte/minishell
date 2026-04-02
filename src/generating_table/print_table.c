@@ -48,24 +48,6 @@ void print_table(int **table, t_slr1 *data)
     }
 }
 
-void set_row(int **table, int state_index, char *values)
-{
-    char    **split;
-    int     i;
-
-    split = ft_split(values, ' ');
-    if (!split)
-        return ;
-    i = 0;
-    while (split[i])
-    {
-        table[state_index][i] = ft_atoi(split[i]);
-        free(split[i]);
-        i++;
-    }
-    free(split);
-}
-
 void    print_table_in_c(int **table, int nb_states, int nb_tokens)
 {
     int i;
@@ -78,7 +60,10 @@ void    print_table_in_c(int **table, int nb_states, int nb_tokens)
         if (i % 12 == 0)
         {
             if (i != 0)
+            {
+                printf("\tinit_table_part_%d(t);\n", i / 12);
                 printf("}\n\n");
+            }
             printf("void\tinit_table_part_%d(int **t)\n{\n", i / 12);
         }
         printf("\tset_row(t, %d, \"", i);
@@ -111,14 +96,42 @@ void    print_rules_in_c(t_list *rules_list)
         if (i % 12 == 0)
         {
             if (i != 0)
+            {
+                printf("\tinit_rules_part_%d(rules);\n", i / 12);
                 printf("}\n\n");
+            }
             printf("void\tinit_rules_part_%d(t_reduce_rule *rules)\n{\n", i / 12);
         }
-        printf("\trules[%d].left_symbol = \"%s\";\n", i, rule->left_symbol);
-        printf("\trules[%d].nb_items = %d;\n", i, rule->nb_items);
+        printf("\trules[%d].left_symbol = \"%s\";\n", rule->id, rule->left_symbol);
+        printf("\trules[%d].nb_items = %d;\n", rule->id, rule->nb_items);
         rules_list = rules_list->next;
         i++;
     }
     if (i > 0)
         printf("}\n");
+}
+void    print_symbols_in_c(t_list *symbols_list)
+{
+    t_symbol    *symbol;
+    int         i;
+
+    i = 0;
+    while (symbols_list)
+    {
+        symbol = (t_symbol *)symbols_list->content;
+        if (i % 24 == 0)
+        {
+            if (i != 0)
+            {
+                printf("\tinit_symbols_part_%d(symbols);\n", i / 24);
+                printf("}\n\n");
+            }
+            printf("void\tinit_symbols_part_%d(char **symbols)\n{\n" , i / 24);
+        }
+        printf("\tsymbols[%d] = \"%s\";\n", i, symbol->name);
+        symbols_list = symbols_list->next;
+        i++;
+    }
+    if (i > 0)
+        printf("\tsymbols[%d] = NULL;\n}\n", i);
 }
