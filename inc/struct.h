@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:59 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/22 21:40:57 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/24 07:41:07 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,5 +125,11 @@ typedef struct s_parser
 	t_list	*here_docs;
 	int		**table;
 }			t_parser;
+
+typedef struct  s_shell
+{
+    t_list  *env;
+    int exit_code;
+}   t_shell;
 
 #endif

@@ -29,6 +29,7 @@ typedef struct s_list
 int			ft_max(int n1, int n2);
 int			ft_abs(int n);
 int			ft_atoi(const char *nptr);
+long long	ft_atoll(const char *nptr);
 char		*ft_itoa(int n);
 // char	*ft_itoa_base(int n, char *base);
 char		**ft_split(const char *s, char c);

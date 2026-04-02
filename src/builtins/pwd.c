@@ -1,20 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   global_variables.h                                 :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/27 09:51:56 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/10 01:03:35 by blamotte         ###   ########.fr       */
+/*   Created: 2026/03/23 23:29:01 by user              #+#    #+#             */
+/*   Updated: 2026/03/23 23:31:53 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GLOBAL_VARIABLES_H
-# define GLOBAL_VARIABLES_H
+#include <unistd.h>
 
-# define ACCEPTED 424242
+int builtin_pwd(void)
+{
+    char    *path;
 
-extern int	g_signal;
-
-#endif
+    path = getcwd(NULL, 0);
+    if (!path)
+    {
+        write (2, "error\n", 6);
+        return (1);
+    }
+    ft_printf("%s\n", path);
+    free(path);
+    return (0);
+}

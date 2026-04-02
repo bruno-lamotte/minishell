@@ -1,20 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   global_variables.h                                 :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/27 09:51:56 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/10 01:03:35 by blamotte         ###   ########.fr       */
+/*   Created: 2026/03/24 05:45:47 by user              #+#    #+#             */
+/*   Updated: 2026/03/24 05:48:40 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GLOBAL_VARIABLES_H
-# define GLOBAL_VARIABLES_H
+#include <unistd.h>
 
-# define ACCEPTED 424242
+int builtin_env(char **envp)
+{
+    int i;
 
-extern int	g_signal;
-
-#endif
+    i = 0;
+    while (envp[i])
+    {
+        ft_printf("%s\n", envp[i]);
+        i++;
+    }
+    return (0);
+}
