@@ -37,16 +37,18 @@ int	builtin_exit(t_shell *shell, char **args)
 	ft_printf("exit\n");
 	if (!args[1])
 		exit(shell->exit_code);
-	if (!is_numeric(args[1]))
-	{
-		ft_printf("minishell: exit: %s: numeric argument required\n", args[1]);
-		exit(2);
-	}
 	if (args[2])
 	{
 		write(2, "minishell: exit: too many arguments\n", 36);
 		shell->exit_code = 1;
 		return (1);
+	}
+	if (!is_numeric(args[1]))
+	{
+		write(2, "minishell: exit: ", 17);
+		write(2, args[1], ft_strlen(args[1]));
+		write(2, ": numeric argument required\n", 28);
+		exit(2);
 	}
 	code = ft_atoll(args[1]);
 	exit((int)(code % 256));

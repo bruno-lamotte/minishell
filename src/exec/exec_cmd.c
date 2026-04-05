@@ -136,7 +136,17 @@ int	exec_command(t_ast *node, t_shell *shell)
 	int		saved[3];
 
 	if (!node->args || !node->args[0])
+	{
+		if (node->redirections)
+		{
+			saved[0] = dup(STDIN_FILENO);
+			saved[1] = dup(STDOUT_FILENO);
+			saved[2] = dup(STDERR_FILENO);
+			apply_redirections(node->redirections);
+			restore_fds(saved);
+		}
 		return (0);
+	}
 	args = expand_args(node->args, shell);
 	if (is_builtin(args[0]))
 	{

@@ -65,6 +65,8 @@ t_token *tokenizer_loop(char **str)
             return (make_token(*str, i, "OPERATOR"));
         if (!quoted && is_blank((*str)[i]))
             return (make_token(*str, i, "WORD"));
+        if (!quoted && i > 0 && is_operator((*str)[i]))
+            return (make_token(*str, i, "WORD"));
         i++;
     }
 }
