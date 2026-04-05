@@ -6,6 +6,8 @@ GEN_TABLE       = generating_table
 CC              = cc
 CFLAGS          = -Wall -Wextra -Werror -g3 -MMD -MP
 
+READLINE_LIBS   = -lreadline -lhistory -lncurses
+
 # **************************************************************************** #
 #                                 CHEMINS                                      #
 # **************************************************************************** #
@@ -42,6 +44,11 @@ SHELL_SRC_FILES = parsing/lexer.c \
                   parsing/tokenizer_utils.c \
                   parsing/tokenizer.c \
                   parsing/initialize_table.c \
+				  parsing/heredoc.c \
+				  parsing/expand/expand_ast.c \
+				  parsing/expand/expand_string.c \
+				  parsing/expand/expand_wildcard.c \
+				  parsing/expand/wilcard.c \
                   parsing/reduce/pop_redirect.c \
                   parsing/reduce/reduce_cmd.c \
                   parsing/reduce/reduce_others.c \
@@ -69,7 +76,7 @@ LIBS_FLAGS      = $(LIBFT)
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(INIT_TABLE_FILE) $(SHELL_OBJS)
-	$(CC) $(CFLAGS) $(SHELL_OBJS) $(LIBS_FLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(SHELL_OBJS) $(LIBS_FLAGS) $(READLINE_LIBS) -o $(NAME)
 	@echo "✅ $(NAME) compiled successfully!"
 
 $(INIT_TABLE_FILE): $(GEN_TABLE)

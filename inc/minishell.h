@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:51:52 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/31 05:16:35 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/04/05 23:03:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <readline/history.h>
 # include <unistd.h>
 # include "libft.h"
+# include <sys/wait.h>
 # include "struct.h"
 # include "global_variables.h"
 
@@ -243,5 +244,23 @@ int		builtin_export(t_shell *shell, char **args);
 int		builtin_unset(t_shell *shell, char **args);
 int		builtin_exit(t_shell *shell, char **args);
 t_list	*find_var(t_list *env, char *arg);
+
+/* ************************************************************************** */
+/*                               heredoc.c                                    */
+/* ************************************************************************** */
+
+char	*generate_tmp_filename(void);
+int		read_heredoc(t_redirection *redir);
+int		open_heredocs(t_parser *data);
+
+/* ************************************************************************** */
+/*                                expand                                      */
+/* ************************************************************************** */
+
+char	*expand_string(char *str, t_shell *shell);
+void	expand_ast(t_ast *node, t_shell *shell);
+
+void	expand_wildcards_args(t_ast *node);
+char	**get_wildcard_matches(char *pattern, int *count);
 
 #endif
