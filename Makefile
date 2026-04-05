@@ -84,16 +84,16 @@ all: $(NAME)
 
 $(NAME): $(LIBFT) $(INIT_TABLE_FILE) $(SHELL_OBJS)
 	$(CC) $(CFLAGS) $(SHELL_OBJS) $(LIBS_FLAGS) -lreadline -o $(NAME)
-	@echo "✅ $(NAME) compiled successfully!"
+	@echo "$(NAME) compiled successfully!"
 
 $(INIT_TABLE_FILE): $(GEN_TABLE)
 	@echo "Generating parsing table..."
 	@./$(GEN_TABLE) > $(INIT_TABLE_FILE)
-	@echo "✅ Parsing table generated!"
+	@echo "Parsing table generated!"
 
 $(GEN_TABLE): $(LIBFT) $(GEN_OBJS)
 	$(CC) $(CFLAGS) $(GEN_OBJS) $(LIBS_FLAGS) -o $(GEN_TABLE)
-	@echo "✅ Table generator compiled!"
+	@echo "Table generator compiled!"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
@@ -106,12 +106,12 @@ $(LIBFT):
 clean:
 	@rm -rf $(OBJ_DIR)
 	@make -sC $(LIBFT_DIR) clean
-	@echo "🧹 Objects cleaned."
+	@echo "Objects cleaned."
 
 fclean: clean
 	@rm -f $(NAME) $(GEN_TABLE) $(INIT_TABLE_FILE)
 	@make -sC $(LIBFT_DIR) fclean
-	@echo "🗑️  Executables removed."
+	@echo "Executables removed."
 
 re: fclean all
 

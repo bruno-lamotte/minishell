@@ -6,3 +6,4 @@ obj/
 *.a
 METHODE_PEDAGOGIQUE.md
 src/parsing/initialize_table.c
+
