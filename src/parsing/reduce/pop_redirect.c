@@ -61,7 +61,10 @@ t_list  *pop_redirections_from_stack(t_parser *data, int lookahead)
     while (lookahead--)
     {
         if (((t_stack *)(stack->content))->ast_node)
+        {
             ft_lstadd_back(&redirections, ((t_stack *)(stack->content))->ast_node->redirections);
+            ((t_stack *)(stack->content))->ast_node->redirections = NULL;
+        }
         else if (is_redirection_symbol((t_stack *)(stack->content)))
         {
             new_redir = get_redirection_from_symbol(data, (t_stack *)(stack->content));

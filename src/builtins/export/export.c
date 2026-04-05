@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int  is_valid_name(char *str)
+static int	is_valid_export_name(char *str)
 {
     int i;
 
@@ -77,7 +77,7 @@ int builtin_export(t_shell *shell, char **args)
     }
     while (args[i])
     {
-        if (!is_valid_name(args[i]))
+        if (!is_valid_export_name(args[i]))
         {
             ft_printf("minishell: export: '%s': not a valid identifier\n", args[i]);
             shell->exit_code = 1;

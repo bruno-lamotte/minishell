@@ -1,0 +1,8 @@
+minishell
+generating_table
+obj/
+*.o
+*.d
+*.a
+METHODE_PEDAGOGIQUE.md
+src/parsing/initialize_table.c

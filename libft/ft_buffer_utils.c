@@ -42,12 +42,3 @@ void	ft_putstr_buffer(char *str, t_data *list)
 	}
 }
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}

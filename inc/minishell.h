@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/time.h>
+# include <sys/wait.h>
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -240,8 +241,24 @@ int		builtin_echo(char **args);
 int		builtin_cd(t_shell *shell, char **args);
 int		builtin_env(t_shell *shell);
 int		builtin_export(t_shell *shell, char **args);
+void	print_export(t_list *env);
 int		builtin_unset(t_shell *shell, char **args);
 int		builtin_exit(t_shell *shell, char **args);
 t_list	*find_var(t_list *env, char *arg);
+
+char	*get_env_val(t_shell *shell, char *name, int len);
+char	*expand_str(char *str, t_shell *shell);
+char	**expand_args(char **args, t_shell *shell);
+
+int		apply_redirections(t_list *redirs);
+
+char	**env_to_arr(t_shell *shell);
+char	*find_path(char *cmd, t_shell *shell);
+void	exec_in_child(t_ast *node, t_shell *shell);
+int		exec_command(t_ast *node, t_shell *shell);
+
+int		exec_pipe(t_ast *node, t_shell *shell);
+
+int		execute(t_ast *node, t_shell *shell);
 
 #endif

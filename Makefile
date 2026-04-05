@@ -46,7 +46,21 @@ SHELL_SRC_FILES = parsing/lexer.c \
                   parsing/reduce/reduce_cmd.c \
                   parsing/reduce/reduce_others.c \
                   parsing/reduce/reduce_utils.c \
-                  parsing/main.c
+                  parsing/main.c \
+                  signals.c \
+                  builtins/pwd.c \
+                  builtins/echo.c \
+                  builtins/cd.c \
+                  builtins/env.c \
+                  builtins/export/export.c \
+                  builtins/export/export_utils.c \
+                  builtins/unset.c \
+                  builtins/exit.c \
+                  exec/expand.c \
+                  exec/redirections.c \
+                  exec/exec_cmd.c \
+                  exec/exec_pipe.c \
+                  exec/exec.c
 
 SHELL_SRCS      = $(addprefix $(SRC_DIR)/, $(SHELL_SRC_FILES))
 SHELL_OBJS      = $(SHELL_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
@@ -69,7 +83,7 @@ LIBS_FLAGS      = $(LIBFT)
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(INIT_TABLE_FILE) $(SHELL_OBJS)
-	$(CC) $(CFLAGS) $(SHELL_OBJS) $(LIBS_FLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(SHELL_OBJS) $(LIBS_FLAGS) -lreadline -o $(NAME)
 	@echo "✅ $(NAME) compiled successfully!"
 
 $(INIT_TABLE_FILE): $(GEN_TABLE)

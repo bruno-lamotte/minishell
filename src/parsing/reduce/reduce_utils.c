@@ -14,7 +14,8 @@
 
 t_node_type get_node_type_from_rule(t_reduce_rule *rule, t_list *stack)
 {
-    if (ft_strnstr(rule->left_symbol, "cmd", ft_strlen(rule->left_symbol)))
+    if (ft_strnstr(rule->left_symbol, "cmd", ft_strlen(rule->left_symbol))
+        || ft_strnstr(rule->left_symbol, "simple_command", ft_strlen(rule->left_symbol)))
         return (COMMAND);
     if (ft_strnstr(rule->left_symbol, "subshell", ft_strlen(rule->left_symbol)))
         return (SUBSHELL);
@@ -22,8 +23,7 @@ t_node_type get_node_type_from_rule(t_reduce_rule *rule, t_list *stack)
         && rule->nb_items == 3 && ((t_stack *)(stack->next->content))->symbol
         && !ft_strcmp(((t_stack *)(stack->next->content))->symbol, "PIPE"))
         return (PIPE);
-    if (ft_strnstr(rule->left_symbol, "and_or", ft_strlen(rule->left_symbol))
-        && rule->nb_items == 3 && ((t_stack *)(stack->next->content))->symbol
+    if (rule->nb_items == 3 && ((t_stack *)(stack->next->content))->symbol
         && !ft_strcmp(((t_stack *)(stack->next->content))->symbol, "SEMI"))
         return (SEQUENCE);
     if (ft_strnstr(rule->left_symbol, "and_or", ft_strlen(rule->left_symbol))
