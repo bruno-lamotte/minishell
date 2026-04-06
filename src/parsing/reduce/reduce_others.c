@@ -132,6 +132,15 @@ void    reduce_symbol(t_parser *data, t_reduce_rule *rule)
         ((t_stack *)(data->stack->content))->ast_node = NULL;
         clear_stack_after_reduce(data, 1, 0);
     }
+    else if (rule->nb_items == 2 && ast
+        && ((t_stack *)(data->stack->next->content))->symbol
+        && !ft_strcmp(((t_stack *)(data->stack->next->content))->symbol, "BANG"))
+    {
+        stack_node->ast_node = ast;
+        stack_node->ast_node->is_bang = !stack_node->ast_node->is_bang;
+        ((t_stack *)(data->stack->content))->ast_node = NULL;
+        clear_stack_after_reduce(data, 2, 0);
+    }
     else
     {
         stack_node->nb_values = get_size_of_args(data, rule->nb_items);

@@ -43,19 +43,41 @@ static int	exec_sequence(t_ast *node, t_shell *shell)
 	return (execute(node->children[1], shell));
 }
 
+static int	exec_subshell(t_ast *node, t_shell *shell)
+{
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid == 0)
+		exit(execute(node->children[0], shell));
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (1);
+}
+
 int	execute(t_ast *node, t_shell *shell)
 {
+	int	ret;
+
 	if (!node)
 		return (0);
 	if (node->type == COMMAND)
-		return (exec_command(node, shell));
-	if (node->type == PIPE)
-		return (exec_pipe(node, shell));
-	if (node->type == AND)
-		return (exec_and(node, shell));
-	if (node->type == OR)
-		return (exec_or(node, shell));
-	if (node->type == SEQUENCE)
-		return (exec_sequence(node, shell));
-	return (0);
+		ret = exec_command(node, shell);
+	else if (node->type == PIPE)
+		ret = exec_pipe(node, shell);
+	else if (node->type == AND)
+		ret = exec_and(node, shell);
+	else if (node->type == OR)
+		ret = exec_or(node, shell);
+	else if (node->type == SEQUENCE)
+		ret = exec_sequence(node, shell);
+	else if (node->type == SUBSHELL)
+		ret = exec_subshell(node, shell);
+	else
+		ret = 0;
+	if (node->is_bang)
+		return (!ret);
+	return (ret);
 }
