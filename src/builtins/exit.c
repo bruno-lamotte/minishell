@@ -5,51 +5,62 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: user <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/02 18:38:13 by user              #+#    #+#             */
-/*   Updated: 2026/04/02 18:38:16 by user             ###   ########.fr       */
+/*   Created: 2026/04/06 00:00:00 by user              #+#    #+#             */
+/*   Updated: 2026/04/06 00:00:00 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_numeric(char *str)
+static int	exit_in_parent(t_shell *shell, unsigned char status)
 {
-	int	i;
+	shell->exit_code = status;
+	shell->should_exit = 1;
+	return (shell->exit_code);
+}
 
-	i = 0;
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	if (!str[i])
-		return (0);
-	while (str[i])
+static void	exit_process(t_shell *shell, int status)
+{
+	cleanup_shell_exit(shell);
+	exit(status);
+}
+
+static int	handle_numeric_exit_error(t_shell *shell, char *arg)
+{
+	print_exit_numeric_error(shell, arg);
+	if (getpid() == shell->pid)
 	{
-		if (!ft_isdigit(str[i]))
-			return (0);
-		i++;
+		shell->exit_code = 2;
+		shell->should_exit = 1;
+		return (2);
 	}
-	return (1);
+	exit_process(shell, 2);
+	return (2);
 }
 
 int	builtin_exit(t_shell *shell, char **args)
 {
-	long long	code;
+	unsigned char	status;
 
-	ft_printf("exit\n");
+	if (shell->interactive)
+		ft_putendl_fd("exit", 1);
 	if (!args[1])
-		exit(shell->exit_code);
+	{
+		if (getpid() == shell->pid)
+			return (exit_in_parent(shell, shell->exit_code));
+		exit_process(shell, shell->exit_code);
+	}
+	if (!parse_exit_value(args[1], &status))
+		return (handle_numeric_exit_error(shell, args[1]));
 	if (args[2])
 	{
-		write(2, "minishell: exit: too many arguments\n", 36);
+		print_shell_prefix(shell);
+		ft_putendl_fd("exit: too many arguments", 2);
 		shell->exit_code = 1;
 		return (1);
 	}
-	if (!is_numeric(args[1]))
-	{
-		write(2, "minishell: exit: ", 17);
-		write(2, args[1], ft_strlen(args[1]));
-		write(2, ": numeric argument required\n", 28);
-		exit(2);
-	}
-	code = ft_atoll(args[1]);
-	exit((int)(code % 256));
+	if (getpid() == shell->pid)
+		return (exit_in_parent(shell, status));
+	exit_process(shell, status);
+	return (status);
 }

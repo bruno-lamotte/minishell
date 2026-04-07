@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: user <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/24 05:45:47 by user              #+#    #+#             */
-/*   Updated: 2026/03/24 05:48:40 by user             ###   ########.fr       */
+/*   Created: 2026/04/06 00:00:00 by user              #+#    #+#             */
+/*   Updated: 2026/04/06 00:00:00 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 int	builtin_env(t_shell *shell)
 {
-	t_list	*current;
+	t_list	*node;
 
-	current = shell->env;
-	while (current)
+	env_assign_arg(&shell->env, "_=/usr/bin/env");
+	node = shell->env;
+	while (node)
 	{
-		ft_printf("%s\n", (char *)current->content);
-		current = current->next;
+		if (env_has_value((char *)node->content))
+			ft_putendl_fd((char *)node->content, 1);
+		node = node->next;
 	}
 	return (0);
 }

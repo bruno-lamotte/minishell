@@ -85,7 +85,12 @@ typedef enum e_redirection_type
 typedef struct s_redirection
 {
 	t_redirection_type		type;
+	int						fd;
 	char					*file;
+	char					*delimiter;
+	int						expand_heredoc;
+	int						ambiguous;
+	int						unlink_after_use;
 }							t_redirection;
 
 typedef struct s_ast
@@ -93,6 +98,7 @@ typedef struct s_ast
 	t_node_type		type;
 	int				is_bang;
 	int				is_async;
+	int				expanded;
 	char			**args;
 	int				nb_args;
 	char			**assignments;
@@ -111,6 +117,13 @@ typedef struct s_stack
 	t_ast	*ast_node;
 }			t_stack;
 
+typedef struct s_pipe_fds
+{
+	int	in_fd;
+	int	out_fd;
+	int	close_fd;
+}			t_pipe_fds;
+
 typedef struct s_slr1
 {
 	t_list	*rules;
@@ -126,13 +139,23 @@ typedef struct s_parser
 	t_list			*stack;
 	t_list			*here_docs;
 	t_reduce_rule	*rules;
-
+	t_token			*error_token;
+	int				error_row;
 }			t_parser;
 
-typedef struct  s_shell
+typedef struct s_shell
 {
-    t_list  *env;
-    int exit_code;
-}   t_shell;
+	t_list			*env;
+	int				exit_code;
+	pid_t			pid;
+	int				interactive;
+	int				should_exit;
+	int				input_line;
+	int				command_line;
+	int				allow_env_fallback;
+	char			*current_line;
+	struct s_parser	*parser;
+	struct s_ast	*ast;
+}			t_shell;
 
 #endif

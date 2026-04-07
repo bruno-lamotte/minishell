@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user <ynabti@42.fr>                        +#+  +:+       +#+        */
+/*   By: user <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 17:25:43 by ynabti            #+#    #+#             */
-/*   Updated: 2026/04/05 17:55:18 by user             ###   ########.fr       */
+/*   Updated: 2026/04/06 00:00:00 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,16 @@ static int	exec_subshell(t_ast *node, t_shell *shell)
 	int		status;
 
 	pid = fork();
+	if (pid < 0)
+		return (perror("fork"), 1);
 	if (pid == 0)
-		exit(execute(node->children[0], shell));
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		exit_child_process(shell, NULL, execute(node->children[0], shell));
+	}
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (1);
+	return (wait_status_code(status));
 }
 
 int	execute(t_ast *node, t_shell *shell)

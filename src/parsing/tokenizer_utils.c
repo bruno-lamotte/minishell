@@ -10,42 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int is_end_of_imput(char c)
+int	is_end_of_imput(char c)
 {
-    return (c == '\0' || c == '\n');
+	return (c == '\0' || c == '\n');
 }
 
-int is_operator(char c)
+int	is_operator(char c)
 {
-    return (c == '|' || c == '<' || c == '>' || c == ';' || c == '&' 
-        || c == '(' || c == ')' || c == '!');
+	return (c == '|' || c == '<' || c == '>' || c == ';'
+		|| c == '&' || c == '(' || c == ')' || c == '!');
 }
 
-int can_be_added_to_opperator(char c)
+int	can_be_added_to_opperator(char c)
 {
-    return (c == '<' || c == '>' || c == '&' || c == '|');
+	return (c == '<' || c == '>' || c == '&' || c == '|');
 }
 
-int is_blank(char c)
+int	is_blank(char c)
 {
-    return (c == ' ' || c == '\t');
+	return (c == ' ' || c == '\t');
 }
 
-int handle_comment(char *str, int *i)
+int	handle_comment(char *str, int *i)
 {
-    if (str[*i] == '#')
-    {
-        while (str[*i] && str[*i] != '\n')
-            (*i)++;
-        return (1);
-    }
-    return (0);
-}
-
-int is_quote(char c)
-{
-    static int  quotes[256] = {0};
-    if (!quotes[(unsigned char)c])
-        quotes[(unsigned char)c] = (c == '"' || c == '\'');
-    return (quotes[(unsigned char)c]);
+	if (str[*i] == '#')
+	{
+		while (str[*i] && str[*i] != '\n')
+			(*i)++;
+		return (1);
+	}
+	return (0);
 }

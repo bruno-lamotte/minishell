@@ -3,143 +3,80 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>             +#+  +:+       +#+         */
+/*   By: user <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/03 14:22:07 by ynabti            #+#    #+#             */
-/*   Updated: 2026/04/04 19:35:41 by ynabti           ###   ########.fr       */
+/*   Created: 2026/04/07 00:00:00 by user              #+#    #+#             */
+/*   Updated: 2026/04/07 00:00:00 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "expand_internal.h"
 
-char	*get_env_val(t_shell *shell, char *name, int len)
+static int	append_heredoc_part(t_expand_buf *buf, char *line, int *i,
+		t_shell *shell)
 {
-	t_list	*cur;
-	char	*content;
+	char	*value;
 
-	cur = shell->env;
-	while (cur)
-	{
-		content = (char *)cur->content;
-		if (ft_strncmp(content, name, len) == 0 && content[len] == '=')
-			return (content + len + 1);
-		cur = cur->next;
-	}
-	return (NULL);
+	if (line[*i] != '$' || !line[*i + 1])
+		return (expand_buf_char(buf, line[(*i)++]));
+	value = expand_var_value(line, i, shell);
+	if (!value || !expand_buf_string(buf, value, 0))
+		return (free(value), 0);
+	free(value);
+	return (1);
 }
 
-static char	*expand_var(char *str, int *i, t_shell *shell)
+char	*expand_string(char *str, t_shell *shell)
 {
-	int		start;
-	char	*name;
-	char	*val;
+	char	*encoded;
+	char	*plain;
+	int		keep_empty;
 
-	(*i)++;
-	if (str[*i] == '?')
-	{
-		(*i)++;
-		return (ft_itoa(shell->exit_code));
-	}
-	start = *i;
-	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
-		(*i)++;
-	if (*i == start)
-		return (ft_strdup("$"));
-	name = ft_substr(str, start, *i - start);
-	val = get_env_val(shell, name, *i - start);
-	free(name);
-	if (val)
-		return (ft_strdup(val));
-	return (ft_strdup(""));
+	keep_empty = 0;
+	encoded = encode_word(str, shell, &keep_empty);
+	if (!encoded)
+		return (NULL);
+	plain = strip_protected(encoded);
+	free(encoded);
+	return (plain);
 }
 
-static char	*expand_dquote(char *str, int *i, t_shell *shell)
+char	*expand_heredoc_line(char *line, t_shell *shell)
 {
-	char	*res;
-	char	*tmp;
-	char	*part;
+	t_expand_buf	buf;
+	int				i;
 
-	res = ft_strdup("");
-	(*i)++;
-	while (str[*i] && str[*i] != '"')
+	ft_bzero(&buf, sizeof(buf));
+	buf.buf = ft_calloc(1, 1);
+	if (!buf.buf)
+		return (NULL);
+	buf.cap = 1;
+	i = 0;
+	while (line[i])
 	{
-		if (str[*i] == '$')
-			part = expand_var(str, i, shell);
-		else
-		{
-			part = ft_substr(str, *i, 1);
-			(*i)++;
-		}
-		tmp = ft_strjoin(res, part);
-		free(res);
-		free(part);
-		res = tmp;
+		if (!append_heredoc_part(&buf, line, &i, shell))
+			return (free(buf.buf), NULL);
 	}
-	if (str[*i] == '"')
-		(*i)++;
-	return (res);
+	return (buf.buf);
 }
 
-char	*expand_str(char *str, t_shell *shell)
+char	*dequote_string(char *str)
 {
-	char	*res;
-	char	*tmp;
-	char	*part;
-	int		i;
+	t_expand_buf	buf;
+	int				i;
 
-	res = ft_strdup("");
+	ft_bzero(&buf, sizeof(buf));
+	buf.buf = ft_calloc(1, 1);
+	if (!buf.buf)
+		return (NULL);
+	buf.cap = 1;
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'')
-		{
+		if (str[i] == '\'' || str[i] == '"')
 			i++;
-			part = ft_strdup("");
-			while (str[i] && str[i] != '\'')
-			{
-				tmp = ft_strjoin(part, ft_substr(str, i, 1));
-				free(part);
-				part = tmp;
-				i++;
-			}
-			if (str[i])
-				i++;
-		}
-		else if (str[i] == '"')
-			part = expand_dquote(str, &i, shell);
-		else if (str[i] == '$')
-			part = expand_var(str, &i, shell);
-		else
-		{
-			part = ft_substr(str, i, 1);
-			i++;
-		}
-		tmp = ft_strjoin(res, part);
-		free(res);
-		free(part);
-		res = tmp;
+		else if (!expand_buf_char(&buf, str[i++]))
+			return (free(buf.buf), NULL);
 	}
-	return (res);
-}
-
-char	**expand_args(char **args, t_shell *shell)
-{
-	char	**expanded;
-	int		n;
-	int		i;
-
-	n = 0;
-	while (args[n])
-		n++;
-	expanded = malloc(sizeof(char *) * (n + 1));
-	if (!expanded)
-		return (NULL);
-	i = 0;
-	while (i < n)
-	{
-		expanded[i] = expand_str(args[i], shell);
-		i++;
-	}
-	expanded[n] = NULL;
-	return (expanded);
+	return (buf.buf);
 }

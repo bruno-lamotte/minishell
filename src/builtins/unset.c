@@ -5,46 +5,44 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: user <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/25 15:45:09 by user              #+#    #+#             */
-/*   Updated: 2026/03/25 19:25:01 by user             ###   ########.fr       */
+/*   Created: 2026/04/06 00:00:00 by user              #+#    #+#             */
+/*   Updated: 2026/04/06 00:00:00 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-static void remove_var(t_shell *shell, char *arg)
+static void	print_unset_usage(void)
 {
-    t_list  *current;
-    t_list  *prev;
-
-    prev = NULL;
-    current = shell->env;
-    while (current)
-    {
-        if (find_var(current, arg) == current)
-        {
-            if (prev == NULL)
-                shell->env = current->next;
-            else
-                prev->next = current->next;
-            ft_lstdelone(current, free);
-            return ;
-        }
-        prev = current;
-        current = current->next;
-    }
+	ft_putendl_fd("unset: usage: unset [-f] [-v] [-n] [name ...]", 2);
 }
 
-int builtin_unset(t_shell *shell, char **args)
+static void	print_unset_option(t_shell *shell, char *arg)
 {
-    int i;
+	print_shell_prefix(shell);
+	ft_putstr_fd("unset: -", 2);
+	ft_putchar_fd(arg[1], 2);
+	ft_putendl_fd(": invalid option", 2);
+	print_unset_usage();
+}
 
-    i = 1;
-    while (args[i])
-    {
-        remove_var(shell, args[i]);
-        i++;
-    }
-    return (0);
+int	builtin_unset(t_shell *shell, char **args)
+{
+	int	i;
+
+	i = 1;
+	while (args[i])
+	{
+		if (args[i][0] == '-' && args[i][1])
+		{
+			print_unset_option(shell, args[i]);
+			return (2);
+		}
+		if (!ft_strcmp(args[i], "PATH"))
+			shell->allow_env_fallback = 0;
+		if (!env_unset_arg(&shell->env, args[i]))
+			return (1);
+		i++;
+	}
+	return (0);
 }

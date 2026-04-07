@@ -5,86 +5,79 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: user <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/25 08:49:43 by user              #+#    #+#             */
-/*   Updated: 2026/03/25 15:34:10 by user             ###   ########.fr       */
+/*   Created: 2026/04/06 00:00:00 by user              #+#    #+#             */
+/*   Updated: 2026/04/06 00:00:00 by user             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_valid_export_name(char *str)
-{
-    int i;
+int	is_valid_identifier(char *arg);
+int	get_name_len(char *arg, int *append);
+int	export_append_arg(t_shell *shell, char *arg, int name_len);
 
-    i = 0;
-    if (!str[0] || str[0] == '=' || ft_isdigit(str[0]))
-        return (0);
-    while (str[i] && str[i] != '=')
-    {
-        if (!ft_isalnum(str[i]) && str[i] != '_')
-            return (0);
-        i++;
-    }
-    return (1);
+static void	print_export_usage(void)
+{
+	ft_putendl_fd("export: usage: export [-fn] [name[=value] ...] or export -p",
+		2);
 }
 
-t_list	*find_var(t_list *env, char *arg)
+static void	print_export_option(t_shell *shell, char *arg)
 {
-    int len;
-    char    *equal;
-    char    *content;
-
-    equal = ft_strchr(arg, '=') ;
-    if (equal)
-        len = equal - arg;
-    else
-        len = ft_strlen(arg);
-    while (env)
-    {
-        content = env->content;
-        if (ft_strncmp(content, arg, len) == 0
-			&& (content[len] == '=' || content[len] == '\0'))
-            return (env);
-        env = env->next;
-    }
-    return (NULL);
+	print_shell_prefix(shell);
+	ft_putstr_fd("export: ", 2);
+	if (arg[1] == '-')
+		ft_putstr_fd("--", 2);
+	else
+	{
+		ft_putchar_fd('-', 2);
+		ft_putchar_fd(arg[1], 2);
+	}
+	ft_putendl_fd(": invalid option", 2);
+	print_export_usage();
 }
 
-static void add_or_replace(t_shell *shell, char *arg)
+static int	export_option_error(t_shell *shell, char *arg)
 {
-    t_list  *existing;
-
-    existing = find_var(shell->env, arg);
-    if (existing)
-    {
-        free(existing->content);
-        existing->content = ft_strdup(arg);
-    }
-    else
-        ft_lstadd_back(&shell->env, ft_lstnew(ft_strdup(arg)));
+	if (arg[0] == '-' && arg[1])
+	{
+		print_export_option(shell, arg);
+		return (1);
+	}
+	return (0);
 }
 
-
-int builtin_export(t_shell *shell, char **args)
+static void	export_identifier_error(t_shell *shell, char *arg)
 {
-    int i;
+	print_shell_prefix(shell);
+	ft_putstr_fd("export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putendl_fd("': not a valid identifier", 2);
+}
 
-    i = 1;
-    if (!args[i])
-    {
-        print_export(shell->env);
-        return (0);
-    }
-    while (args[i])
-    {
-        if (!is_valid_export_name(args[i]))
-        {
-            ft_printf("minishell: export: '%s': not a valid identifier\n", args[i]);
-            shell->exit_code = 1;
-        }
-        else
-            add_or_replace(shell, args[i]);
-        i++;
-    }
-    return (0);
+int	builtin_export(t_shell *shell, char **args)
+{
+	int	i;
+	int	ret;
+	int	append;
+	int	name_len;
+
+	if (!args[1])
+		return (print_export(shell->env), 0);
+	i = 1;
+	ret = 0;
+	while (args[i])
+	{
+		name_len = get_name_len(args[i], &append);
+		if (export_option_error(shell, args[i]))
+			ret = 2;
+		else if (!name_len || (!append && !is_valid_identifier(args[i])))
+			ret = (export_identifier_error(shell, args[i]), 1);
+		else if (append && !export_append_arg(shell, args[i], name_len))
+			return (1);
+		else if (!env_export_arg(&shell->env, args[i]))
+			return (1);
+		i++;
+	}
+	return (ret);
 }

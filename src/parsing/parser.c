@@ -12,97 +12,114 @@
 
 #include "minishell.h"
 
-void shift(t_parser *data, int state_id, t_token *token)
+static int	apply_action(t_parser *data, t_token *token, t_list **tokens,
+		int row)
 {
-    t_stack *new_node;
+	int	action;
+	int	col;
 
-    new_node = malloc(sizeof(t_stack));
-    if (!new_node)
-        return /*a completer*/;
-    new_node->state_id = state_id;
-    //printf("Shift to state %d with token \"%s\" of type \"%s\"\n", state_id, token->value, token->type);
-    new_node->ast_node = NULL;
-    new_node->symbol = ft_strdup(token->type);
-    new_node->values = malloc(sizeof(char *) * 2);
-    if (!new_node->symbol || !new_node->values)
-        return /*a completer*/;
-    new_node->values[0] = ft_strdup(token->value);
-    if (!new_node->symbol || !new_node->values)
-        return /*a completer*/;
-    new_node->nb_values = 1;
-    ft_lstadd_front(&data->stack, ft_lstnew(new_node));
+	col = get_symbol_nbr(data, token->type);
+	if (col < 0)
+		return (0);
+	action = data->table[row][col];
+	if (!action)
+		return (0);
+	if (action == ACCEPTED)
+		return (2);
+	if (action < 0)
+		reduce(data, data->table, -action);
+	else
+	{
+		shift(data, action, token);
+		*tokens = (*tokens)->next;
+	}
+	return (1);
 }
 
-void    reduce(t_parser *data, int **table, int action)
+void	shift(t_parser *data, int state_id, t_token *token)
 {
-    t_reduce_rule  *rule;
-    t_node_type     node_type;
+	t_stack	*new_node;
 
-    rule = &data->rules[action];
-    //printf("Reduce using rule %d : %s\n", -action, rule->left_symbol);
-    node_type = get_node_type_from_rule(rule, data->stack);
-    if (node_type == COMMAND)
-        reduce_ast_command(data, rule, node_type);
-    else if (node_type == SUBSHELL 
-        || ft_strnstr(rule->left_symbol, "subshell", ft_strlen(rule->left_symbol)))
-        reduce_ast_subshell(data, rule, node_type);
-    else if (node_type == PIPE && is_node_already_type(data, rule->nb_items, node_type))
-        reduce_multiple_pipes(data, rule);
-    else if (node_type == PIPE || node_type == SEQUENCE || node_type == AND || node_type == OR)
-        reduce_ast_control(data, rule, node_type);
-    else if (!reduce_booleans(data, rule))
-        reduce_symbol(data, rule);
-    ((t_stack *)(data->stack->content))->state_id = get_next_state_after_reduce(data, table, rule);
+	new_node = malloc(sizeof(t_stack));
+	if (!new_node)
+		return ;
+	new_node->state_id = state_id;
+	new_node->ast_node = NULL;
+	new_node->symbol = ft_strdup(token->type);
+	new_node->values = malloc(sizeof(char *) * 2);
+	if (!new_node->symbol || !new_node->values)
+		return ;
+	new_node->values[0] = ft_strdup(token->value);
+	if (!new_node->symbol || !new_node->values)
+		return ;
+	new_node->nb_values = 1;
+	ft_lstadd_front(&data->stack, ft_lstnew(new_node));
 }
 
-void    print_parsing_error(t_parser *data, int **table, int id, t_token *token)
+void	reduce(t_parser *data, int **table, int action)
 {
-    int     i;
-    char    **symbols;
+	t_reduce_rule	*rule;
+	t_node_type		node_type;
 
-    printf("Parsing error at token \"%s\" of type \"%s\"\n", token->value, token->type);
-    printf("Expected tokens are : ");
-    symbols = data->symbols;
-    i = 0;
-    while (symbols[i])
-    {
-        if (table[id][i])
-            printf("%s ", symbols[i]);
-        i++;
-    }
-    printf("\n");
+	rule = &data->rules[action];
+	node_type = get_node_type_from_rule(rule, data->stack);
+	if (node_type == COMMAND)
+		reduce_ast_command(data, rule, node_type);
+	else if (node_type == SUBSHELL
+		|| ft_strnstr(rule->left_symbol, "subshell",
+			ft_strlen(rule->left_symbol)))
+		reduce_ast_subshell(data, rule, node_type);
+	else if (node_type == PIPE
+		&& is_node_already_type(data, rule->nb_items, node_type))
+		reduce_multiple_pipes(data, rule);
+	else if (node_type == PIPE || node_type == SEQUENCE
+		|| node_type == AND || node_type == OR)
+		reduce_ast_control(data, rule, node_type);
+	else if (!reduce_booleans(data, rule))
+		reduce_symbol(data, rule);
+	((t_stack *)(data->stack->content))->state_id
+		= get_next_state_after_reduce(data, table, rule);
 }
 
-int parser(t_parser *data)
+void	print_parsing_error(t_parser *data, int **table, int id, t_token *token)
 {
-    int     action;
-    int     row;
-    t_list  *tokens_list;
-    t_token *token;
-    int     col;
+	int		i;
+	char	**symbols;
 
-    tokens_list = data->tokens;
-    while (tokens_list)
-    {
-        row = ((t_stack *)(data->stack->content))->state_id;
-        token = lex_token(data, data->table, ((t_token *)(tokens_list->content)), row);
-        if (!token)
-            return (/*print_parsing_error(data, data->table, row, token), */0);
-        col = get_symbol_nbr(data, token->type);
-        if (col < 0)
-            return (/*printf("Error: Unexpected token type \"%s\"\n", token->type),*/ 0);
-        action = data->table[row][col];
-        if (!action)
-            return (/*print_parsing_error(data, data->table, row, token),*/ 0);
-        else if (action == ACCEPTED)
-            return (1);
-        else if (action < 0)
-            reduce(data, data->table, -action);
-        else
-        {
-            shift(data, action, token);
-            tokens_list = tokens_list->next;
-        }
-    }
-    return (0);
+	printf("Parsing error at token \"%s\" of type \"%s\"\n",
+		token->value, token->type);
+	printf("Expected tokens are : ");
+	symbols = data->symbols;
+	i = 0;
+	while (symbols[i])
+	{
+		if (table[id][i])
+			printf("%s ", symbols[i]);
+		i++;
+	}
+	printf("\n");
+}
+
+int	parser(t_parser *data)
+{
+	int		row;
+	int		status;
+	t_list	*tokens_list;
+	t_token	*token;
+
+	tokens_list = data->tokens;
+	while (tokens_list)
+	{
+		row = ((t_stack *)(data->stack->content))->state_id;
+		token = lex_token(data, data->table,
+				((t_token *)(tokens_list->content)), row);
+		if (!token)
+			return (0);
+		status = apply_action(data, token, &tokens_list, row);
+		if (status == 2)
+			return (1);
+		if (!status)
+			return (0);
+	}
+	return (0);
 }
