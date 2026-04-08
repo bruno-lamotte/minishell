@@ -52,7 +52,7 @@ int	heredoc_has_quotes(char *str)
 char	*read_heredoc_line(t_shell *shell)
 {
 	if (shell->interactive)
-		return (readline("> "));
+		ft_putstr_fd("> ", STDERR_FILENO);
 	return (read_plain_line());
 }
 

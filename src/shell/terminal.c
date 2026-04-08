@@ -17,7 +17,6 @@ static void	heredoc_sigint_handler(int sig)
 	g_signal = sig;
 	write(STDERR_FILENO, "\n", 1);
 	close(STDIN_FILENO);
-	rl_done = 1;
 }
 
 void	save_shell_terminal(t_shell *shell)
