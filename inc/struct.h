@@ -149,11 +149,13 @@ typedef struct s_shell
 	int				exit_code;
 	pid_t			pid;
 	int				interactive;
+	int				has_tty_state;
 	int				should_exit;
 	int				input_line;
 	int				command_line;
 	int				allow_env_fallback;
 	char			*current_line;
+	struct termios	tty_state;
 	struct s_parser	*parser;
 	struct s_ast	*ast;
 }			t_shell;

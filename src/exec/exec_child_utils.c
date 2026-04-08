@@ -25,12 +25,10 @@ void	free_envp(char **envp)
 void	update_underscore(t_shell *shell, char *value)
 {
 	char	*entry;
-	char	*tmp;
 
-	tmp = ft_strjoin("_=", value);
-	if (!tmp)
+	entry = ft_strjoin("_=", value);
+	if (!entry)
 		return ;
-	entry = tmp;
 	env_assign_arg(&shell->env, entry);
 	free(entry);
 }

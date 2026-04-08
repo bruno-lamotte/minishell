@@ -75,19 +75,3 @@ int	has_raw_wildcard(char *encoded)
 	}
 	return (0);
 }
-
-char	*encoded_slice(char *encoded, int start, int end)
-{
-	return (ft_substr(encoded, start, end - start));
-}
-
-int	add_field(t_list **fields, char *encoded)
-{
-	t_list	*node;
-
-	node = ft_lstnew(encoded);
-	if (!node)
-		return (free(encoded), 0);
-	ft_lstadd_back(fields, node);
-	return (1);
-}

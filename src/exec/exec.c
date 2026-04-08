@@ -46,7 +46,6 @@ static int	exec_sequence(t_ast *node, t_shell *shell)
 static int	exec_subshell(t_ast *node, t_shell *shell)
 {
 	pid_t	pid;
-	int		status;
 
 	pid = fork();
 	if (pid < 0)
@@ -57,8 +56,7 @@ static int	exec_subshell(t_ast *node, t_shell *shell)
 		signal(SIGQUIT, SIG_DFL);
 		exit_child_process(shell, NULL, execute(node->children[0], shell));
 	}
-	waitpid(pid, &status, 0);
-	return (wait_status_code(status));
+	return (wait_foreground_job(shell, pid));
 }
 
 int	execute(t_ast *node, t_shell *shell)

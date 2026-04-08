@@ -25,23 +25,19 @@ static int	is_blank_line(char *line)
 static char	*read_shell_line(t_shell *shell)
 {
 	if (shell->interactive)
+	{
+		restore_shell_terminal(shell);
 		return (readline("minishell> "));
+	}
 	return (read_stdin_line(shell));
 }
 
-static int	handle_sigint_line(t_shell *shell, char *line)
+static void	handle_sigint_line(t_shell *shell)
 {
 	if (g_signal != SIGINT)
-		return (1);
+		return ;
 	shell->exit_code = 130;
 	g_signal = 0;
-	if (!*line)
-	{
-		free(line);
-		shell->current_line = NULL;
-		return (0);
-	}
-	return (1);
 }
 
 static int	run_shell_loop(t_shell *shell, t_parser *parser)
@@ -55,10 +51,9 @@ static int	run_shell_loop(t_shell *shell, t_parser *parser)
 		if (!line)
 			return (1);
 		shell->current_line = line;
+		handle_sigint_line(shell);
 		if (shell->interactive && *line)
 			add_history(line);
-		if (!handle_sigint_line(shell, line))
-			return (0);
 		if (is_blank_line(line))
 		{
 			free(line);
@@ -83,12 +78,11 @@ int	main(int ac, char **av, char **envp)
 	init_shell(&shell, envp);
 	setup_signals();
 	parser = init_parser_data();
-	while (!run_shell_loop(&shell, &parser))
-		continue ;
+	run_shell_loop(&shell, &parser);
 	if (shell.interactive && !shell.should_exit)
-		ft_putendl_fd("exit", 1);
+		ft_putendl_fd("exit", STDERR_FILENO);
 	free_parser_data(&parser);
 	free_env_list(&shell.env);
-	rl_clear_history();
+	cleanup_shell_terminal(&shell);
 	return (shell.exit_code);
 }

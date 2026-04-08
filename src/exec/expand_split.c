@@ -12,12 +12,6 @@
 
 #include "expand_internal.h"
 
-static void	skip_field_blanks(char *encoded, int *i)
-{
-	while (encoded[*i] == ' ' || encoded[*i] == '\t')
-		(*i)++;
-}
-
 static int	next_field_end(char *encoded, int start)
 {
 	int	i;
@@ -35,6 +29,22 @@ static int	next_field_end(char *encoded, int start)
 	return (i);
 }
 
+static char	*encoded_slice(char *encoded, int start, int end)
+{
+	return (ft_substr(encoded, start, end - start));
+}
+
+static int	add_field(t_list **fields, char *encoded)
+{
+	t_list	*node;
+
+	node = ft_lstnew(encoded);
+	if (!node)
+		return (free(encoded), 0);
+	ft_lstadd_back(fields, node);
+	return (1);
+}
+
 int	split_fields(char *encoded, int keep_empty, t_list **fields)
 {
 	int		i;
@@ -44,7 +54,8 @@ int	split_fields(char *encoded, int keep_empty, t_list **fields)
 	i = 0;
 	while (encoded[i])
 	{
-		skip_field_blanks(encoded, &i);
+		while (encoded[i] == ' ' || encoded[i] == '\t')
+			i++;
 		if (!encoded[i])
 			break ;
 		start = i;
@@ -77,15 +88,4 @@ char	**expand_fields_to_array(t_list **fields, int count)
 	}
 	array[i] = NULL;
 	return (array);
-}
-
-int	add_plain_field(t_list **plain_fields, char *plain)
-{
-	t_list	*node;
-
-	node = ft_lstnew(plain);
-	if (!node)
-		return (free(plain), 0);
-	ft_lstadd_back(plain_fields, node);
-	return (1);
 }

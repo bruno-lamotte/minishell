@@ -55,16 +55,14 @@ static void	update_shell_pwd(t_shell *shell)
 {
 	char	*cwd;
 	char	*entry;
-	char	*tmp;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return ;
-	tmp = ft_strjoin("PWD=", cwd);
+	entry = ft_strjoin("PWD=", cwd);
 	free(cwd);
-	if (!tmp)
+	if (!entry)
 		return ;
-	entry = tmp;
 	env_assign_arg(&shell->env, entry);
 	free(entry);
 }
@@ -81,7 +79,8 @@ void	init_shell(t_shell *shell, char **envp)
 
 	ft_bzero(shell, sizeof(t_shell));
 	shell->pid = getpid();
-	shell->interactive = isatty(STDIN_FILENO);
+	shell->interactive = (isatty(STDIN_FILENO) && isatty(STDERR_FILENO));
+	save_shell_terminal(shell);
 	if (!shell->interactive)
 		shell->input_line = 1;
 	i = 0;

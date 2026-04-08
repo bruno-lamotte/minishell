@@ -48,11 +48,7 @@ char	*encode_word(char *str, t_shell *shell, int *keep_empty);
 char	*strip_protected(char *encoded);
 char	*wildcard_pattern(char *encoded);
 int		has_raw_wildcard(char *encoded);
-char	*encoded_slice(char *encoded, int start, int end);
-int		add_field(t_list **fields, char *encoded);
 int		split_fields(char *encoded, int keep_empty, t_list **fields);
 char	**expand_fields_to_array(t_list **fields, int count);
-int		add_plain_field(t_list **plain_fields, char *plain);
-int		add_wildcard_matches(t_list **plain_fields, char **matches, int count);
 
 #endif

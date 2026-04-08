@@ -14,10 +14,20 @@
 
 int	g_signal = 0;
 
+static void	setup_signal(int signum, void (*handler)(int))
+{
+	struct sigaction	sa;
+
+	ft_bzero(&sa, sizeof(sa));
+	sa.sa_handler = handler;
+	sigemptyset(&sa.sa_mask);
+	sigaction(signum, &sa, NULL);
+}
+
 static void	sigint_handler(int sig)
 {
 	g_signal = sig;
-	write(1, "\n", 1);
+	write(STDERR_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -28,40 +38,14 @@ static void	sigquit_handler(int sig)
 	(void)sig;
 }
 
-static void	heredoc_sigint_handler(int sig)
-{
-	g_signal = sig;
-	write(1, "\n", 1);
-	close(STDIN_FILENO);
-	rl_done = 1;
-}
-
 void	setup_signals(void)
 {
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
-
-	ft_bzero(&sa_int, sizeof(sa_int));
-	ft_bzero(&sa_quit, sizeof(sa_quit));
-	sa_int.sa_handler = sigint_handler;
-	sigemptyset(&sa_int.sa_mask);
-	sigaction(SIGINT, &sa_int, NULL);
-	sa_quit.sa_handler = sigquit_handler;
-	sigemptyset(&sa_quit.sa_mask);
-	sigaction(SIGQUIT, &sa_quit, NULL);
+	setup_signal(SIGINT, sigint_handler);
+	setup_signal(SIGQUIT, sigquit_handler);
 }
 
-void	setup_heredoc_signals(void)
+void	setup_wait_signals(void)
 {
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
-
-	ft_bzero(&sa_int, sizeof(sa_int));
-	ft_bzero(&sa_quit, sizeof(sa_quit));
-	sa_int.sa_handler = heredoc_sigint_handler;
-	sigemptyset(&sa_int.sa_mask);
-	sigaction(SIGINT, &sa_int, NULL);
-	sa_quit.sa_handler = sigquit_handler;
-	sigemptyset(&sa_quit.sa_mask);
-	sigaction(SIGQUIT, &sa_quit, NULL);
+	setup_signal(SIGINT, SIG_IGN);
+	setup_signal(SIGQUIT, SIG_IGN);
 }

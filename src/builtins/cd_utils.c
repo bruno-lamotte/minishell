@@ -43,12 +43,13 @@ int	print_cd_error(t_shell *shell, char *path)
 char	*resolve_cd_path(t_shell *shell, char *arg, int *allocated)
 {
 	char	*home;
+	char	*path;
 
 	*allocated = 0;
 	if (!arg || !ft_strcmp(arg, "--"))
 		return (get_env_val(shell, "HOME", 4));
 	if (!ft_strcmp(arg, "~"))
-		return (get_cd_home(shell));
+		return (*allocated = 1, get_cd_home(shell));
 	if (!ft_strcmp(arg, "-"))
 		return (get_env_val(shell, "OLDPWD", 6));
 	if (ft_strncmp(arg, "~/", 2))
@@ -56,8 +57,10 @@ char	*resolve_cd_path(t_shell *shell, char *arg, int *allocated)
 	home = get_cd_home(shell);
 	if (!home)
 		return (NULL);
+	path = ft_strjoin(home, arg + 1);
+	free(home);
 	*allocated = 1;
-	return (ft_strjoin(home, arg + 1));
+	return (path);
 }
 
 int	update_pwd(t_shell *shell, char *oldpwd)

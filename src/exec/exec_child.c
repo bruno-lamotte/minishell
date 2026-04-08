@@ -26,7 +26,7 @@ void	exit_child_process(t_shell *shell, t_list **extra_env, int status)
 		free_parser_data(shell->parser);
 	else if (shell->ast)
 		free_ast(shell->ast);
-	rl_clear_history();
+	cleanup_shell_terminal(shell);
 	exit(status);
 }
 
@@ -52,7 +52,7 @@ static void	run_external(t_ast *node, t_shell *shell, t_shell *tmp)
 	path = find_path(node->args[0], tmp, &status);
 	if (!path)
 	{
-		print_exec_error(tmp, node->args[0], status);
+		print_command_error(tmp, node->args[0], status);
 		exit_child_process(shell, &tmp->env, status);
 	}
 	update_underscore(tmp, path);
@@ -65,7 +65,7 @@ static void	run_external(t_ast *node, t_shell *shell, t_shell *tmp)
 	if (is_env_program(path))
 		reorder_env_output(envp);
 	execve(path, node->args, envp);
-	print_exec_error(tmp, node->args[0], 126);
+	print_command_error(tmp, node->args[0], 126);
 	free(path);
 	free_envp(envp);
 	exit_child_process(shell, &tmp->env, 126);

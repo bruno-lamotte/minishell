@@ -16,7 +16,6 @@
 int		is_dot_entry(char *name);
 int		match_pattern(char *pattern, char *name);
 int		split_pattern(char *pattern, char **dir, char **name);
-char	**sorted_matches(t_list **matches, int count);
 
 static int	append_match(t_list **matches, char *dir, char *name)
 {
@@ -62,6 +61,49 @@ static int	collect_matches(DIR *dirp, char *dir, char *name, t_list **matches)
 		entry = readdir(dirp);
 	}
 	return (count);
+}
+
+static void	sort_match_array(char **array, int count)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+
+	i = -1;
+	while (++i < count)
+	{
+		j = i;
+		while (++j < count)
+		{
+			if (ft_strcmp(array[i], array[j]) > 0)
+			{
+				tmp = array[i];
+				array[i] = array[j];
+				array[j] = tmp;
+			}
+		}
+	}
+}
+
+static char	**sorted_matches(t_list **matches, int count)
+{
+	char	**array;
+	t_list	*next;
+	int		i;
+
+	array = ft_calloc(count + 1, sizeof(char *));
+	if (!array)
+		return (NULL);
+	i = 0;
+	while (*matches)
+	{
+		array[i++] = (char *)(*matches)->content;
+		next = (*matches)->next;
+		free(*matches);
+		*matches = next;
+	}
+	sort_match_array(array, count);
+	return (array);
 }
 
 char	**get_wildcard_matches(char *pattern, int *count)

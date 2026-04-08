@@ -66,8 +66,9 @@ int	read_heredoc(t_redirection *redir, t_shell *shell)
 		line = read_heredoc_line(shell);
 	}
 	free(line);
-	setup_signals();
 	restore_heredoc_stdin(saved_stdin);
+	restore_shell_terminal(shell);
+	setup_signals();
 	return (finish_heredoc(redir, shell, tmp_name, fd));
 }
 

@@ -25,8 +25,8 @@ static int	pipe_error(int in_fd)
 static int	run_pipe_chain(t_ast *node, t_shell *shell, int in_fd)
 {
 	int			fd[2];
-	int			status;
 	int			ret;
+	int			status;
 	pid_t		pid;
 	t_pipe_fds	fds;
 
@@ -44,11 +44,16 @@ static int	run_pipe_chain(t_ast *node, t_shell *shell, int in_fd)
 	if (pid < 0)
 		return (close(fd[0]), pipe_error(STDIN_FILENO));
 	ret = run_pipe_chain(node->children[1], shell, fd[0]);
-	waitpid(pid, &status, 0);
+	wait_for_pid(pid, &status);
 	return (ret);
 }
 
 int	exec_pipe(t_ast *node, t_shell *shell)
 {
-	return (run_pipe_chain(node, shell, STDIN_FILENO));
+	int	ret;
+
+	prepare_foreground_job(shell);
+	ret = run_pipe_chain(node, shell, STDIN_FILENO);
+	finish_foreground_job(shell);
+	return (ret);
 }

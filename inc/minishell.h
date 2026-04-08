@@ -14,12 +14,14 @@
 # define MINISHELL_H
 
 # include <fcntl.h>
+# include <errno.h>
 # include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/time.h>
 # include <sys/wait.h>
+# include <termios.h>
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>

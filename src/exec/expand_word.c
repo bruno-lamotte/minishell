@@ -12,7 +12,19 @@
 
 #include "expand_internal.h"
 
-int	add_wildcard_matches(t_list **plain_fields, char **matches, int count)
+static int	add_plain_field(t_list **plain_fields, char *plain)
+{
+	t_list	*node;
+
+	node = ft_lstnew(plain);
+	if (!node)
+		return (free(plain), 0);
+	ft_lstadd_back(plain_fields, node);
+	return (1);
+}
+
+static int	add_wildcard_matches(t_list **plain_fields, char **matches,
+		int count)
 {
 	int	i;
 
@@ -68,20 +80,11 @@ static int	process_encoded_field(t_list **plain_fields, t_list *encoded_field,
 			(char *)encoded_field->content, count));
 }
 
-static void	pop_encoded_field(t_list **encoded_fields)
-{
-	t_list	*tmp;
-
-	free((*encoded_fields)->content);
-	tmp = *encoded_fields;
-	*encoded_fields = (*encoded_fields)->next;
-	free(tmp);
-}
-
 char	**expand_word(char *str, t_shell *shell, int *count)
 {
 	t_list	*encoded_fields;
 	t_list	*plain_fields;
+	t_list	*tmp;
 	char	*encoded;
 	int		keep_empty;
 
@@ -98,7 +101,10 @@ char	**expand_word(char *str, t_shell *shell, int *count)
 		if (!process_encoded_field(&plain_fields, encoded_fields, count))
 			return (ft_lstclear(&encoded_fields, free_string),
 				ft_lstclear(&plain_fields, free_string), NULL);
-		pop_encoded_field(&encoded_fields);
+		free(encoded_fields->content);
+		tmp = encoded_fields;
+		encoded_fields = encoded_fields->next;
+		free(tmp);
 	}
 	return (expand_fields_to_array(&plain_fields, *count));
 }

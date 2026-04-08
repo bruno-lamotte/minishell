@@ -19,7 +19,7 @@ int	wait_status_code(int status)
 	if (WIFSIGNALED(status))
 	{
 		if (WTERMSIG(status) == SIGINT)
-			write(1, "\n", 1);
+			write(STDERR_FILENO, "\n", 1);
 		if (WTERMSIG(status) == SIGQUIT)
 			ft_putendl_fd("Quit (core dumped)", 2);
 		return (128 + WTERMSIG(status));

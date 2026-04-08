@@ -15,6 +15,14 @@
 
 void		setup_signals(void);
 void		setup_heredoc_signals(void);
+void		setup_wait_signals(void);
+void		save_shell_terminal(t_shell *shell);
+void		restore_shell_terminal(t_shell *shell);
+void		cleanup_shell_terminal(t_shell *shell);
+void		prepare_foreground_job(t_shell *shell);
+void		finish_foreground_job(t_shell *shell);
+int			wait_for_pid(pid_t pid, int *status);
+int			wait_foreground_job(t_shell *shell, pid_t pid);
 
 int			builtin_pwd(void);
 int			builtin_echo(char **args);
@@ -59,7 +67,6 @@ char		*expand_heredoc_line(char *line, t_shell *shell);
 char		*dequote_string(char *str);
 char		**expand_word(char *str, t_shell *shell, int *count);
 void		expand_ast(t_ast *node, t_shell *shell);
-void		expand_wildcards_args(t_ast *node);
 char		**get_wildcard_matches(char *pattern, int *count);
 
 int			apply_redirections(t_list *redirs, t_shell *shell);
@@ -74,7 +81,6 @@ int			is_builtin_command(char **args);
 int			is_env_fallback_builtin(t_shell *shell, char **args);
 void		apply_assignments(t_shell *shell, t_ast *node);
 void		print_command_error(t_shell *shell, char *cmd, int status);
-void		print_exec_error(t_shell *shell, char *cmd, int status);
 void		reorder_env_output(char **envp);
 int			is_env_program(char *path);
 int			exec_pipe(t_ast *node, t_shell *shell);

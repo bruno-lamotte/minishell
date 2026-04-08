@@ -12,11 +12,6 @@
 
 #include "minishell.h"
 
-static char	*handle_incomplete_line(char *line)
-{
-	return (line);
-}
-
 static char	*append_input_line(t_shell *shell, char *line,
 		int continued, int *done)
 {
@@ -28,7 +23,7 @@ static char	*append_input_line(t_shell *shell, char *line,
 	if (!next)
 	{
 		*done = 1;
-		return (handle_incomplete_line(line));
+		return (line);
 	}
 	shell->input_line++;
 	joined = join_input_lines(line, next, continued);

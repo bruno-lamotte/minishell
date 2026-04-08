@@ -48,6 +48,7 @@ SHELL_SRC_FILES = parsing/lexer.c \
                   shell/line_normalize.c \
                   shell/line_normalize_utils.c \
                   shell/shell_init.c \
+                  shell/terminal.c \
                   signals.c \
                   builtins/pwd.c \
                   builtins/echo.c \
@@ -63,7 +64,6 @@ SHELL_SRC_FILES = parsing/lexer.c \
                   builtins/exit.c \
                   builtins/exit_utils.c \
                   exec/exec_common.c \
-                  exec/exec_errors.c \
                   exec/expand.c \
                   exec/expand_buffer.c \
                   exec/expand_parse_quotes.c \
@@ -80,10 +80,10 @@ SHELL_SRC_FILES = parsing/lexer.c \
                   exec/exec_child_utils.c \
                   exec/exec_pipe.c \
                   exec/exec_pipe_stage.c \
+                  exec/exec_wait.c \
                   exec/path_utils.c \
                   exec/wildcard.c \
                   exec/wildcard_utils.c \
-                  exec/wildcard_sort.c \
                   exec/path_search.c \
                   exec/exec.c
 

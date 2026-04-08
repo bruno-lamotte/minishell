@@ -59,6 +59,7 @@ int	run_last_stage(t_ast *node, t_shell *shell, int in_fd)
 		close(in_fd);
 	if (pid < 0)
 		return (1);
-	waitpid(pid, &status, 0);
+	if (!wait_for_pid(pid, &status))
+		return (1);
 	return (wait_status_code(status));
 }

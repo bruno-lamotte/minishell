@@ -12,6 +12,16 @@
 
 #include "minishell.h"
 
+static void	close_saved_fds(int stdin_fd, int stdout_fd, int stderr_fd)
+{
+	if (stdin_fd >= 0)
+		close(stdin_fd);
+	if (stdout_fd >= 0)
+		close(stdout_fd);
+	if (stderr_fd >= 0)
+		close(stderr_fd);
+}
+
 static int	with_redirections(t_list *redirections,
 		int (*fn)(t_shell *, char **), t_shell *shell, char **args)
 {
@@ -24,7 +34,10 @@ static int	with_redirections(t_list *redirections,
 	saved_stdout = dup(STDOUT_FILENO);
 	saved_stderr = dup(STDERR_FILENO);
 	if (saved_stdin < 0 || saved_stdout < 0 || saved_stderr < 0)
+	{
+		close_saved_fds(saved_stdin, saved_stdout, saved_stderr);
 		return (1);
+	}
 	if (!apply_redirections(redirections, shell))
 		ret = 1;
 	else if (fn)
@@ -34,9 +47,7 @@ static int	with_redirections(t_list *redirections,
 	dup2(saved_stdin, STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
 	dup2(saved_stderr, STDERR_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
-	close(saved_stderr);
+	close_saved_fds(saved_stdin, saved_stdout, saved_stderr);
 	return (ret);
 }
 
@@ -94,6 +105,5 @@ int	exec_command(t_ast *node, t_shell *shell)
 		return (perror("fork"), 1);
 	if (pid == 0)
 		exec_in_child(node, shell);
-	waitpid(pid, &status, 0);
-	return (wait_status_code(status));
+	return (wait_foreground_job(shell, pid));
 }
