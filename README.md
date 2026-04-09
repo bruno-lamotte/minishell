@@ -1,71 +1,66 @@
+*This project has been created as part of the 42 curriculum by blamotte, ynabti.*
+
 # minishell
 
-Projet realise par `blamotte` et `ynabti` dans le cadre du cursus 42.
+## Description
 
-## Apercu
+`minishell` is a small UNIX shell written in C for the 42 curriculum.
+The goal of the project is to reproduce the core behavior of a Bourne-like
+shell with a strong focus on processes, pipes, redirections, signals, and
+environment handling.
 
-`minishell` reproduit le comportement d'un shell UNIX en C.
-Le projet combine un parseur maison et un moteur d'execution pour retrouver
-le comportement attendu d'un shell interactif dans le cadre du sujet 42.
-L'objectif est de proposer un shell stable, lisible et defendable en
-soutenance, avec un mandatory solide et les bonus principaux integres.
-
-Fonctionnalites principales :
-- prompt interactif et historique
-- gestion des quotes simples et doubles
-- expansion des variables d'environnement et de `$?`
+This implementation includes:
+- an interactive prompt with history
+- quote handling for single and double quotes
+- environment expansion, including `$?`
 - redirections `<`, `>`, `<<`, `>>`
-- pipes
-- builtins `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`
+- pipelines
+- the mandatory builtins `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`
 
-Bonus inclus :
-- `&&`
-- `||`
-- parenthèses
-- wildcard `*`
+The project also includes the main bonus features used in our repository:
+- logical operators `&&` and `||`
+- subshells with parentheses
+- wildcard expansion with `*`
 
-Le parsing repose sur un parser `SLR(1)` maison. L'execution est ensuite
-separee du parsing, avec une gestion dediee des expansions, des redirections,
-des pipes, des builtins et des signaux.
+The parser is based on a custom `SLR(1)` approach, while execution is handled
+separately through dedicated runtime code for expansion, redirections, pipes,
+builtins, and signals.
 
-## Structure
+## Instructions
 
-Le projet est organise autour de quelques zones principales :
-- `src/parsing` pour le tokenizer, le parser et la construction de l'AST
-- `src/exec` pour l'expansion, les redirections, les pipes et l'execution
-- `src/shell` pour la boucle principale, l'environnement, les heredocs et le terminal
-- `src/builtins` pour les builtins du sujet
-- `inc` pour les structures et les prototypes
-
-## Build
+Build the project from the repository root:
 
 ```bash
 make
 ```
 
-Commandes utiles :
+Useful rules:
 - `make clean`
 - `make fclean`
 - `make re`
+- `make bonus`
 
-## Execution
+Run the shell with:
 
 ```bash
 ./minishell
 ```
 
-## Notes
+Project layout:
+- `src/parsing` contains tokenization, parser logic, and AST construction
+- `src/exec` contains expansion, redirections, pipes, and command execution
+- `src/shell` contains the shell loop, environment helpers, heredocs, and terminal handling
+- `src/builtins` contains builtin commands
+- `inc` contains shared structures and prototypes
 
-Le projet suit le sujet `minishell` de 42 avec le mandatory et les bonus
-principaux. Le parsing, les expansions, les redirections, les pipes et la
-gestion des signaux ont ete travailles pour rester stables aussi bien dans
-les tests que dans les cas interactifs classiques.
+## Resources
 
-Le projet a ete verifie avec :
-- les testeurs communautaires utilises pendant le developpement
-- des repros interactifs sur les signaux et les shells imbriques
-- des verifications `valgrind` pour la memoire et les file descriptors
+Classic references used for the project:
+- GNU Bash Manual: https://www.gnu.org/software/bash/manual/bash.html
+- POSIX Shell Command Language: https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
+- GNU Readline Manual: https://tiswww.case.edu/php/chet/readline/rltop.html
+- Linux `signal(7)`, `pipe(2)`, `dup(2)`, `waitpid(2)`, `execve(2)` man pages
 
-## AI Usage
-
-L'IA a ete utilisee de facon pedagogique pendant le projet et pour ecrire ce README.
+AI was used in a pedagogical way during the project to discuss ideas, review
+behaviors, and help structure explanations. AI was also used to write this
+`README.md`.

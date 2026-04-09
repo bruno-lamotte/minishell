@@ -90,6 +90,8 @@ LIBS_FLAGS      = $(LIBFT)
 
 all: $(NAME)
 
+bonus: $(NAME)
+
 $(NAME): $(LIBFT) $(SHELL_OBJS)
 	$(CC) $(CFLAGS) $(SHELL_OBJS) $(LIBS_FLAGS) -lreadline -o $(NAME)
 	@echo "$(NAME) compiled successfully!"
@@ -116,4 +118,4 @@ re: fclean all
 
 -include $(SHELL_DEPS)
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re
