@@ -6,7 +6,7 @@
 /*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 09:52:12 by blamotte          #+#    #+#             */
-/*   Updated: 2026/03/24 20:06:31 by blamotte         ###   ########.fr       */
+/*   Updated: 2026/04/10 23:20:27 by blamotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	handle_is_operator(char *str, int *i)
 	if (!is_operator(str[*i]))
 		return (0);
 	(*i)++;
+	if (str[*i - 1] == '(' || str[*i - 1] == ')' || str[*i - 1] == '!')
+		return (1);
 	while (can_be_added_to_opperator(str[*i]))
 		(*i)++;
 	return (1);
