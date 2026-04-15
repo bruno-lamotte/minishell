@@ -6,7 +6,7 @@
 /*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 08:08:56 by ynabti            #+#    #+#             */
-/*   Updated: 2026/04/06 18:44:28 by ynabti           ###   ########.fr       */
+/*   Updated: 2026/04/15 21:18:00 by ynabti           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ int	builtin_cd(t_shell *shell, char **args)
 		print_shell_prefix(shell);
 		return (ft_putendl_fd("cd: too many arguments", 2), 1);
 	}
+	if (args[1] && !args[1][0])
+		return (0);
 	path = resolve_cd_path(shell, args[1], &allocated);
 	if (!path)
 		return (handle_cd_env_error(shell, args[1]));
