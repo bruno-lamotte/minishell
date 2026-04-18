@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   pop_redirect.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blamotte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:50:40 by blamotte          #+#    #+#             */
 /*   Updated: 2026/03/24 07:22:22 by blamotte         ###   ########.fr       */

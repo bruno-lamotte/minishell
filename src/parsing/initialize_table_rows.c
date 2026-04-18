@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   initialize_table_rows.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:54:18 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/08 10:42:54 by ynabti           ###   ########.fr       */

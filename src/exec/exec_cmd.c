@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 08:40:40 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/06 10:40:20 by ynabti           ###   ########.fr       */

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   export_parse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 11:41:17 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/07 19:23:31 by ynabti           ###   ########.fr       */

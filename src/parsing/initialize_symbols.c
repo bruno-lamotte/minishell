@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   initialize_symbols.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 11:37:49 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/07 16:31:47 by ynabti           ###   ########.fr       */

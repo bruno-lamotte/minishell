@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:14:38 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/08 09:02:34 by ynabti           ###   ########.fr       */

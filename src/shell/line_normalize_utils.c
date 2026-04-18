@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   line_normalize_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 08:52:04 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/06 14:16:32 by ynabti           ###   ########.fr       */

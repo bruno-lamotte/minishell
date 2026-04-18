@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   reduce_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blamotte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 00:45:50 by blamotte          #+#    #+#             */
 /*   Updated: 2026/03/24 22:29:25 by blamotte         ###   ########.fr       */

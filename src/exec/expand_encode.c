@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   expand_encode.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 11:13:01 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/07 11:19:23 by ynabti           ###   ########.fr       */

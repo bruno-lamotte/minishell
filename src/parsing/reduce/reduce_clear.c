@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   reduce_clear.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 08:28:16 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/06 09:04:08 by ynabti           ###   ########.fr       */

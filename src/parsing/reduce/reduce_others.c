@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   reduce_others.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blamotte <blamotte@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blamotte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 04:57:55 by blamotte          #+#    #+#             */
 /*   Updated: 2026/03/24 18:31:49 by blamotte         ###   ########.fr       */

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   reduce_symbol.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:02:14 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/08 19:26:22 by ynabti           ###   ########.fr       */

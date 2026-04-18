@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   initialize_rules.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 08:20:20 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/06 11:20:40 by ynabti           ###   ########.fr       */

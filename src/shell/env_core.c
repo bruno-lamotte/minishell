@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   env_core.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynabti <ynabti@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ynabti <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 11:53:41 by ynabti            #+#    #+#             */
 /*   Updated: 2026/04/07 12:59:43 by ynabti           ###   ########.fr       */
