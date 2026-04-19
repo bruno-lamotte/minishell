@@ -24,7 +24,7 @@ The project also includes the main bonus features used in our repository:
 
 The parser is based on a custom `SLR(1)` approach, while execution is handled
 separately through dedicated runtime code for expansion, redirections, pipes,
-builtins, and signals.
+builtins, and signals. For more details see this old commit: https://github.com/bruno-lamotte/minishell/tree/bruno
 
 ## Instructions
 
